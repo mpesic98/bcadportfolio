@@ -59,6 +59,7 @@ function Offers() {
 
   return (
     <>
+    <div className="max-w-[1440px] items-center justify-center mx-auto">
       <div className="justify-items-center mt-50 gap-10 md:gap-10 grid grid-cols-3">
         {items.map((item) => (
           <Card
@@ -70,7 +71,7 @@ function Offers() {
           />
         ))}
       </div>
-
+    </div>
       <AnimatePresence>
         {openItem && (
           <motion.div
