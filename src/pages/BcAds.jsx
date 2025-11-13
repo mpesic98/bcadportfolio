@@ -1,5 +1,5 @@
 import exampleImg from "../assets/exampleImg.png";
-import BcAdsDetails from "../components/BcAdsDetails.jsx";
+import Offers from "../components/Offers";
 import { motion } from "framer-motion";
 
 const listVariants = {
@@ -113,7 +113,7 @@ function BcAds() {
           ))}
         </motion.h1>
 
-        <motion.ul
+        {/* <motion.ul
           className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-10 mt-10 md:mt-20"
           variants={listVariants}
           initial="hidden"
@@ -131,10 +131,10 @@ function BcAds() {
               <button className="btn">{label}</button>
             </motion.li>
           ))}
-        </motion.ul>
+        </motion.ul> */}
       </div>
 
-      <BcAdsDetails />
+      <Offers />
     </div>
   );
 }
