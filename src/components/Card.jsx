@@ -3,7 +3,14 @@ import { motion } from "framer-motion";
 import arrow from "../assets/arrow.svg";
 import arrowDown from "../assets/arrowDown.svg";
 
-function Card({ backgroundImg, hoverImg, title, onOpen }) {
+function Card({
+  backgroundImg,
+  hoverImg,
+  hoverColor,
+  hoverText,
+  title,
+  onOpen,
+}) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -11,7 +18,7 @@ function Card({ backgroundImg, hoverImg, title, onOpen }) {
       onClick={onOpen}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative w-[400px] h-[500px] rounded-xl overflow-hidden cursor-pointer"
+      className="relative w-[400px] h-[500px] rounded-xl overflow-hidden cursor-pointer "
       initial="rest"
       whileHover="hover"
       animate="rest"
@@ -25,13 +32,24 @@ function Card({ backgroundImg, hoverImg, title, onOpen }) {
         transition={{ duration: 0.6, ease: "easeOut" }}
       />
 
-      {/* hover image becomes DEFAULT */}
       <motion.div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: `url(${hoverImg})` }}
+        className={`absolute inset-0 ${
+          hoverColor ? "flex items-center justify-center" : "bg-cover bg-center"
+        }`}
+        style={
+          hoverColor
+            ? { backgroundColor: hoverColor }
+            : { backgroundImage: `url(${hoverImg})` }
+        }
         animate={{ opacity: isHovered ? 0 : 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-      />
+      >
+        {hoverColor && (
+          <h1 className="text-white text-3xl md:text-4xl font-bold drop-shadow-lg select-none text-center px-4">
+            {hoverText || title}
+          </h1>
+        )}
+      </motion.div>
 
       <div
         className="pointer-events-none absolute inset-0"
@@ -44,7 +62,7 @@ function Card({ backgroundImg, hoverImg, title, onOpen }) {
       <motion.div
         className="absolute bottom-0 left-0 right-0 text-black-100 rounded-b-lg backdrop-blur-2xl"
         variants={{
-          rest: { height: 64, backgroundColor: "rgba(255,255,255,0.40)" },
+          rest: { height: 0, backgroundColor: "rgba(255,255,255,0.40)" },
           hover: { height: 170, backgroundColor: "rgba(255,255,255,0.65)" },
         }}
         transition={{ duration: 0.35, ease: "easeOut" }}
