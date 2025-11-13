@@ -88,54 +88,47 @@ function Offers() {
             />
 
             <div className="absolute inset-0 flex items-center justify-center p-4">
-              <motion.div
-                role="dialog"
-                aria-modal="true"
-                aria-label={`${openItem?.title} details`}
-                className="relative w-[80%] md:w-[80%] max-w-[1200px] md:h-[700px] rounded-2xl overflow-hidden shadow-2xl bg-white/95"
-                variants={modalVariants}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
-                style={{ willChange: "opacity, transform" }}
-              >
-                <div className="relative h-full overflow-hidden">
-                  <img
-                    src={openItem?.image || displayBanner}
-                    alt=""
-                    className="w-full h-full object-cover overflow-hidden"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                  <h3 className="absolute bottom-3 left-4 text-white text-2xl md:text-3xl font-semibold drop-shadow">
-                    {openItem?.title}
-                  </h3>
+            <motion.div
+  variants={modalVariants}
+  initial="hidden"
+  animate="visible"
+  exit="exit"
+  style={{ willChange: "opacity, transform" }}
+  className="fixed inset-0 z-50 flex items-center justify-center"
+>
+  {/* Overlay for closing the modal */}
+  <div
+    onClick={() => setOpenItem(null)} // Close modal when clicking outside
+    className="fixed inset-0 bg-black/50"
+    aria-hidden="true"
+  />
 
-                  <button
-                    onClick={() => setOpenItem(null)}
-                    className="absolute top-3 right-3 rounded-full bg-white/90 hover:bg-white shadow p-2 leading-none"
-                    aria-label="Close"
-                  >
-                    ✕
-                  </button>
-                </div>
+  {/* Modal Content */}
+  <div
+    className="relative w-[80%] md:w-[80%] max-w-[1200px] md:h-[700px] rounded-2xl overflow-hidden shadow-2xl bg-white/95"
+    onClick={(e) => e.stopPropagation()} // Prevent overlay click from closing modal
+  >
+    <div className="relative h-full overflow-hidden">
+      <img
+        src={openItem?.image || displayBanner}
+        alt=""
+        className="w-full h-full object-cover overflow-hidden"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+      <h3 className="absolute bottom-3 left-4 text-white text-2xl md:text-3xl font-semibold drop-shadow">
+        {openItem?.title}
+      </h3>
 
-                {/* <div className="p-5 md:p-7 overflow-y-auto max-h-[calc(85vh-14rem)]">
-                  <div className="prose max-w-none">
-                    <p>
-                      Ovde ide sadržaj za <strong>{openItem?.title}</strong>.
-                      Ubaci screenshot, opis kampanje, metrike, CTA, šta god ti
-                      treba.
-                    </p>
-                    <ul className="list-disc pl-5 mt-4">
-                      <li>Format i platforma oglasa</li>
-                      <li>Target publika i KPI</li>
-                      <li>Rezultati / benchmark</li>
-                    </ul>
-                  </div>
-
-                  <div className="mt-6 flex flex-wrap gap-3"></div>
-                </div> */}
-              </motion.div>
+      <button
+        onClick={() => setOpenItem(null)}
+        className="cursor-pointer absolute top-3 right-3 rounded-full bg-white/90 hover:bg-white shadow p-2 leading-none"
+        aria-label="Close"
+      >
+        ✕
+      </button>
+    </div>
+  </div>
+</motion.div>
             </div>
           </motion.div>
         )}
