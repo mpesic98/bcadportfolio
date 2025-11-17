@@ -2,15 +2,9 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import arrow from "../assets/arrow.svg";
 import arrowDown from "../assets/arrowDown.svg";
+import exampleImg from "../assets/ad-types/displaybanner.png";
 
-function Card({
-  backgroundImg,
-  hoverImg,
-  hoverColor,
-  hoverText,
-  title,
-  onOpen,
-}) {
+function Card({ backgroundImg, hoverImg, hoverText, title, onOpen }) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -18,13 +12,13 @@ function Card({
       onClick={onOpen}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className="relative w-[400px] h-[500px] rounded-xl overflow-hidden cursor-pointer "
+      className="relative w-[400px] h-[500px] rounded-xl overflow-hidden cursor-pointer"
       initial="rest"
       whileHover="hover"
       animate="rest"
       transition={{ type: "spring", stiffness: 150, damping: 22 }}
     >
-      {/* two layered divs for smooth crossfade */}
+      {/* Hover slika div */}
       <motion.div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${backgroundImg})` }}
@@ -32,25 +26,25 @@ function Card({
         transition={{ duration: 0.6, ease: "easeOut" }}
       />
 
+      {/* Base div */}
       <motion.div
-        className={`absolute inset-0 ${
-          hoverColor ? "flex items-center justify-center" : "bg-cover bg-center"
-        }`}
-        style={
-          hoverColor
-            ? { backgroundColor: hoverColor }
-            : { backgroundImage: `url(${hoverImg})` }
-        }
+        className="absolute inset-0 bg-cover bg-center"
+        style={{
+          backgroundImage: `url(${hoverImg || exampleImg})`,
+          filter: "blur(4px) brightness(85%)",
+        }}
         animate={{ opacity: isHovered ? 0 : 1 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-      >
-        {hoverColor && (
-          <h1 className="text-white text-3xl md:text-4xl font-bold drop-shadow-lg select-none text-center px-4">
-            {hoverText || title}
-          </h1>
-        )}
-      </motion.div>
+      />
 
+      {/* Base tittle div */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <h1 className="text-white text-3xl md:text-4xl font-bold drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)] select-none text-center px-4">
+          {hoverText || title}
+        </h1>
+      </div>
+
+      {/* GRADIENT OVERLAY */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
@@ -59,8 +53,9 @@ function Card({
         }}
       />
 
+      {/* Pop-up div*/}
       <motion.div
-        className="absolute bottom-0 left-0 right-0 text-black-100 rounded-b-lg backdrop-blur-2xl"
+        className="absolute bottom-0 left-0 right-0 text-black rounded-b-lg backdrop-blur-2xl"
         variants={{
           rest: { height: 0, backgroundColor: "rgba(255,255,255,0.40)" },
           hover: { height: 170, backgroundColor: "rgba(255,255,255,0.65)" },
@@ -94,6 +89,7 @@ function Card({
           </div>
         </div>
 
+        {/* Opis i dugme*/}
         <motion.div
           className="px-3 md:px-4 pb-4 text-base text-black/80"
           initial={{ opacity: 0 }}
