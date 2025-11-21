@@ -3,6 +3,7 @@ import slider from "../assets/ad-types/slider.png";
 import displayBanner from "../assets/ad-types/displaybanner.png";
 import adtype3 from "../assets/ad-types/adtype3.png";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import Card from "./Card";
 
 const sharedHoverColor = "#00a666";
@@ -43,16 +44,12 @@ const modalVariants = {
 function Offers() {
   const [openItem, setOpenItem] = useState(null);
 
-  useEffect(() => {
-    if (openItem) {
-      const prev = document.body.style.overflow;
-      return () => (document.body.style.overflow = prev);
-    }
-  }, [openItem]);
+  const navigate = useNavigate(); // ✅ FIX
 
   const handleKeyDown = useCallback((e) => {
     if (e.key === "Escape") setOpenItem(null);
   }, []);
+
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
@@ -61,7 +58,7 @@ function Offers() {
   return (
     <>
       <div className="max-w-[1440px] items-center justify-center mx-auto">
-        <div className="justify-items-center mt-50 gap-10 md:gap-10 grid grid-cols-3  ">
+        <div className="justify-items-center mt-50 gap-10 md:gap-10 grid grid-cols-3">
           {items.map((item) => (
             <Card
               key={item.title}
@@ -73,6 +70,7 @@ function Offers() {
           ))}
         </div>
       </div>
+
       <AnimatePresence>
         {openItem && (
           <motion.div
@@ -85,7 +83,6 @@ function Offers() {
             <motion.div
               className="absolute inset-0 bg-black/40 backdrop-blur-sm lg:backdrop-blur-md"
               onClick={() => setOpenItem(null)}
-              aria-hidden="true"
             />
 
             <div className="absolute inset-0 flex items-center justify-center p-4">
@@ -94,35 +91,40 @@ function Offers() {
                 initial="hidden"
                 animate="visible"
                 exit="exit"
-                style={{ willChange: "opacity, transform" }}
                 className="fixed inset-0 z-50 flex items-center justify-center"
               >
                 <div
                   onClick={() => setOpenItem(null)}
                   className="fixed inset-0 bg-black/50"
-                  aria-hidden="true"
                 />
 
-                {/* Modal Content */}
                 <div
                   className="relative w-[80%] md:w-[80%] max-w-[1200px] md:h-[700px] rounded-2xl overflow-hidden shadow-2xl bg-white/95"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <div className="relative h-full overflow-hidden">
                     <img
-                      src={openItem?.image || displayBanner}
+                      src={openItem?.image}
                       alt=""
-                      className="w-full h-full object-cover overflow-hidden"
+                      className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-                    <h3 className="absolute bottom-3 left-4 text-white text-2xl md:text-3xl font-semibold drop-shadow">
-                      {openItem?.title}
-                    </h3>
+
+                    <div className="absolute bottom-0 left-0 right-0 px-4 py-5 bg-gradient-to-t from-black/80 to-transparent flex flex-col gap-3">
+                      <h3 className="text-white text-2xl md:text-3xl font-semibold drop-shadow-xl px-1">
+                        {openItem?.title}
+                      </h3>
+
+                      <button
+                        onClick={() => navigate(`/preview/${openItem?.title}`)}
+                        className="w-fit px-5 py-2 bg-white text-black font-medium rounded-lg shadow hover:bg-gray-100 "
+                      >
+                        Open Full Preview
+                      </button>
+                    </div>
 
                     <button
                       onClick={() => setOpenItem(null)}
                       className="cursor-pointer absolute top-3 right-3 rounded-full bg-white/90 hover:bg-white shadow p-2 leading-none"
-                      aria-label="Close"
                     >
                       ✕
                     </button>

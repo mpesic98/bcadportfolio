@@ -1,26 +1,29 @@
-import Navbar from './components/Layout/Navbar.jsx'
-import Footer from './components/Layout/Footer.jsx'
-import Betsense from './pages/Betsense.jsx';
-import BcAds from './pages/BcAds.jsx'; 
-import Modal from './pages/Modal.jsx'; 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import MainLayout from "./components/Layout/MainLayout";
+import PreviewLayout from "./components/Layout/previews/PreviewLayout";
+
+import Betsense from "./pages/Betsense";
+import BcAds from "./pages/BcAds";
+import Modal from "./pages/Modal";
+import Preview from "./components/Preview";
 
 function App() {
   return (
-    <div>
     <BrowserRouter>
-      <Navbar />
       <Routes>
-        <Route path="/" element={<Betsense />} />
-        <Route path="/bcads" element={<BcAds />} />
-        <Route path="/modal" element={<Modal />} />
+        <Route element={<MainLayout />}>
+          <Route path="/" element={<Betsense />} />
+          <Route path="/bcads" element={<BcAds />} />
+          <Route path="/modal" element={<Modal />} />
+        </Route>
+
+        <Route element={<PreviewLayout />}>
+          <Route path="/preview/:title" element={<Preview />} />
+        </Route>
       </Routes>
-      <Footer />
     </BrowserRouter>
-
-    </div>
-
-  )
+  );
 }
 
-export default App
+export default App;
