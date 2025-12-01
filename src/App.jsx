@@ -3,9 +3,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import MainLayout from "./components/Layout/MainLayout";
 import PreviewLayout from "./components/Layout/previews/PreviewLayout";
 
-import Betsense from "./pages/Betsense";
-import BcAds from "./pages/BcAds";
-import Modal from "./pages/Modal";
+import Usa from "./pages/USA";
+import Latam from "./pages/LATAM";
+import Europe from "./pages/Europe";
 import Preview from "./components/Preview";
 
 function App() {
@@ -13,9 +13,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route element={<MainLayout />}>
-          <Route path="/" element={<Betsense />} />
-          <Route path="/bcads" element={<BcAds />} />
-          <Route path="/modal" element={<Modal />} />
+          <Route path="/" element={<Usa />} />
+          <Route path="/latam" element={<Latam />} />
+          <Route path="/europe" element={<Europe />} />
         </Route>
 
         <Route element={<PreviewLayout />}>

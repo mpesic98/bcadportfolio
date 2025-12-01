@@ -2,25 +2,7 @@ import exampleImg from "../assets/exampleImg.png";
 import Offers from "../components/Offers";
 import { motion } from "framer-motion";
 
-const listVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.12, delayChildren: 3.2 },
-  },
-};
-
-const itemVariants = {
-  hidden: { opacity: 0, y: 16, scale: 0.98 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    transition: { duration: 0.45, ease: "easeOut" },
-  },
-};
-
-function BcAds() {
+function Latam() {
   return (
     <div className="bg-white">
       <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-12 md:gap-24 w-full max-w-[1440px] mx-auto px-6 md:px-16 mt-16 md:mt-30">
@@ -31,7 +13,7 @@ function BcAds() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1, ease: "easeIn", delay: 3 }}
           >
-            Bc Ads
+            LATAM
           </motion.span>
 
           <motion.h1
@@ -112,26 +94,6 @@ function BcAds() {
             </motion.span>
           ))}
         </motion.h1>
-
-        {/* <motion.ul
-          className="flex flex-wrap justify-center gap-4 sm:gap-6 md:gap-10 mt-10 md:mt-20"
-          variants={listVariants}
-          initial="hidden"
-          animate="visible"
-          viewport={{ once: true, amount: 0.2 }}
-        >
-          {["Type1", "Type2", "Type3", "Type4", "Type5"].map((label) => (
-            <motion.li
-              key={label}
-              variants={itemVariants}
-              whileHover={{ y: -3, scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ type: "spring", stiffness: 260, damping: 18 }}
-            >
-              <button className="btn">{label}</button>
-            </motion.li>
-          ))}
-        </motion.ul> */}
       </div>
 
       <Offers />
@@ -139,4 +101,4 @@ function BcAds() {
   );
 }
 
-export default BcAds;
+export default Latam;
