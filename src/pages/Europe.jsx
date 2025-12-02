@@ -15,7 +15,7 @@ function Europe() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1, ease: "easeIn", delay: 3 }}
           >
-            Modal
+            Europe
           </motion.span>
 
           <motion.h1

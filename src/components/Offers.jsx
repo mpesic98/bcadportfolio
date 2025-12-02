@@ -44,7 +44,9 @@ const modalVariants = {
 function Offers() {
   const [openItem, setOpenItem] = useState(null);
 
-  const navigate = useNavigate(); // ✅ FIX
+  const navigate = useNavigate();
+
+  const [selected, setSelected] = useState('success');
 
   const handleKeyDown = useCallback((e) => {
     if (e.key === "Escape") setOpenItem(null);
@@ -57,12 +59,43 @@ function Offers() {
 
   return (
     <>
-      <div className="max-w-[1440px] items-center justify-center mx-auto px-6 md:px-16 mt-16 md:mt-30">
-        <div className="flex items-center justify-center gap-10 mx-auto py-15 border-b-1 border-t-1 border-gray-300 mb-10">
-          <button className="cursor-pointer">Endemic</button>
-          <button className="cursor-pointer">Non-Endemic</button>
+      <div className="max-w-[1440px] items-center justify-center mx-auto px-6 md:px-16 mt-10 md:mt-30">
+        <div className="flex items-center justify-center gap-20 mx-auto py-5 border-b-1 border-t-1 border-gray-300 mb-10">
+          <button
+            type="button"
+            onClick={() => setSelected("success")}
+            className={`
+          border border-green-600 font-medium leading-5 rounded-lg text-sm px-4 py-2.5 
+          focus:outline-none 
+          transition-all duration-200 ease-in-out active:scale-95
+          ${
+            selected === "success"
+              ? "bg-green-600 text-white shadow-md transform scale-105"
+              : "bg-white text-green-600 hover:bg-green-200 hover:text-green-900"
+          }
+        `}
+          >
+            Success
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setSelected("endemic")}
+            className={`
+          border border-green-600 font-medium leading-7 rounded-3xl text-sm px-4 py-2.5 
+          focus:outline-none  cursor-pointer
+          transition-all duration-200 ease-in-out active:scale-95
+          ${
+            selected === "endemic"
+              ? "bg-green-600 text-white shadow-md transform scale-105"
+              : "bg-white text-green-600 hover:bg-green-200 hover:text-green-900"
+          }
+        `}
+          >
+            Endemic
+          </button>
         </div>
-        <div className="justify-items-center mt-50 gap-10 md:gap-10 grid grid-cols-3">
+        <div className="justify-items-center mt-20 gap-10 md:gap-10 grid grid-cols-3">
           {items.map((item) => (
             <Card
               key={item.title}

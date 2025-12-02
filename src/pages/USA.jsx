@@ -15,7 +15,7 @@ function Usa() {
             animate={{ opacity: 1 }}
             transition={{ duration: 1, ease: "easeIn", delay: 3 }}
           >
-            Betsense
+            USA
           </motion.span>
 
           <motion.h1
