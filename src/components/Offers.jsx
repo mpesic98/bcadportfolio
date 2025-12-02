@@ -65,7 +65,7 @@ function Offers() {
             type="button"
             onClick={() => setSelected("success")}
             className={`
-          border border-green-600 font-medium leading-5 rounded-lg text-sm px-4 py-2.5 
+          border border-green-600 font-medium leading-5 rounded-3xl text-sm px-4 py-2.5 
           focus:outline-none 
           transition-all duration-200 ease-in-out active:scale-95
           ${
@@ -75,7 +75,7 @@ function Offers() {
           }
         `}
           >
-            Success
+            Non-Endemic
           </button>
 
           <button
