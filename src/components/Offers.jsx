@@ -57,7 +57,11 @@ function Offers() {
 
   return (
     <>
-      <div className="max-w-[1440px] items-center justify-center mx-auto">
+      <div className="max-w-[1440px] items-center justify-center mx-auto px-6 md:px-16 mt-16 md:mt-30">
+        <div className="flex items-center justify-center gap-10 mx-auto py-15 border-b-1 border-t-1 border-gray-300 mb-10">
+          <button className="cursor-pointer">Endemic</button>
+          <button className="cursor-pointer">Non-Endemic</button>
+        </div>
         <div className="justify-items-center mt-50 gap-10 md:gap-10 grid grid-cols-3">
           {items.map((item) => (
             <Card
