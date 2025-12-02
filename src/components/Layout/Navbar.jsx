@@ -14,7 +14,7 @@ function Navbar() {
       <ul className="hidden md:flex gap-15">
         <Link to = "/"><li className="cursor-pointer hover:text-green-500">USA</li></Link>
         <Link to = "/latam"><li className="cursor-pointer hover:text-green-500">LATAM</li></Link>
-        <Link to = "/modal"><li className="cursor-pointer hover:text-green-500">EUROPE</li></Link>
+        <Link to = "/europe"><li className="cursor-pointer hover:text-green-500">EUROPE</li></Link>
       </ul>
 
     <button className="hidden md:inline-flex relative items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 dark:text-white dark:hover:text-gray-900 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-lime-800">

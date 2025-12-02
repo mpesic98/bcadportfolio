@@ -70,31 +70,6 @@ function Latam() {
         />
       </div>
 
-      <div className="flex flex-col items-center justify-center w-full max-w-[1440px] mx-auto px-6 md:px-16 mt-16 md:mt-20 border-t border-b border-gray-300 py-10 md:py-14">
-        <motion.h1
-          className="text-2xl sm:text-3xl tracking-wider text-center flex flex-wrap justify-center"
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: {},
-            visible: { transition: { staggerChildren: 0.2, delayChildren: 3 } },
-          }}
-        >
-          {"Explore Bc Ads".split("").map((char, i) => (
-            <motion.span
-              key={i}
-              variants={{
-                hidden: { opacity: 0, x: 30 },
-                visible: { opacity: 1, x: 0 },
-              }}
-              transition={{ duration: 0.7, ease: "easeOut" }}
-              className="inline-block"
-            >
-              {char === " " ? "\u00A0" : char}
-            </motion.span>
-          ))}
-        </motion.h1>
-      </div>
 
       <Offers />
     </div>
