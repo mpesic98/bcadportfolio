@@ -26,6 +26,24 @@ const items = [
   { title: "Compare", image: adtype3 },
 ];
 
+const items2 = [
+  { title: "Bet Boost", image: slider },
+  { title: "Pro Acca", image: slider },
+  { title: "Countdown", image: slider },
+  { title: "M3-Way", image: slider },
+  { title: "Multi-Event", image: slider },
+  { title: "X-Operator", image: slider },
+  { title: "Bet Offer", image: slider },
+  { title: "Two Way", image: slider },
+  { title: "Game Center", image: slider },
+  { title: "Horse Racing", image: slider },
+  { title: "Predictor", image: slider },
+  { title: "Tickets", image: slider },
+  { title: "Absences", image: slider },
+  { title: "Transfers", image: slider },
+  { title: "Line-Ups", image: slider },
+];
+
 const backdropVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1 },
@@ -43,10 +61,8 @@ const modalVariants = {
 
 function Offers() {
   const [openItem, setOpenItem] = useState(null);
-
   const navigate = useNavigate();
-
-  const [selected, setSelected] = useState('success');
+  const [selected, setSelected] = useState("success");
 
   const handleKeyDown = useCallback((e) => {
     if (e.key === "Escape") setOpenItem(null);
@@ -57,6 +73,8 @@ function Offers() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [handleKeyDown]);
 
+  const displayedItems = selected === "success" ? items : items2;
+
   return (
     <>
       <div className="max-w-[1440px] items-center justify-center mx-auto px-6 md:px-16 mt-10 md:mt-30">
@@ -66,7 +84,7 @@ function Offers() {
             onClick={() => setSelected("success")}
             className={`
           border border-green-600 font-medium leading-5 rounded-3xl text-sm px-4 py-2.5 
-          focus:outline-none 
+          focus:outline-none cursor-pointer
           transition-all duration-200 ease-in-out active:scale-95
           ${
             selected === "success"
@@ -95,8 +113,9 @@ function Offers() {
             Endemic
           </button>
         </div>
+
         <div className="justify-items-center mt-20 gap-10 md:gap-10 grid grid-cols-3">
-          {items.map((item) => (
+          {displayedItems.map((item) => (
             <Card
               key={item.title}
               backgroundImg={item.image}
