@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import slider from "../assets/ad-types/slider.png";
 import displayBanner from "../assets/ad-types/displaybanner.png";
 import adtype3 from "../assets/ad-types/adtype3.png";
@@ -44,20 +44,14 @@ const items2 = [
   { title: "Line-Ups", image: slider },
 ];
 
-const gridContainerVariants = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
-  exit: { opacity: 0, transition: { duration: 0.2 } },
-};
-
+// --- VARIANTS ---
 const cardItemVariants = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 80, damping: 14 } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 80, damping: 14 },
+  },
 };
 
 const backdropVariants = {
@@ -75,10 +69,28 @@ const modalVariants = {
   exit: { opacity: 0, y: 16, transition: { duration: 0.3, ease: "easeIn" } },
 };
 
+// GLOBAL VARIABLE: Persists during navigation, Resets on Refresh
+let globalHasVisited = false;
+
 function Offers() {
   const [openItem, setOpenItem] = useState(null);
   const navigate = useNavigate();
   const [selected, setSelected] = useState("success");
+
+  // REF: Tracks if the component is currently mounting
+  const isMounting = useRef(true);
+
+  useEffect(() => {
+    // After first render, we set these flags
+    isMounting.current = false;
+    globalHasVisited = true;
+  }, []);
+
+  // LOGIC:
+  // We only skip animation if we are mounting (fresh page load or back button)
+  // AND we have visited before (global flag is true).
+  // If we are just switching tabs (isMounting is false), we always animate.
+  const shouldSkipAnimation = isMounting.current && globalHasVisited;
 
   const handleKeyDown = useCallback((e) => {
     if (e.key === "Escape") setOpenItem(null);
@@ -91,14 +103,27 @@ function Offers() {
 
   const displayedItems = selected === "success" ? items : items2;
 
+  // GRID VARIANTS
+  const gridContainerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        // If skipping, 0 stagger. If normal animation, 0.1 stagger.
+        staggerChildren: shouldSkipAnimation ? 0 : 0.1,
+      },
+    },
+    exit: { opacity: 0, transition: { duration: 0.2 } },
+  };
+
   return (
     <>
       <div className="max-w-[1440px] items-center justify-center mx-auto px-6 md:px-16 mt-10 md:mt-30">
         <motion.div
           className="flex items-center justify-center gap-20 mx-auto py-5 border-b-1 border-t-1 border-gray-300 mb-10"
-          initial={{ opacity: 0 }}
+          initial={globalHasVisited ? { opacity: 1 } : { opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 2 }}
+          transition={{ duration: 1, delay: globalHasVisited ? 0 : 0.3 }}
         >
           <button
             type="button"
@@ -137,10 +162,10 @@ function Offers() {
 
         <AnimatePresence mode="wait">
           <motion.div
-            key={selected} // Key change triggers the animation
+            key={selected}
             className="justify-items-center mt-20 gap-10 md:gap-10 grid grid-cols-3"
             variants={gridContainerVariants}
-            initial="hidden"
+            initial={shouldSkipAnimation ? "show" : "hidden"}
             animate="show"
             exit="exit"
           >
