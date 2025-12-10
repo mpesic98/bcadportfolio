@@ -13,7 +13,7 @@ function Usa() {
             className="uppercase text-white text-xs tracking-[0.3em] font-semibold px-5 py-1 rounded-full bg-gradient-to-r from-green-700 to-green-400 shadow-md inline-block"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1, ease: "easeIn", delay: 3 }}
+            transition={{ duration: 1, ease: "easeIn", delay: 1.5 }}
           >
             USA
           </motion.span>
@@ -22,7 +22,7 @@ function Usa() {
             className="relative inline-block text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-black mt-4"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, ease: "easeIn", delay: 0.5 }}
+            transition={{ duration: 1, ease: "easeIn", delay: 0.2 }}
           >
 
             <motion.span
@@ -46,7 +46,7 @@ function Usa() {
             className="text-gray-600 mt-6 text-base sm:text-lg leading-relaxed border-t border-gray-200 pt-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1, ease: "easeIn", delay: 2 }}
+            transition={{ duration: 1, ease: "easeIn", delay: 1.8 }}
           >
             Contextual advertising that allows you to reach your audience across
             the websites, newsletters, and podcasts they engage with.
@@ -56,7 +56,7 @@ function Usa() {
             className="mt-8 sm:mt-10 px-6 py-3 border border-black rounded-md font-semibold text-sm sm:text-base hover:bg-black hover:text-white transition"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 1, ease: "easeOut", delay: 2.5 }}
+            transition={{ duration: 1, ease: "easeOut", delay: 2 }}
           >
             💬 ADVERTISE WITH US
           </motion.button>

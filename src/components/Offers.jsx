@@ -44,6 +44,22 @@ const items2 = [
   { title: "Line-Ups", image: slider },
 ];
 
+const gridContainerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+  exit: { opacity: 0, transition: { duration: 0.2 } },
+};
+
+const cardItemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 80, damping: 14 } },
+};
+
 const backdropVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1 },
@@ -78,7 +94,12 @@ function Offers() {
   return (
     <>
       <div className="max-w-[1440px] items-center justify-center mx-auto px-6 md:px-16 mt-10 md:mt-30">
-        <div className="flex items-center justify-center gap-20 mx-auto py-5 border-b-1 border-t-1 border-gray-300 mb-10">
+        <motion.div
+          className="flex items-center justify-center gap-20 mx-auto py-5 border-b-1 border-t-1 border-gray-300 mb-10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 2 }}
+        >
           <button
             type="button"
             onClick={() => setSelected("success")}
@@ -112,19 +133,29 @@ function Offers() {
           >
             Endemic
           </button>
-        </div>
+        </motion.div>
 
-        <div className="justify-items-center mt-20 gap-10 md:gap-10 grid grid-cols-3">
-          {displayedItems.map((item) => (
-            <Card
-              key={item.title}
-              backgroundImg={item.image}
-              hoverColor={sharedHoverColor}
-              title={item.title}
-              onOpen={() => setOpenItem(item)}
-            />
-          ))}
-        </div>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={selected} // Key change triggers the animation
+            className="justify-items-center mt-20 gap-10 md:gap-10 grid grid-cols-3"
+            variants={gridContainerVariants}
+            initial="hidden"
+            animate="show"
+            exit="exit"
+          >
+            {displayedItems.map((item) => (
+              <motion.div key={item.title} variants={cardItemVariants}>
+                <Card
+                  backgroundImg={item.image}
+                  hoverColor={sharedHoverColor}
+                  title={item.title}
+                  onOpen={() => setOpenItem(item)}
+                />
+              </motion.div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
       </div>
 
       <AnimatePresence>
