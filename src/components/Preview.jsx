@@ -1,7 +1,6 @@
 function Preview() {
   return (
-     <div className="flex min-h-screen flex-col">
-
+    <div className="flex min-h-screen flex-col">
       {/* Floating Back Button */}
       <button
         onClick={() => window.history.back()}
@@ -15,7 +14,7 @@ function Preview() {
       >
         ← Back
       </button>
-      
+
       <header className="bg-gray-100 py-4 text-white dark:bg-gray-900">
         <div className="container mx-auto px-4">
           {/* Top Bar */}
@@ -32,11 +31,13 @@ function Preview() {
 
           {/* Main Navigation */}
           <nav className="flex flex-col items-center justify-between sm:flex-row">
-            
             <div className="mb-4 h-12 w-40 bg-gray-300 dark:bg-gray-700 sm:mb-0"></div>
             <div className="hidden space-x-6 sm:flex">
               {[...Array(5)].map((_, i) => (
-                <div key={i} className="h-8 w-24 rounded bg-gray-300 dark:bg-gray-700"></div>
+                <div
+                  key={i}
+                  className="h-8 w-24 rounded bg-gray-300 dark:bg-gray-700"
+                ></div>
               ))}
             </div>
             <div className="h-10 w-10 bg-gray-300 dark:bg-gray-700 sm:hidden"></div>
@@ -46,9 +47,7 @@ function Preview() {
 
       <div className="container mx-auto flex flex-col gap-8 p-0 py-8">
         <main className="flex flex-col gap-8 lg:mb-0 lg:flex-row">
-          {/* Main Content */}
           <div className="flex flex-grow flex-col gap-12">
-            {/* Featured Article */}
             <section>
               <div className="mb-4 h-10 w-3/4 bg-gray-200 dark:bg-gray-700"></div>
               <div className="mb-4 h-96 w-full bg-gray-200 dark:bg-gray-700"></div>
@@ -156,7 +155,10 @@ function Preview() {
               <div className="mb-4 h-8 w-1/2 bg-gray-200 dark:bg-gray-700"></div>
               <div className="flex flex-wrap gap-2">
                 {[...Array(10)].map((_, i) => (
-                  <div key={i} className="h-8 w-20 rounded-full bg-gray-200 dark:bg-gray-700"></div>
+                  <div
+                    key={i}
+                    className="h-8 w-20 rounded-full bg-gray-200 dark:bg-gray-700"
+                  ></div>
                 ))}
               </div>
             </section>
@@ -171,7 +173,10 @@ function Preview() {
               <div key={section} className="w-full sm:w-1/2 md:w-1/4">
                 <div className="mb-6 h-8 w-32 bg-gray-300 dark:bg-gray-700"></div>
                 {[...Array(4)].map((_, i) => (
-                  <div key={i} className="mb-4 h-6 w-full bg-gray-300 dark:bg-gray-700"></div>
+                  <div
+                    key={i}
+                    className="mb-4 h-6 w-full bg-gray-300 dark:bg-gray-700"
+                  ></div>
                 ))}
               </div>
             ))}
@@ -186,7 +191,10 @@ function Preview() {
             <div className="mb-4 h-6 w-48 bg-gray-300 dark:bg-gray-700 sm:mb-0"></div>
             <div className="flex space-x-6">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-700"></div>
+                <div
+                  key={i}
+                  className="h-8 w-8 rounded-full bg-gray-300 dark:bg-gray-700"
+                ></div>
               ))}
             </div>
           </div>

@@ -1,15 +1,33 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import arrow from "../assets/arrow.svg";
 import arrowDown from "../assets/arrowDown.svg";
 import exampleImg from "../assets/ad-types/displaybanner.png";
 
-function Card({ backgroundImg, hoverImg, hoverText, title, onOpen }) {
+function Card({
+  backgroundImg,
+  leftImg,
+  rightImg,
+  hoverImg,
+  hoverText,
+  title,
+  onOpen,
+}) {
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
+
+  // Navigation logic for the "See Preview" buttons
+  const handlePreviewNavigation = (e) => {
+    e.stopPropagation(); // Prevents triggering the card's main onClick (modal)
+    navigate("/preview", {
+      state: { leftImg, rightImg, title },
+    });
+  };
 
   return (
     <motion.div
-      onClick={onOpen}
+      onClick={onOpen} // RESTORED: Opens the modal when clicking the card body
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className="relative w-[400px] h-[500px] rounded-xl overflow-hidden cursor-pointer"
@@ -18,15 +36,13 @@ function Card({ backgroundImg, hoverImg, hoverText, title, onOpen }) {
       animate="rest"
       transition={{ type: "spring", stiffness: 150, damping: 22 }}
     >
-      {/* Hover slika div */}
+      {/* Background Layers */}
       <motion.div
         className="absolute inset-0 bg-cover bg-center"
         style={{ backgroundImage: `url(${backgroundImg})` }}
         animate={{ opacity: isHovered ? 1 : 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
       />
-
-      {/* Base div */}
       <motion.div
         className="absolute inset-0 bg-cover bg-center"
         style={{
@@ -37,23 +53,14 @@ function Card({ backgroundImg, hoverImg, hoverText, title, onOpen }) {
         transition={{ duration: 0.6, ease: "easeOut" }}
       />
 
-      {/* Base tittle div */}
+      {/* Centered Title */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <h1 className="text-white text-3xl md:text-4xl font-bold drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)] select-none text-center px-4">
           {hoverText || title}
         </h1>
       </div>
 
-      {/* GRADIENT OVERLAY */}
-      <div
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(to top, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0) 45%)",
-        }}
-      />
-
-      {/* Pop-up div*/}
+      {/* Hover Panel (Pop-up) */}
       <motion.div
         className="absolute bottom-0 left-0 right-0 text-black rounded-b-lg backdrop-blur-2xl"
         variants={{
@@ -62,11 +69,10 @@ function Card({ backgroundImg, hoverImg, hoverText, title, onOpen }) {
         }}
         transition={{ duration: 0.35, ease: "easeOut" }}
       >
-        <div className="flex items-center justify-between px-3 md:px-4">
+        <div className="flex items-center justify-between px-4">
           <h2 className="tracking-wide h-[50px] flex items-center font-medium">
             {title}
           </h2>
-
           <div className="relative w-6 h-6">
             <motion.img
               src={arrow}
@@ -75,7 +81,6 @@ function Card({ backgroundImg, hoverImg, hoverText, title, onOpen }) {
                 rest: { opacity: 1, x: 0 },
                 hover: { opacity: 0, x: -6 },
               }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
             />
             <motion.img
               src={arrowDown}
@@ -84,25 +89,24 @@ function Card({ backgroundImg, hoverImg, hoverText, title, onOpen }) {
                 rest: { opacity: 0, x: 6 },
                 hover: { opacity: 1, x: 0 },
               }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
             />
           </div>
         </div>
 
-        {/* Opis i dugme*/}
         <motion.div
-          className="px-3 md:px-4 pb-4 text-base text-black/80"
+          className="px-4 pb-4 text-base text-black/80"
           initial={{ opacity: 0 }}
           variants={{ rest: { opacity: 0 }, hover: { opacity: 1 } }}
           transition={{ duration: 0.1 }}
         >
           <p className="leading-relaxed text-black/90 mt-1">
-            Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry.
+            Visualise how your assets will appear in a live environment.
           </p>
-
-          <div className="mt-3">
-            <button className="px-4 py-2 bg-black text-white rounded-lg cursor-pointer">
+          <div className="mt-3 flex gap-2">
+            <button
+              onClick={handlePreviewNavigation}
+              className="px-4 py-2 bg-black text-white rounded-lg cursor-pointer hover:bg-neutral-800 transition-colors"
+            >
               See Preview
             </button>
           </div>
