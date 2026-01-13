@@ -1,31 +1,29 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import PrieviewSkin from "./pages/PrieviewSkin";
+import { BrowserRouter, Routes, Route } from "react-router-dom"
 
-import MainLayout from "./components/Layout/MainLayout";
-import PreviewLayout from "./components/Layout/previews/PreviewLayout";
+import MainLayout from "./components/Layout/MainLayout"
 
-import Usa from "./pages/USA";
-import Latam from "./pages/LATAM";
-import Europe from "./pages/Europe";
-import Preview from "./components/Preview";
+import Usa from "./pages/USA"
+import Latam from "./pages/LATAM"
+import Europe from "./pages/Europe"
+
+import PreviewRouter from "./router/PreviewRouter"
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Site normal */}
         <Route element={<MainLayout />}>
           <Route path="/" element={<Usa />} />
           <Route path="/latam" element={<Latam />} />
           <Route path="/europe" element={<Europe />} />
-          {/* <Route path="/preview" element={<PrieviewSkin />} /> */}
         </Route>
 
-        <Route element={<PreviewLayout />}>
-          <Route path="/preview" element={<PrieviewSkin />} />
-        </Route>
+        {/* Previews */}
+        <Route path="/preview/*" element={<PreviewRouter />} />
       </Routes>
     </BrowserRouter>
-  );
+  )
 }
 
-export default App;
+export default App
