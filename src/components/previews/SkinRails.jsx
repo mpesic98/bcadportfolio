@@ -1,18 +1,18 @@
 import { useMemo } from "react"
 import { useLocation } from "react-router-dom"
-
-import skinRail from "../../assets/skin.png"
+import skinL from "../../assets/skinl.png"
+import skinR from "../../assets/skinr.png"
 
 export default function SkinRails({
   railWidth = 160,
-  topBarHeight = 72,
-  contentMaxWidth = 1100,
+  topBarHeight = 108,
+  contentMaxWidth = 1052,
 }) {
   const location = useLocation()
   const state = location.state || {}
 
-  const leftImg = state.leftImg || skinRail
-  const rightImg = state.rightImg || skinRail
+  const leftImg = state.leftImg || skinL
+  const rightImg = state.rightImg || skinR
   const clickUrl = state.clickUrl
 
   const offset = contentMaxWidth / 2 + railWidth
@@ -48,18 +48,14 @@ export default function SkinRails({
   const LeftTag = clickUrl ? "a" : "div"
   const RightTag = clickUrl ? "a" : "div"
 
+  const linkProps = clickUrl
+    ? { href: clickUrl, target: "_blank", rel: "noreferrer" }
+    : {}
+
   return (
     <>
-      <LeftTag
-        {...(clickUrl ? { href: clickUrl, target: "_blank", rel: "noreferrer" } : {})}
-        className="fixed z-[999] block cursor-pointer"
-        style={leftStyle}
-      />
-      <RightTag
-        {...(clickUrl ? { href: clickUrl, target: "_blank", rel: "noreferrer" } : {})}
-        className="fixed z-[999] block cursor-pointer"
-        style={rightStyle}
-      />
+      <LeftTag {...linkProps} className="fixed z-[999] block cursor-pointer" style={leftStyle} />
+      <RightTag {...linkProps} className="fixed z-[999] block cursor-pointer" style={rightStyle} />
     </>
   )
 }

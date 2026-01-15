@@ -5,23 +5,22 @@ import BaseNewsMock from "./BaseNewsMock"
 export default function SkinPreview() {
   const railWidth = 160
   const gap = 24
-  const contentMaxWidth = 1100
+  const contentMaxWidth = 1052
 
   return (
     <PreviewFrame maxWidth={contentMaxWidth}>
-    <SkinRails railWidth={railWidth} topBarHeight={72} contentMaxWidth={contentMaxWidth} /> 
+    <SkinRails railWidth={railWidth} topBarHeight={108} contentMaxWidth={contentMaxWidth} /> 
 
-      <div
-        className="mx-auto"
-        style={{
-          maxWidth: contentMaxWidth,
-          width: `calc(100% - ${(railWidth + gap) * 2}px)`,
-          paddingLeft: gap,
-          paddingRight: gap,
-        }}
-      >
-        <BaseNewsMock />
-      </div>
+<div className="mx-auto" style={{ maxWidth: `${contentMaxWidth + railWidth * 2 + 48}px` }}>
+  <div
+    style={{
+      paddingLeft: railWidth + 24,
+      paddingRight: railWidth + 24
+    }}
+  >
+    <BaseNewsMock />
+  </div>
+</div>
     </PreviewFrame>
   )
 }

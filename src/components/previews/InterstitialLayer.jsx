@@ -1,40 +1,57 @@
 import { useEffect } from "react"
-import { useLocation } from "react-router-dom"
 
-export default function InterstitialLayer({ topBarHeight = 72 }) {
-  const location = useLocation()
-  const title = location.state?.title
-
+export default function InterstitialLayer({
+  isOpen,
+  onClose,
+  clickUrl,
+  sideLabel = "Interstitial",
+  creative,
+}) {
   useEffect(() => {
+    if (!isOpen) return
+
     const onKey = (e) => {
-      if (e.key === "Escape") window.history.back()
+      if (e.key === "Escape") onClose()
     }
+
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
-  }, [])
+  }, [isOpen, onClose])
+
+  if (!isOpen) return null
+
+  const Tag = clickUrl ? "a" : "div"
+  const linkProps = clickUrl
+    ? { href: clickUrl, target: "_blank", rel: "noreferrer" }
+    : {}
 
   return (
-    <div className="fixed inset-0 z-[60]">
-      <div className="absolute inset-0 bg-black/60" />
-      <div className="absolute left-1/2 -translate-x-1/2 w-[min(92vw,900px)] top-[calc(72px+24px)]">
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden border border-neutral-200">
-          <div className="flex items-center justify-between px-5 py-4 border-b border-neutral-200">
-            <div className="text-sm font-medium text-neutral-900">{title || "Interstitial"}</div>
-            <button
-              onClick={() => window.history.back()}
-              className="h-8 w-8 rounded-full bg-neutral-100 hover:bg-neutral-200 text-neutral-900 cursor-pointer"
-            >
-              ✕
-            </button>
+    <div className="fixed inset-0 z-[2000] pointer-events-none">
+      <div className="absolute inset-0 bg-black/50" />
+
+      <div className="absolute inset-0 flex items-center justify-center p-4">
+        <div className="relative flex items-center gap-4">
+          <div className="hidden md:flex flex-col items-end pointer-events-none">
+            <div className="text-xs font-semibold text-white/85 tracking-wide">
+              {sideLabel}
+            </div>
+            <div className="mt-1 text-[11px] text-white/60">
+              Scroll enabled · ESC / X to close
+            </div>
           </div>
-          <div className="p-6">
-            <div className="h-[520px] rounded-xl bg-neutral-200 flex items-center justify-center text-neutral-500">
-              Interstitial Creative Area
-            </div>
-            <div className="mt-4 flex items-center justify-between">
-              <div className="h-10 w-36 rounded bg-neutral-200" />
-              <div className="h-10 w-24 rounded bg-neutral-200" />
-            </div>
+
+          <div className="relative pointer-events-auto">
+            <button
+              onClick={onClose}
+              className="absolute -top-3 -right-3 h-9 w-9 rounded-full bg-neutral-900 text-white text-lg leading-none flex items-center justify-center hover:bg-neutral-700 z-10"
+              aria-label="Close interstitial"
+            >
+              ×
+            </button>
+
+            <Tag {...linkProps} className="block">
+              {creative}
+            </Tag>
           </div>
         </div>
       </div>

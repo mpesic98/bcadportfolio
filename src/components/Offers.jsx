@@ -6,26 +6,20 @@ import Card from "./Card"
 import slider from "../assets/slider.png"
 import displayBanner from "../assets/displaybanner.png"
 import adtype3 from "../assets/adtype3.png"
-import skin160 from "../assets/skin.png"
+import skinl from "../assets/skinl.png"
+import skinr from "../assets/skinr.png"
+
 
 const sharedHoverColor = "#00a666"
 let globalHasVisited = false
 
 const items = [
   { title: "Display Banners", image: slider, format: "display" },
-
-  {
-    title: "Skin",
-    image: displayBanner,
-    format: "skin",
-    leftImg: skin160,
-    rightImg: skin160,
-  },
-
+  { title: "Skin",image: displayBanner,format: "skin",leftImg: skinl,rightImg: skinr,},
   { title: "Interscroller", image: adtype3, format: "interscroller" },
   { title: "Interstitial", image: slider, format: "interstitial" },
-  { title: "Video Banners", image: displayBanner, format: "display" },
-  { title: "Pre-Roll Video", image: adtype3, format: "display" },
+  { title: "Video Banners", image: displayBanner, format: "videobanner" },
+  { title: "Pre-Roll Video", image: adtype3, format: "preroll" },
   { title: "Leadgen", image: slider, format: "display" },
   { title: "Cube", image: displayBanner, format: "display" },
   { title: "Native", image: adtype3, format: "display" },

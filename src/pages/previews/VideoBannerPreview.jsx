@@ -1,8 +1,8 @@
 import PreviewFrame from "../../components/previews/PreviewFrame"
 import BaseNewsMock from "./BaseNewsMock"
-import DisplayCreative from "../../components/previews/DisplayCreative"
+import VideoBannerCreative from "../../components/previews/VideoBannerCreative"
 
-export default function DisplayPreview() {
+export default function VideoBannerPreview() {
   const contentMaxWidth = 1100
 
   const renderAd = (slotId) => {
@@ -14,7 +14,8 @@ export default function DisplayPreview() {
       inline_300x250_1: "300x250"
     }
 
-    return <DisplayCreative slotId={slotId} size={sizes[slotId] || "300x250"} />
+    if (!sizes[slotId]) return null
+    return <VideoBannerCreative slotId={slotId} size={sizes[slotId]} />
   }
 
   return (
