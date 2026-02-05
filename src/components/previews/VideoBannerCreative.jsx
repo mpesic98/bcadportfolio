@@ -3,7 +3,7 @@ import { useRef, useState } from "react"
 export default function VideoBannerCreative({
   slotId,
   size = "300x250",
-  videoUrl = "https://www.pexels.com/download/video/1943483/"
+  videoUrl = "https://www.pexels.com/download/video/1943483/",
 }) {
   const [w, h] = size.split("x").map(Number)
   const videoRef = useRef(null)
@@ -13,6 +13,7 @@ export default function VideoBannerCreative({
   const togglePlay = () => {
     const v = videoRef.current
     if (!v) return
+
     if (v.paused) {
       v.play()
       setPaused(false)
@@ -25,6 +26,7 @@ export default function VideoBannerCreative({
   const toggleMute = () => {
     const v = videoRef.current
     if (!v) return
+
     v.muted = !v.muted
     setMuted(v.muted)
   }
@@ -38,26 +40,28 @@ export default function VideoBannerCreative({
         <video
           ref={videoRef}
           src={videoUrl}
-          muted
+          muted={muted}
           playsInline
           autoPlay
           loop
           preload="metadata"
+          onPause={() => setPaused(true)}
+          onPlay={() => setPaused(false)}
           className="absolute inset-0 w-full h-full object-cover"
         />
 
-        <div className="absolute bottom-2 right-2 flex gap-2">
+        <div className="absolute bottom-2 right-2 flex gap-2 pointer-events-auto">
           <button
             onClick={togglePlay}
-            className="h-7 w-5 text-white text-xs flex items-center justify-center"
-            aria-label="Pause / Play"
+            className="h-7 w-7 text-white text-xs flex items-center justify-center"
+            aria-label="Play / Pause"
           >
             {paused ? "▶" : "⏸"}
           </button>
 
           <button
             onClick={toggleMute}
-            className="h-7 w-5 text-white text-xs flex items-center justify-center"
+            className="h-7 w-7 text-white text-xs flex items-center justify-center"
             aria-label="Mute / Unmute"
           >
             {muted ? "🔇" : "🔊"}

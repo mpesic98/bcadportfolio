@@ -11,7 +11,12 @@ export default function DisplayPreview() {
       sidebar_300x250_1: "300x250",
       sidebar_300x250_2: "300x250",
       inline_300x600: "300x600",
-      inline_300x250_1: "300x250"
+      inline_300x250_1: "300x250",
+      mobile_sticky_320x50: "320x50",
+      mobile_inline_300x250_1: "300x250",
+      mobile_inline_300x250_2: "300x250",
+      mobile_inline_300x250_3: "300x250",
+      mobile_inline_300x600: "300x600",
     }
 
     return <DisplayCreative slotId={slotId} size={sizes[slotId] || "300x250"} />
@@ -19,9 +24,7 @@ export default function DisplayPreview() {
 
   return (
     <PreviewFrame maxWidth={contentMaxWidth}>
-      <div className="mx-auto max-w-[1100px] px-6">
-        <BaseNewsMock renderAd={renderAd} />
-      </div>
+      <BaseNewsMock renderAd={renderAd} />
     </PreviewFrame>
   )
 }

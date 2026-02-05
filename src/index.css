@@ -6,3 +6,10 @@
   me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white 
   dark:hover:bg-green-600 dark:focus:ring-green-800;
 }
+.preview-scroll {
+  scrollbar-width: none;
+}
+.preview-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}

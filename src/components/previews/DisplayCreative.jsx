@@ -1,7 +1,7 @@
-import adA from "../../assets/adImg.jpg"
+import adA from "../../assets/BClogo.png"
 import adB from "../../assets/displaybanner.png"
 import adC from "../../assets/exampleImg.png"
-import adD from "../../assets/adtype3.png"
+import adD from "../../assets/interscroller.jpg"
 import adE from "../../assets/slider.png"
 
 export default function DisplayCreative({ slotId, size = "300x250" }) {

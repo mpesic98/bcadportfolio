@@ -8,9 +8,7 @@ export default function InterscrollerPreview() {
   const renderAd = (slotId) => {
     const sizes = {
       inline_300x600: "300x600",
-      inline_300x250_1: "300x250",
-      sidebar_300x250_1: "300x250",
-      sidebar_300x250_2: "300x250"
+      inline_300x250_1: "300x250"
     }
 
     if (!sizes[slotId]) return null

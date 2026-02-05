@@ -1,9 +1,20 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
+import creativeA from "../../assets/interscroller.jpg"
+import creativeB from "../../assets/interscroller.jpg"
+import creativeC from "../../assets/interscroller.jpg"
 
 export default function InterscrollerLayer({ slotId, size = "300x600" }) {
   const [w, h] = size.split("x").map(Number)
   const wrapRef = useRef(null)
-  const [progress, setProgress] = useState(0)
+  const [clip, setClip] = useState("inset(0px 0px 0px 0px)")
+  const [show, setShow] = useState(false)
+  const [leftPx, setLeftPx] = useState(0)
+
+  const img = useMemo(() => {
+    if (slotId === "inline_300x600") return creativeC
+    if (slotId === "inline_300x250_1") return creativeA
+    return creativeB
+  }, [slotId])
 
   useEffect(() => {
     const el = wrapRef.current
@@ -14,13 +25,25 @@ export default function InterscrollerLayer({ slotId, size = "300x600" }) {
     const calc = () => {
       raf = 0
       const rect = el.getBoundingClientRect()
+      const vw = window.innerWidth || 1
       const vh = window.innerHeight || 1
 
-      const start = vh
-      const end = -rect.height
-      const p = (start - rect.top) / (start - end)
+      const fullyOut =
+        rect.height <= 1 ||
+        rect.bottom <= 0 ||
+        rect.top >= vh ||
+        rect.right <= 0 ||
+        rect.left >= vw
 
-      setProgress(Math.max(0, Math.min(1, p)))
+      setShow(!fullyOut)
+      setLeftPx(rect.left)
+
+      const top = Math.max(0, rect.top)
+      const left = Math.max(0, rect.left)
+      const bottom = Math.max(0, vh - rect.bottom)
+      const right = Math.max(0, vw - rect.right)
+
+      setClip(`inset(${top}px ${right}px ${bottom}px ${left}px)`)
     }
 
     const onScroll = () => {
@@ -38,31 +61,34 @@ export default function InterscrollerLayer({ slotId, size = "300x600" }) {
     }
   }, [])
 
-  const travel = Math.min(140, Math.max(60, Math.round(h * 0.25)))
-  const y = (0.5 - progress) * travel
-
   return (
-    <div className="w-full flex justify-center">
-      <div
-        ref={wrapRef}
-        className="relative overflow-hidden rounded border border-neutral-300 bg-white shadow-sm"
-        style={{ width: w, height: h }}
-      >
-        <div className="absolute inset-0">
-          <div
-            className="absolute -inset-x-8 -inset-y-16 bg-neutral-200"
-            style={{ transform: `translateY(${y}px)` }}
-          />
-        </div>
-
-        <div className="absolute inset-0 flex items-center justify-center text-neutral-600 text-sm font-semibold">
-          Interscroller · {size}
-        </div>
-
-        <div className="absolute top-2 left-2 text-[10px] px-2 py-1 rounded bg-neutral-900 text-white">
-          {slotId}
-        </div>
+    <>
+      <div className="w-full flex justify-center">
+        <div
+          ref={wrapRef}
+          className="relative overflow-hidden"
+          style={{ width: w, height: h, borderRadius: 10 }}
+        />
       </div>
-    </div>
+
+      {show && (
+        <div
+          className="fixed inset-0 z-[5000] pointer-events-none"
+          style={{ clipPath: clip, WebkitClipPath: clip }}
+        >
+          <div
+            className="absolute"
+            style={{ top: 0, bottom: 0, left: leftPx, width: w }}
+          >
+            <img
+              src={img}
+              alt="Interscroller creative"
+              draggable="false"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        </div>
+      )}
+    </>
   )
 }
