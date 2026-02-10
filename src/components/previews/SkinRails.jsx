@@ -14,8 +14,6 @@ export default function SkinRails({
   const location = useLocation()
   const state = location.state || {}
 
-  if (vp === "mobile") return null
-
   const leftImg = state.leftImg || skinL
   const rightImg = state.rightImg || skinR
   const clickUrl = state.clickUrl
@@ -27,7 +25,7 @@ export default function SkinRails({
     () => ({
       width: `${railWidth}px`,
       top: `${topBarHeight}px`,
-      bottom: 0,
+      height: "1080px",
       left: `calc(50% - ${leftOffset}px)`,
       backgroundImage: `url(${leftImg})`,
       backgroundRepeat: "no-repeat",
@@ -41,7 +39,7 @@ export default function SkinRails({
     () => ({
       width: `${railWidth}px`,
       top: `${topBarHeight}px`,
-      bottom: 0,
+      height: "1080px",
       left: `calc(50% + ${rightOffset}px)`,
       backgroundImage: `url(${rightImg})`,
       backgroundRepeat: "no-repeat",
@@ -51,8 +49,12 @@ export default function SkinRails({
     [rightImg, railWidth, topBarHeight, rightOffset]
   )
 
+  if (vp === "mobile") return null
+
   const Tag = clickUrl ? "a" : "div"
-  const linkProps = clickUrl ? { href: clickUrl, target: "_blank", rel: "noreferrer" } : {}
+  const linkProps = clickUrl
+    ? { href: clickUrl, target: "_blank", rel: "noreferrer" }
+    : {}
 
   return (
     <>

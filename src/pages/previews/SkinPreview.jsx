@@ -2,8 +2,11 @@ import PreviewFrame from "../../components/previews/PreviewFrame"
 import SkinRails from "../../components/previews/SkinRails"
 import BaseNewsMock from "./BaseNewsMock"
 import DisplayCreative from "../../components/previews/DisplayCreative"
+import { useLocation } from "react-router-dom"
 
 export default function SkinPreview() {
+  const location = useLocation()
+  const isMobile = new URLSearchParams(location.search).get("vp") === "mobile"
   const railWidth = 160
   const railGap = 24
   const contentMaxWidth = 1100
@@ -26,8 +29,16 @@ export default function SkinPreview() {
     return <DisplayCreative slotId={slotId} size={sizes[slotId] || "300x250"} />
   }
 
+  if (isMobile) {
+    return (
+      <PreviewFrame maxWidth={1100} controlsMaxWidth={1100}>
+        <div aria-hidden="true" className="h-0" />
+      </PreviewFrame>
+    )
+  }
+
   return (
-    <PreviewFrame maxWidth={frameMaxWidth}>
+    <PreviewFrame maxWidth={frameMaxWidth} controlsMaxWidth={1100}>
       <SkinRails railWidth={railWidth} railGap={railGap} topBarHeight={72} contentMaxWidth={contentMaxWidth} />
 
       <div className="mx-auto" style={{ maxWidth: frameMaxWidth }}>

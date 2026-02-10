@@ -1,26 +1,20 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 
 import MainLayout from "./components/Layout/MainLayout"
-
-import Usa from "./pages/USA"
-import Latam from "./pages/LATAM"
-import Europe from "./pages/Europe"
-
+import RegionLandingResolver from "./router/RegionLandingResolver"
 import PreviewRouter from "./router/PreviewRouter"
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Site normal */}
         <Route element={<MainLayout />}>
-          <Route path="/" element={<Usa />} />
-          <Route path="/latam" element={<Latam />} />
-          <Route path="/europe" element={<Europe />} />
+          <Route path="/" element={<RegionLandingResolver />} />
+          <Route path="/:region" element={<RegionLandingResolver />} />
         </Route>
 
-        {/* Previews */}
-        <Route path="/preview/*" element={<PreviewRouter />} />
+        <Route path="/:region/:segment/preview/:formatId" element={<PreviewRouter />} />
+        <Route path="*" element={<Navigate to="/?segment=non-endemic" replace />} />
       </Routes>
     </BrowserRouter>
   )

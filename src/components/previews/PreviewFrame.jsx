@@ -1,28 +1,40 @@
 import { useEffect, useLayoutEffect, useMemo, useState } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { endemicCatalog } from "../../data/endemicCatalog"
+import { nonEndemicCatalog } from "../../data/nonEndemicCatalog"
+import { normalizeRegion, normalizeSegment } from "../../data/regionConfig"
 import { PreviewViewportProvider } from "./previewViewport.jsx"
 
-const desktopTabs = [
-  { key: "display", label: "Display" },
-  { key: "skin", label: "Skin" },
-  { key: "interscroller", label: "Interscroller" },
-  { key: "interstitial", label: "Interstitial" },
-  { key: "videobanner", label: "Video" },
-]
-
-const mobileTabs = [
-  { key: "display", label: "Display" },
-  { key: "interscroller", label: "Interscroller" },
-  { key: "interstitial", label: "Interstitial" },
-  { key: "videobanner", label: "Video" },
-]
-
-
-export default function PreviewFrame({ children, maxWidth = 1100 }) {
+export default function PreviewFrame({
+  children,
+  maxWidth = 1100,
+  controlsMaxWidth = 1100,
+}) {
   const navigate = useNavigate()
   const location = useLocation()
+  const { region: regionParam, segment: segmentParam, formatId } = useParams()
 
-  const search = useMemo(() => new URLSearchParams(location.search), [location.search])
+  const region = normalizeRegion(regionParam)
+  const segment = normalizeSegment(segmentParam)
+
+  const catalog = segment === "endemic" ? endemicCatalog : nonEndemicCatalog
+  const tabs = useMemo(() => {
+    const uniqueByKey = new Map()
+    catalog.forEach((item) => {
+      if (!uniqueByKey.has(item.formatId)) {
+        uniqueByKey.set(item.formatId, {
+          key: item.formatId,
+          label: item.title,
+        })
+      }
+    })
+    return Array.from(uniqueByKey.values())
+  }, [catalog])
+
+  const search = useMemo(
+    () => new URLSearchParams(location.search),
+    [location.search]
+  )
   const initialVp = search.get("vp") === "mobile" ? "mobile" : "desktop"
   const [vp, setVp] = useState(initialVp)
 
@@ -70,53 +82,63 @@ export default function PreviewFrame({ children, maxWidth = 1100 }) {
     window.scrollTo(0, 0)
   }, [location.pathname, location.search])
 
-  const active = location.pathname.split("/").pop()
-  const visibleTabs = vp === "mobile" ? mobileTabs : desktopTabs
+  const active = formatId
 
   const setViewport = (next) => {
-    const s = new URLSearchParams(location.search)
-    s.set("vp", next)
+    const nextSearch = new URLSearchParams(location.search)
+    nextSearch.set("vp", next)
     setVp(next)
-    navigate(`${location.pathname}?${s.toString()}`, { replace: true })
+    navigate(`${location.pathname}?${nextSearch.toString()}`, { replace: true })
   }
 
   const goToTab = (key) => {
-    const s = new URLSearchParams(location.search)
-    s.set("vp", vp)
-    navigate(`/preview/${key}?${s.toString()}`)
+    const nextSearch = new URLSearchParams(location.search)
+    nextSearch.set("vp", vp)
+    navigate(`/${region}/${segment}/preview/${key}?${nextSearch.toString()}`)
+  }
+
+  const goHome = () => {
+    navigate(`/${region}?segment=${segment}`)
   }
 
   return (
     <PreviewViewportProvider vp={vp}>
       <div className="min-h-screen bg-neutral-100 overflow-x-hidden">
         <div className="fixed top-0 left-0 right-0 z-50 h-[72px] bg-white/80 backdrop-blur border-b border-neutral-200 flex items-center">
-          <div className="mx-auto w-full px-6 flex items-center justify-between gap-4" style={{ maxWidth }}>
-            <div className="flex items-center gap-3">
+          <div
+            className="mx-auto w-full px-6 flex items-center justify-between gap-4"
+            style={{ maxWidth: controlsMaxWidth }}
+          >
+            <div className="flex items-center gap-3 min-w-0">
               <button
-                onClick={() => navigate("/")}
+                type="button"
+                onClick={goHome}
                 className="px-4 py-1.5 bg-neutral-900 text-white rounded text-sm font-medium hover:bg-neutral-700"
               >
-                ← Home
+                {"<"} Home
               </button>
-            <div className="hidden md:flex items-center gap-2">
-              {visibleTabs.map((t) => (
-                <button
-                  key={t.key}
-                  onClick={() => goToTab(t.key)}
-                  className={[
-                    "px-3 py-1.5 rounded text-sm font-medium border",
-                    active === t.key
-                      ? "bg-neutral-900 text-white border-neutral-900"
-                      : "bg-white text-neutral-800 border-neutral-200 hover:bg-neutral-50",
-                  ].join(" ")}
-                >
-                  {t.label}
-                </button>
-              ))}
+              <div className="hidden md:flex items-center gap-2 overflow-x-auto whitespace-nowrap">
+                {tabs.map((tab) => (
+                  <button
+                    key={tab.key}
+                    type="button"
+                    onClick={() => goToTab(tab.key)}
+                    className={[
+                      "px-3 py-1.5 rounded text-sm font-medium border",
+                      active === tab.key
+                        ? "bg-neutral-900 text-white border-neutral-900"
+                        : "bg-white text-neutral-800 border-neutral-200 hover:bg-neutral-50",
+                    ].join(" ")}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
             </div>
-            </div>
+
             <div className="flex items-center gap-2">
               <button
+                type="button"
                 onClick={() => setViewport("desktop")}
                 className={[
                   "px-3 py-1.5 rounded text-sm font-medium border",
@@ -129,6 +151,7 @@ export default function PreviewFrame({ children, maxWidth = 1100 }) {
               </button>
 
               <button
+                type="button"
                 onClick={() => setViewport("mobile")}
                 className={[
                   "px-3 py-1.5 rounded text-sm font-medium border",
@@ -149,21 +172,26 @@ export default function PreviewFrame({ children, maxWidth = 1100 }) {
               {children}
             </div>
           ) : (
-            <div className="mx-auto px-4 py-6 flex justify-center">
+            <div className="mx-auto px-4 py-6 flex justify-center overflow-x-hidden">
               <div
-                className="relative bg-neutral-900 rounded-[34px] p-[10px] shadow-lg"
-                style={{ width: deviceW + 20 }}
+                className="relative box-border bg-neutral-900 rounded-[34px] shadow-lg overflow-x-hidden"
+                style={{ width: deviceW, maxWidth: deviceW }}
               >
-                <div className="absolute top-[10px] left-1/2 -translate-x-1/2 h-[18px] w-[120px] rounded-full bg-neutral-800" />
+                <div className="absolute top-[8px] left-1/2 -translate-x-1/2 h-[18px] w-[120px] rounded-full bg-neutral-800 z-10" />
 
                 <div
-                  className="bg-white rounded-[26px] overflow-hidden relative"
-                  style={{ width: deviceW, height: deviceH }}
+                  className="bg-white rounded-[26px] overflow-hidden relative w-full max-w-full"
+                  style={{ height: deviceH }}
                 >
                   <div
                     id="preview-overlay-root"
                     className="absolute inset-0 z-[3000]"
                     style={{ pointerEvents: "none" }}
+                  />
+
+                  <div
+                    id="preview-mobile-sticky-root"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 z-[2800]"
                   />
 
                   <div

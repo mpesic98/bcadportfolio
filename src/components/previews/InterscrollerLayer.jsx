@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from "react"
-import creativeA from "../../assets/interscroller.jpg"
-import creativeB from "../../assets/interscroller.jpg"
-import creativeC from "../../assets/interscroller.jpg"
+import creativeA from "../../assets/Interscroller.jpg"
+import creativeB from "../../assets/Interscroller.jpg"
+import creativeC from "../../assets/Interscroller.jpg"
+import { usePreviewViewport } from "./previewViewport.jsx"
 
 export default function InterscrollerLayer({ slotId, size = "300x600" }) {
+  const { vp } = usePreviewViewport()
+  const isMobile = vp === "mobile"
   const [w, h] = size.split("x").map(Number)
   const wrapRef = useRef(null)
   const [clip, setClip] = useState("inset(0px 0px 0px 0px)")
@@ -17,6 +20,8 @@ export default function InterscrollerLayer({ slotId, size = "300x600" }) {
   }, [slotId])
 
   useEffect(() => {
+    if (isMobile) return undefined
+
     const el = wrapRef.current
     if (!el) return
 
@@ -59,7 +64,26 @@ export default function InterscrollerLayer({ slotId, size = "300x600" }) {
       window.removeEventListener("resize", onScroll)
       if (raf) cancelAnimationFrame(raf)
     }
-  }, [])
+  }, [isMobile])
+
+  if (isMobile) {
+    return (
+      <div className="w-full flex justify-center">
+        <div
+          ref={wrapRef}
+          className="relative overflow-hidden"
+          style={{ width: w, height: h, borderRadius: 10 }}
+        >
+          <img
+            src={img}
+            alt="Interscroller creative"
+            draggable="false"
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>

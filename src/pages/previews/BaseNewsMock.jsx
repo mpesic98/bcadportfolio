@@ -1,4 +1,5 @@
 // src/pages/previews/BaseNewsMock.jsx
+import { createPortal } from "react-dom"
 import AdSlot from "../../components/previews/AdSlot"
 import { usePreviewViewport } from "../../components/previews/previewViewport.jsx"
 
@@ -78,9 +79,15 @@ function SidebarBox() {
   )
 }
 
-function MobileStickyBottom({ renderAd }) {
-  return (
-    <div className="sticky bottom-0 z-50 bg-white border-t border-neutral-200">
+function MobileStickyBottom({ renderAd, mode = "flow" }) {
+  const isFixed = mode === "fixed"
+  const fixedRoot =
+    typeof document !== "undefined"
+      ? document.getElementById("preview-mobile-sticky-root")
+      : null
+
+  const stickyContent = (
+    <div className="pointer-events-auto border-t border-neutral-200 bg-white/95 backdrop-blur">
       <div className="py-2 flex justify-center">
         <AdSlot slotId="mobile_sticky_320x50" renderAd={renderAd}>
           <div className="w-[320px] h-[50px] rounded bg-neutral-200" />
@@ -88,6 +95,11 @@ function MobileStickyBottom({ renderAd }) {
       </div>
     </div>
   )
+
+  if (isFixed && fixedRoot) return createPortal(stickyContent, fixedRoot)
+  if (isFixed) return <div className="fixed bottom-0 inset-x-0 z-[120]">{stickyContent}</div>
+
+  return <div className="sticky bottom-0 z-50">{stickyContent}</div>
 }
 
 function MobileVideoMock() {
@@ -125,18 +137,27 @@ function MobileSummary() {
   )
 }
 
-export default function BaseNewsMock({ renderAd }) {
+export default function BaseNewsMock({
+  renderAd,
+  mobileStickyMode = "fixed",
+  hideMobileVideoMock = false,
+}) {
   const { vp } = usePreviewViewport()
   const isMobile = vp === "mobile"
+  const mobilePadding = isMobile
+    ? mobileStickyMode === "fixed"
+      ? "pb-[124px]"
+      : "pb-[84px]"
+    : "pb-14"
 
   return (
-    <div className="bg-white w-full overflow-x-hidden">
+    <div className={["w-full overflow-x-hidden", isMobile ? "bg-white" : "bg-neutral-50"].join(" ")}>
       <div className="sticky top-0 z-40">
         <div className="bg-neutral-900 text-neutral-100 w-full">
           <div
             className={[
               "px-4 py-2 flex items-center gap-3 overflow-hidden",
-              isMobile ? "w-full max-w-full" : "mx-auto max-w-[1100px]",
+              isMobile ? "w-full max-w-full" : "w-full",
             ].join(" ")}
           >
             <div className="h-5 w-5 rounded bg-neutral-700" />
@@ -152,7 +173,7 @@ export default function BaseNewsMock({ renderAd }) {
       </div>
 
       {!isMobile && (
-        <div className="mx-auto max-w-[1100px] px-4 pt-3">
+        <div className="mx-auto max-w-[1070px] pt-3">
           <div className="w-full flex items-center justify-center">
             <div className="w-[1070px] max-w-full">
               <AdSlot slotId="top_1070x27" renderAd={renderAd}>
@@ -163,35 +184,80 @@ export default function BaseNewsMock({ renderAd }) {
         </div>
       )}
 
-      <main className={["mx-auto max-w-[1100px] px-4 pt-4", isMobile ? "pb-[84px]" : "pb-14"].join(" ")}>
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-8 min-w-0">
-          <article className="pt-2 min-w-0">
-            <div className="flex items-center gap-2 mb-3">
-              <Block h={10} w={110} r={999} />
-              <div className="h-2 w-2 rounded-full bg-neutral-200" />
-              <Block h={10} w={90} r={999} />
-              <div className="h-2 w-2 rounded-full bg-neutral-200" />
-              <Block h={10} w={130} r={999} />
-            </div>
+      <main
+        className={[
+          "mx-auto pt-4",
+          isMobile ? "w-full max-w-full px-4 overflow-x-hidden" : "max-w-[1070px] px-0",
+          mobilePadding,
+        ].join(" ")}
+      >
+        <div className="grid grid-cols-1 min-w-0 lg:grid-cols-[730px_320px] lg:gap-5">
+          <article className="pt-2 min-w-0 w-full max-w-full overflow-x-hidden">
+            {isMobile ? (
+              <>
+                <div className="flex items-center gap-2 mb-3">
+                  <Block h={10} w={110} r={999} />
+                  <div className="h-2 w-2 rounded-full bg-neutral-200" />
+                  <Block h={10} w={90} r={999} />
+                  <div className="h-2 w-2 rounded-full bg-neutral-200" />
+                  <Block h={10} w={130} r={999} />
+                </div>
 
-            <div className="grid gap-3">
-              <Block h={isMobile ? 22 : 18} w="96%" r={10} />
-              <Block h={isMobile ? 22 : 18} w="92%" r={10} />
-              <Block h={isMobile ? 22 : 18} w={isMobile ? "88%" : "72%"} r={10} />
-            </div>
+                <div className="grid gap-3">
+                  <Block h={22} w="96%" r={10} />
+                  <Block h={22} w="92%" r={10} />
+                  <Block h={22} w="88%" r={10} />
+                </div>
 
-            <div className="mt-3 flex items-center justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <Block h={10} w={120} r={999} />
-                <Block h={10} w={80} r={999} />
-                <Block h={10} w={90} r={999} />
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded bg-neutral-200" />
-                <div className="h-8 w-8 rounded bg-neutral-200" />
-                <div className="h-8 w-8 rounded bg-neutral-200" />
-              </div>
-            </div>
+                <div className="mt-4 grid gap-2">
+                  <Block h={12} w="94%" r={8} className="bg-neutral-300" />
+                  <Block h={12} w="88%" r={8} className="bg-neutral-300" />
+                </div>
+
+                <div className="mt-4 grid gap-2.5">
+                  <div className="flex items-start gap-2.5">
+                    <div className="mt-[5px] h-2.5 w-2.5 rounded-full bg-neutral-500" />
+                    <Block h={12} w="84%" r={8} className="bg-neutral-400" />
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <div className="mt-[5px] h-2.5 w-2.5 rounded-full bg-neutral-500" />
+                    <Block h={12} w="72%" r={8} className="bg-neutral-400" />
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 mb-4">
+                  <Block h={10} w={120} r={999} />
+                  <div className="h-2 w-2 rounded-full bg-neutral-300" />
+                  <Block h={10} w={92} r={999} />
+                  <div className="h-2 w-2 rounded-full bg-neutral-300" />
+                  <Block h={10} w={140} r={999} />
+                </div>
+
+                <div className="grid gap-2.5">
+                  <Block h={26} w="99%" r={10} className="bg-neutral-300" />
+                  <Block h={26} w="95%" r={10} className="bg-neutral-300" />
+                  <Block h={26} w="78%" r={10} className="bg-neutral-300" />
+                </div>
+
+                <div className="mt-4 grid gap-2">
+                  <Block h={12} w="94%" r={8} className="bg-neutral-300" />
+                  <Block h={12} w="88%" r={8} className="bg-neutral-300" />
+                </div>
+
+                <div className="mt-4 grid gap-2.5">
+                  <div className="flex items-start gap-2.5">
+                    <div className="mt-[5px] h-2.5 w-2.5 rounded-full bg-neutral-500" />
+                    <Block h={12} w="84%" r={8} className="bg-neutral-400" />
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <div className="mt-[5px] h-2.5 w-2.5 rounded-full bg-neutral-500" />
+                    <Block h={12} w="70%" r={8} className="bg-neutral-400" />
+                  </div>
+                </div>
+              </>
+            )}
 
             <div className="mt-4 rounded-lg bg-neutral-200" style={{ height: isMobile ? 220 : 420 }} />
 
@@ -212,9 +278,11 @@ export default function BaseNewsMock({ renderAd }) {
                   <Lines n={5} />
                 </div>
 
-                <div className="mt-6">
-                  <MobileVideoMock />
-                </div>
+                {!hideMobileVideoMock && (
+                  <div className="mt-6">
+                    <MobileVideoMock />
+                  </div>
+                )}
 
                 <div className="mt-6 flex justify-center">
                   <AdSlot slotId="mobile_inline_300x250_2" renderAd={renderAd}>
@@ -222,16 +290,8 @@ export default function BaseNewsMock({ renderAd }) {
                   </AdSlot>
                 </div>
 
-                <div className="mt-6 rounded-lg bg-neutral-200 h-[220px]" />
-
                 <div className="mt-5 grid gap-3">
                   <Lines n={6} />
-                </div>
-
-                <div className="mt-6 flex justify-center">
-                  <AdSlot slotId="mobile_inline_300x600" renderAd={renderAd}>
-                    <div className="w-[300px] h-[600px] rounded bg-neutral-200" />
-                  </AdSlot>
                 </div>
 
                 <div className="mt-6 grid gap-3">
@@ -240,8 +300,8 @@ export default function BaseNewsMock({ renderAd }) {
                 </div>
 
                 <div className="mt-6 flex justify-center">
-                  <AdSlot slotId="mobile_inline_300x250_3" renderAd={renderAd}>
-                    <div className="w-[300px] h-[250px] rounded bg-neutral-200" />
+                  <AdSlot slotId="mobile_inline_300x600" renderAd={renderAd}>
+                    <div className="w-[300px] h-[600px] rounded bg-neutral-200" />
                   </AdSlot>
                 </div>
 
@@ -335,12 +395,93 @@ export default function BaseNewsMock({ renderAd }) {
                   <Lines n={6} />
                 </div>
 
-                <div className="mt-6 border border-neutral-200 bg-neutral-50 rounded-lg p-3 flex items-center justify-center">
-                  <div className="w-full max-w-[970px]">
-                    <div className="h-3 w-24 rounded bg-neutral-200 mb-2 mx-auto" />
-                    <AdSlot slotId="inline_300x600" renderAd={renderAd}>
-                      <div className="h-[250px] rounded bg-neutral-200" />
+                <div className="mt-6 border border-neutral-200 bg-neutral-50 rounded-lg p-3">
+                  <div className="h-3 w-24 rounded bg-neutral-200 mb-2 mx-auto" />
+                  <div className="flex justify-center">
+                    <AdSlot slotId="inline_preroll_730x330" renderAd={renderAd}>
+                      <div className="h-[250px] w-[300px] rounded bg-neutral-200" />
                     </AdSlot>
+                  </div>
+                </div>
+
+                <div className="mt-6 grid gap-3">
+                  <Lines n={3} />
+                </div>
+
+                <div className="mt-6 h-[600px] w-full rounded-lg border border-neutral-300 bg-white p-5">
+                  <div className="h-full w-full rounded border border-dashed border-neutral-300 bg-neutral-100 flex flex-col items-center justify-center gap-4">
+                    <Block h={16} w="58%" r={8} className="bg-neutral-400" />
+                    <Block h={12} w="46%" r={8} className="bg-neutral-400" />
+                    <Block h={10} w="40%" r={8} className="bg-neutral-500" />
+                  </div>
+                </div>
+
+                <div className="mt-6">
+                  <Block h={24} w="70%" r={8} className="bg-neutral-300" />
+                </div>
+
+                <div className="mt-6 flex justify-center">
+                  <AdSlot slotId="inline_300x250_2" renderAd={renderAd}>
+                    <div className="h-[250px] w-[300px] rounded border border-neutral-300 bg-white" />
+                  </AdSlot>
+                </div>
+
+                <div className="mt-6 grid gap-2">
+                  <LinkPlaceholder w="86%" />
+                  <LinkPlaceholder w="74%" />
+                </div>
+
+                <div className="mt-6 grid gap-3">
+                  <Lines n={6} />
+                  <Lines n={5} />
+                </div>
+
+                <div className="mt-6">
+                  <Block h={20} w="52%" r={8} className="bg-neutral-300" />
+                </div>
+
+                <div className="mt-4 grid gap-2.5">
+                  <div className="flex items-start gap-2.5">
+                    <div className="mt-[5px] h-2.5 w-2.5 rounded-full bg-neutral-500" />
+                    <Block h={12} w="84%" r={8} className="bg-neutral-400" />
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <div className="mt-[5px] h-2.5 w-2.5 rounded-full bg-neutral-500" />
+                    <Block h={12} w="72%" r={8} className="bg-neutral-400" />
+                  </div>
+                </div>
+
+                <div className="mt-6 flex justify-center">
+                  <AdSlot slotId="inline_300x250_3" renderAd={renderAd}>
+                    <div className="h-[250px] w-[300px] rounded border border-neutral-300 bg-white" />
+                  </AdSlot>
+                </div>
+
+                <div className="mt-6 grid gap-4">
+                  <div className="grid grid-cols-[124px_1fr] gap-4 items-start border border-neutral-200 rounded-lg p-3 bg-white">
+                    <div className="h-[86px] w-[124px] rounded bg-neutral-200" />
+                    <div className="grid gap-2 pt-1">
+                      <Block h={12} w="92%" r={8} />
+                      <Block h={10} w="78%" r={8} />
+                      <Block h={10} w="84%" r={8} />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-[124px_1fr] gap-4 items-start border border-neutral-200 rounded-lg p-3 bg-white">
+                    <div className="h-[86px] w-[124px] rounded bg-neutral-200" />
+                    <div className="grid gap-2 pt-1">
+                      <Block h={12} w="90%" r={8} />
+                      <Block h={10} w="74%" r={8} />
+                      <Block h={10} w="80%" r={8} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-7">
+                  <Block h={20} w="48%" r={8} className="bg-neutral-300" />
+                  <div className="mt-3 grid gap-2">
+                    <LinkPlaceholder w="82%" />
+                    <LinkPlaceholder w="76%" />
+                    <LinkPlaceholder w="68%" />
                   </div>
                 </div>
 
@@ -399,7 +540,20 @@ export default function BaseNewsMock({ renderAd }) {
         </div>
       </main>
 
-      {isMobile && <MobileStickyBottom renderAd={renderAd} />}
+      {isMobile && <MobileStickyBottom renderAd={renderAd} mode={mobileStickyMode} />}
     </div>
+  )
+}
+
+function LinkPlaceholder({ w = "88%" }) {
+  return (
+    <a
+      href="#"
+      onClick={(event) => event.preventDefault()}
+      aria-label="Related article link"
+      className="block"
+    >
+      <span className="block h-[11px] rounded bg-neutral-300" style={{ width: w }} />
+    </a>
   )
 }

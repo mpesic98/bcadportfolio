@@ -1,11 +1,25 @@
 import PreviewFrame from "../../components/previews/PreviewFrame"
 import BaseNewsMock from "./BaseNewsMock"
 import DisplayCreative from "../../components/previews/DisplayCreative"
+import { useLocation } from "react-router-dom"
 
 export default function DisplayPreview() {
   const contentMaxWidth = 1100
+  const location = useLocation()
+  const isMobile = new URLSearchParams(location.search).get("vp") === "mobile"
 
   const renderAd = (slotId) => {
+    if (
+      isMobile &&
+      (slotId === "top_1070x27" ||
+        slotId === "sidebar_300x250_1" ||
+        slotId === "sidebar_300x250_2" ||
+        slotId === "inline_300x600" ||
+        slotId === "inline_300x250_1")
+    ) {
+      return null
+    }
+
     const sizes = {
       top_1070x27: "1070x27",
       sidebar_300x250_1: "300x250",
@@ -24,7 +38,7 @@ export default function DisplayPreview() {
 
   return (
     <PreviewFrame maxWidth={contentMaxWidth}>
-      <BaseNewsMock renderAd={renderAd} />
+      <BaseNewsMock renderAd={renderAd} mobileStickyMode="fixed" />
     </PreviewFrame>
   )
 }

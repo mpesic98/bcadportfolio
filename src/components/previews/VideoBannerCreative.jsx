@@ -3,7 +3,7 @@ import { useRef, useState } from "react"
 export default function VideoBannerCreative({
   slotId,
   size = "300x250",
-  videoUrl = "https://www.pexels.com/download/video/1943483/",
+  videoUrl = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
 }) {
   const [w, h] = size.split("x").map(Number)
   const videoRef = useRef(null)
@@ -11,32 +11,29 @@ export default function VideoBannerCreative({
   const [muted, setMuted] = useState(true)
 
   const togglePlay = () => {
-    const v = videoRef.current
-    if (!v) return
+    const video = videoRef.current
+    if (!video) return
 
-    if (v.paused) {
-      v.play()
+    if (video.paused) {
+      video.play()
       setPaused(false)
     } else {
-      v.pause()
+      video.pause()
       setPaused(true)
     }
   }
 
   const toggleMute = () => {
-    const v = videoRef.current
-    if (!v) return
+    const video = videoRef.current
+    if (!video) return
 
-    v.muted = !v.muted
-    setMuted(v.muted)
+    video.muted = !video.muted
+    setMuted(video.muted)
   }
 
   return (
     <div className="w-full flex justify-center">
-      <div
-        className="relative overflow-hidden"
-        style={{ width: w, height: h }}
-      >
+      <div className="relative overflow-hidden rounded" style={{ width: w, height: h }}>
         <video
           ref={videoRef}
           src={videoUrl}
@@ -50,21 +47,27 @@ export default function VideoBannerCreative({
           className="absolute inset-0 w-full h-full object-cover"
         />
 
+        <div className="absolute top-2 left-2 rounded bg-black/65 px-2 py-1 text-[10px] text-white">
+          {slotId}
+        </div>
+
         <div className="absolute bottom-2 right-2 flex gap-2 pointer-events-auto">
           <button
+            type="button"
             onClick={togglePlay}
-            className="h-7 w-7 text-white text-xs flex items-center justify-center"
-            aria-label="Play / Pause"
+            className="rounded bg-black/65 px-2 py-1 text-[10px] text-white"
+            aria-label="Play or pause video"
           >
-            {paused ? "▶" : "⏸"}
+            {paused ? "Play" : "Pause"}
           </button>
 
           <button
+            type="button"
             onClick={toggleMute}
-            className="h-7 w-7 text-white text-xs flex items-center justify-center"
-            aria-label="Mute / Unmute"
+            className="rounded bg-black/65 px-2 py-1 text-[10px] text-white"
+            aria-label="Mute or unmute video"
           >
-            {muted ? "🔇" : "🔊"}
+            {muted ? "Muted" : "Sound"}
           </button>
         </div>
       </div>

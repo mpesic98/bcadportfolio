@@ -1,7 +1,7 @@
 import adA from "../../assets/BClogo.png"
 import adB from "../../assets/displaybanner.png"
 import adC from "../../assets/exampleImg.png"
-import adD from "../../assets/interscroller.jpg"
+import adD from "../../assets/Interscroller.jpg"
 import adE from "../../assets/slider.png"
 
 export default function DisplayCreative({ slotId, size = "300x250" }) {
@@ -10,7 +10,12 @@ export default function DisplayCreative({ slotId, size = "300x250" }) {
     sidebar_300x250_1: adA,
     sidebar_300x250_2: adC,
     inline_300x600: adD,
-    inline_300x250_1: adE
+    inline_300x250_1: adE,
+    mobile_inline_300x600: adD,
+    mobile_inline_300x250_1: adA,
+    mobile_inline_300x250_2: adC,
+    mobile_inline_300x250_3: adE,
+    mobile_sticky_320x50: adB,
   }
 
   const [w, h] = size.split("x").map(Number)
@@ -24,7 +29,7 @@ export default function DisplayCreative({ slotId, size = "300x250" }) {
       >
         <img src={src} alt={slotId} className="w-full h-full object-cover" />
         <div className="absolute top-2 left-2 text-[10px] px-2 py-1 rounded bg-neutral-900 text-white">
-          {slotId} · {w}x{h}
+          {slotId} - {w}x{h}
         </div>
       </div>
     </div>
