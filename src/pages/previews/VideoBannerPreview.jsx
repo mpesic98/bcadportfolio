@@ -1,7 +1,6 @@
 import PreviewFrame from "../../components/previews/PreviewFrame"
 import BaseNewsMock from "./BaseNewsMock"
 import VideoBannerCreative from "../../components/previews/VideoBannerCreative"
-import DisplayCreative from "../../components/previews/DisplayCreative"
 import { useLocation } from "react-router-dom"
 
 export default function VideoBannerPreview() {
@@ -10,11 +9,7 @@ export default function VideoBannerPreview() {
   const isMobile = new URLSearchParams(location.search).get("vp") === "mobile"
 
   const renderAd = (slotId) => {
-    if (isMobile && slotId === "top_1070x27") return null
-
-    if (slotId === "top_1070x27") {
-      return <DisplayCreative slotId={slotId} size="1070x27" />
-    }
+    if (slotId === "top_1070x27") return null
 
     if (
       isMobile &&

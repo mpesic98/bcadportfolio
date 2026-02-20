@@ -78,8 +78,10 @@ export default function PrerollCreative({
   sidebarWidth = 184,
   stickyWidth = 400,
   stickyHeight = 225,
+  autoScrollIntoView = false,
 }) {
   const containerRef = useRef(null)
+  const scrollAnchorRef = useRef(null)
   const hasEnteredViewportRef = useRef(false)
   const [isSticky, setIsSticky] = useState(false)
   const [hasEnteredViewport, setHasEnteredViewport] = useState(false)
@@ -136,6 +138,19 @@ export default function PrerollCreative({
     return () => window.clearInterval(timer)
   }, [secondsLeft])
 
+  useEffect(() => {
+    if (!autoScrollIntoView) return undefined
+
+    const target = containerRef.current || scrollAnchorRef.current
+    if (!target) return undefined
+
+    const raf = window.requestAnimationFrame(() => {
+      target.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" })
+    })
+
+    return () => window.cancelAnimationFrame(raf)
+  }, [autoScrollIntoView, mode])
+
   const handleVideoError = () => {
     setSourceIndex((prev) => Math.min(prev + 1, sources.length - 1))
   }
@@ -144,7 +159,7 @@ export default function PrerollCreative({
 
   if (mode === "mobile-inline") {
     return (
-      <div className="w-full">
+      <div ref={scrollAnchorRef} className="w-full">
         <VideoPane
           source={activeSource}
           muted={muted}
@@ -162,7 +177,7 @@ export default function PrerollCreative({
 
   if (mode !== "primis") {
     return (
-      <div className="w-full flex justify-center">
+      <div ref={scrollAnchorRef} className="w-full flex justify-center">
         <VideoPane
           source={activeSource}
           muted={muted}

@@ -4,7 +4,14 @@ import creativeB from "../../assets/Interscroller.jpg"
 import creativeC from "../../assets/Interscroller.jpg"
 import { usePreviewViewport } from "./previewViewport.jsx"
 
-export default function InterscrollerLayer({ slotId, size = "300x600" }) {
+const MOBILE_HEIGHT_RATIO = 0.8
+const MOBILE_MIN_HEIGHT = 240
+
+export default function InterscrollerLayer({
+  slotId,
+  size = "300x600",
+  autoScrollIntoView = false,
+}) {
   const { vp } = usePreviewViewport()
   const isMobile = vp === "mobile"
   const [w, h] = size.split("x").map(Number)
@@ -12,6 +19,8 @@ export default function InterscrollerLayer({ slotId, size = "300x600" }) {
   const [clip, setClip] = useState("inset(0px 0px 0px 0px)")
   const [show, setShow] = useState(false)
   const [leftPx, setLeftPx] = useState(0)
+  const [overlayWidth, setOverlayWidth] = useState(w)
+  const [mobileSlotHeight, setMobileSlotHeight] = useState(h)
 
   const img = useMemo(() => {
     if (slotId === "inline_300x600") return creativeC
@@ -20,10 +29,23 @@ export default function InterscrollerLayer({ slotId, size = "300x600" }) {
   }, [slotId])
 
   useEffect(() => {
-    if (isMobile) return undefined
+    if (!autoScrollIntoView) return undefined
 
     const el = wrapRef.current
-    if (!el) return
+    if (!el) return undefined
+
+    const raf = window.requestAnimationFrame(() => {
+      el.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" })
+    })
+
+    return () => window.cancelAnimationFrame(raf)
+  }, [autoScrollIntoView, isMobile, slotId])
+
+  useEffect(() => {
+    const el = wrapRef.current
+    if (!el) return undefined
+
+    const scrollTarget = isMobile ? el.closest(".preview-scroll") || window : window
 
     let raf = 0
 
@@ -33,20 +55,44 @@ export default function InterscrollerLayer({ slotId, size = "300x600" }) {
       const vw = window.innerWidth || 1
       const vh = window.innerHeight || 1
 
+      const containerRect =
+        isMobile &&
+        scrollTarget &&
+        scrollTarget !== window &&
+        typeof scrollTarget.getBoundingClientRect === "function"
+          ? scrollTarget.getBoundingClientRect()
+          : null
+
+      const visTop = containerRect ? Math.max(rect.top, containerRect.top) : rect.top
+      const visLeft = containerRect ? Math.max(rect.left, containerRect.left) : rect.left
+      const visBottom = containerRect ? Math.min(rect.bottom, containerRect.bottom) : rect.bottom
+      const visRight = containerRect ? Math.min(rect.right, containerRect.right) : rect.right
+
       const fullyOut =
-        rect.height <= 1 ||
-        rect.bottom <= 0 ||
-        rect.top >= vh ||
-        rect.right <= 0 ||
-        rect.left >= vw
+        visBottom - visTop <= 1 ||
+        visRight - visLeft <= 1 ||
+        visBottom <= 0 ||
+        visTop >= vh ||
+        visRight <= 0 ||
+        visLeft >= vw
 
       setShow(!fullyOut)
       setLeftPx(rect.left)
 
-      const top = Math.max(0, rect.top)
-      const left = Math.max(0, rect.left)
-      const bottom = Math.max(0, vh - rect.bottom)
-      const right = Math.max(0, vw - rect.right)
+      setOverlayWidth(rect.width)
+
+      if (containerRect) {
+        const nextHeight = Math.max(
+          MOBILE_MIN_HEIGHT,
+          Math.round(containerRect.height * MOBILE_HEIGHT_RATIO)
+        )
+        setMobileSlotHeight((prev) => (prev === nextHeight ? prev : nextHeight))
+      }
+
+      const top = Math.max(0, visTop)
+      const left = Math.max(0, visLeft)
+      const bottom = Math.max(0, vh - visBottom)
+      const right = Math.max(0, vw - visRight)
 
       setClip(`inset(${top}px ${right}px ${bottom}px ${left}px)`)
     }
@@ -57,33 +103,14 @@ export default function InterscrollerLayer({ slotId, size = "300x600" }) {
     }
 
     calc()
-    window.addEventListener("scroll", onScroll, { passive: true })
+    scrollTarget.addEventListener("scroll", onScroll, { passive: true })
     window.addEventListener("resize", onScroll)
     return () => {
-      window.removeEventListener("scroll", onScroll)
+      scrollTarget.removeEventListener("scroll", onScroll)
       window.removeEventListener("resize", onScroll)
       if (raf) cancelAnimationFrame(raf)
     }
-  }, [isMobile])
-
-  if (isMobile) {
-    return (
-      <div className="w-full flex justify-center">
-        <div
-          ref={wrapRef}
-          className="relative overflow-hidden"
-          style={{ width: w, height: h, borderRadius: 10 }}
-        >
-          <img
-            src={img}
-            alt="Interscroller creative"
-            draggable="false"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        </div>
-      </div>
-    )
-  }
+  }, [isMobile, w, h, mobileSlotHeight])
 
   return (
     <>
@@ -91,7 +118,11 @@ export default function InterscrollerLayer({ slotId, size = "300x600" }) {
         <div
           ref={wrapRef}
           className="relative overflow-hidden"
-          style={{ width: w, height: h, borderRadius: 10 }}
+          style={{
+            width: isMobile ? "100%" : w,
+            height: isMobile ? mobileSlotHeight : h,
+            borderRadius: 10,
+          }}
         />
       </div>
 
@@ -102,7 +133,7 @@ export default function InterscrollerLayer({ slotId, size = "300x600" }) {
         >
           <div
             className="absolute"
-            style={{ top: 0, bottom: 0, left: leftPx, width: w }}
+            style={{ top: 0, bottom: 0, left: leftPx, width: overlayWidth }}
           >
             <img
               src={img}

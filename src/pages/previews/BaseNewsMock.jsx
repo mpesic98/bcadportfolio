@@ -1,4 +1,5 @@
 // src/pages/previews/BaseNewsMock.jsx
+import { useEffect, useMemo, useState } from "react"
 import { createPortal } from "react-dom"
 import AdSlot from "../../components/previews/AdSlot"
 import { usePreviewViewport } from "../../components/previews/previewViewport.jsx"
@@ -137,10 +138,84 @@ function MobileSummary() {
   )
 }
 
+function DesktopSiteRails({
+  renderAd,
+  railWidth = 160,
+  railHeight = 600,
+  railGap = 24,
+  topBarHeight = 72,
+  contentMaxWidth = 1070,
+}) {
+  const [viewportWidth, setViewportWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 0
+  )
+
+  useEffect(() => {
+    const onResize = () => setViewportWidth(window.innerWidth || 0)
+    onResize()
+    window.addEventListener("resize", onResize)
+    return () => window.removeEventListener("resize", onResize)
+  }, [])
+
+  const { effectiveGap, effectiveRailWidth, margin } = useMemo(() => {
+    const outerMargin = 8
+    const available = (viewportWidth - contentMaxWidth) / 2 - outerMargin
+
+    if (!Number.isFinite(available) || available <= 0) {
+      return { effectiveGap: 0, effectiveRailWidth: 0, margin: outerMargin }
+    }
+
+    const gap = Math.min(railGap, Math.max(0, Math.floor(available - railWidth)))
+    const width = Math.min(railWidth, Math.max(0, Math.floor(available - gap)))
+
+    return { effectiveGap: gap, effectiveRailWidth: width, margin: outerMargin }
+  }, [contentMaxWidth, railGap, railWidth, viewportWidth])
+
+  if (effectiveRailWidth < 20) return null
+
+  const leftOffset = contentMaxWidth / 2 + effectiveGap + effectiveRailWidth
+  const rightOffset = contentMaxWidth / 2 + effectiveGap
+
+  return (
+    <div className="block" aria-hidden="true">
+      <div
+        className="fixed z-30"
+        style={{
+          width: effectiveRailWidth,
+          height: railHeight,
+          top: topBarHeight + 96,
+          left: `max(${margin}px, calc(50% - ${leftOffset}px))`,
+        }}
+      >
+        <AdSlot slotId="rail_left_160x600" renderAd={renderAd}>
+          <div className="h-full w-full rounded border border-neutral-300 bg-neutral-200" />
+        </AdSlot>
+      </div>
+
+      <div
+        className="fixed z-30"
+        style={{
+          width: effectiveRailWidth,
+          height: railHeight,
+          top: topBarHeight + 96,
+          left: `min(calc(100% - ${effectiveRailWidth + margin}px), calc(50% + ${rightOffset}px))`,
+        }}
+      >
+        <AdSlot slotId="rail_right_160x600" renderAd={renderAd}>
+          <div className="h-full w-full rounded border border-neutral-300 bg-neutral-200" />
+        </AdSlot>
+      </div>
+    </div>
+  )
+}
+
 export default function BaseNewsMock({
   renderAd,
   mobileStickyMode = "fixed",
   hideMobileVideoMock = false,
+  showDesktopRails = false,
+  showMobilePrerollSlot = false,
+  containerClassName,
 }) {
   const { vp } = usePreviewViewport()
   const isMobile = vp === "mobile"
@@ -149,9 +224,11 @@ export default function BaseNewsMock({
       ? "pb-[124px]"
       : "pb-[84px]"
     : "pb-14"
+  const containerBg = containerClassName || (isMobile ? "bg-white" : "bg-neutral-50")
+  const containerOverflow = !isMobile && showDesktopRails ? "" : "overflow-x-hidden"
 
   return (
-    <div className={["w-full overflow-x-hidden", isMobile ? "bg-white" : "bg-neutral-50"].join(" ")}>
+    <div className={["w-full", containerOverflow, containerBg].filter(Boolean).join(" ")}>
       <div className="sticky top-0 z-40">
         <div className="bg-neutral-900 text-neutral-100 w-full">
           <div
@@ -183,6 +260,8 @@ export default function BaseNewsMock({
           </div>
         </div>
       )}
+
+      {!isMobile && showDesktopRails && <DesktopSiteRails renderAd={renderAd} />}
 
       <main
         className={[
@@ -266,6 +345,14 @@ export default function BaseNewsMock({
                 <div className="mt-5 grid gap-3">
                   <Lines n={5} />
                 </div>
+
+                {showMobilePrerollSlot && (
+                  <div className="mt-6">
+                    <AdSlot slotId="mobile_preroll" renderAd={renderAd}>
+                      <div className="w-full rounded bg-neutral-200" style={{ aspectRatio: "16 / 9" }} />
+                    </AdSlot>
+                  </div>
+                )}
 
                 <div className="mt-6 flex justify-center">
                   <AdSlot slotId="mobile_inline_300x250_1" renderAd={renderAd}>
@@ -421,8 +508,8 @@ export default function BaseNewsMock({
                 </div>
 
                 <div className="mt-6 flex justify-center">
-                  <AdSlot slotId="inline_300x250_2" renderAd={renderAd}>
-                    <div className="h-[250px] w-[300px] rounded border border-neutral-300 bg-white" />
+                  <AdSlot slotId="inline_300x600" renderAd={renderAd}>
+                    <div className="h-[600px] w-[300px] rounded border border-neutral-300 bg-neutral-200" />
                   </AdSlot>
                 </div>
 
@@ -453,7 +540,7 @@ export default function BaseNewsMock({
 
                 <div className="mt-6 flex justify-center">
                   <AdSlot slotId="inline_300x250_3" renderAd={renderAd}>
-                    <div className="h-[250px] w-[300px] rounded border border-neutral-300 bg-white" />
+                    <div className="h-[250px] w-[300px] rounded border border-neutral-300 bg-neutral-200" />
                   </AdSlot>
                 </div>
 
@@ -500,15 +587,6 @@ export default function BaseNewsMock({
                 <div className="mt-6 grid gap-3">
                   <Lines n={7} />
                   <Lines n={6} />
-                </div>
-
-                <div className="mt-6 border border-neutral-200 bg-neutral-50 rounded-lg p-3 flex items-center justify-center">
-                  <div className="w-full max-w-[970px]">
-                    <div className="h-3 w-24 rounded bg-neutral-200 mb-2 mx-auto" />
-                    <AdSlot slotId="inline_300x250_1" renderAd={renderAd}>
-                      <div className="h-[250px] rounded bg-neutral-200" />
-                    </AdSlot>
-                  </div>
                 </div>
               </>
             )}

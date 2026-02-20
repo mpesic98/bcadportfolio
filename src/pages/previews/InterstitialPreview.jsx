@@ -2,12 +2,15 @@ import { useEffect, useRef, useState } from "react"
 import PreviewFrame from "../../components/previews/PreviewFrame"
 import BaseNewsMock from "./BaseNewsMock"
 import InterstitialLayer from "../../components/previews/InterstitialLayer"
-import DisplayCreative from "../../components/previews/DisplayCreative"
 import adImg from "../../assets/adImg.jpg"
+
+const INSTRUCTION_VISIBLE_MS = 3000
+const INSTRUCTION_FADE_MS = 800
 
 export default function InterstitialPreview() {
   const [armed, setArmed] = useState(true)
   const [open, setOpen] = useState(false)
+  const [instructionState, setInstructionState] = useState("visible")
   const rootRef = useRef(null)
 
   useEffect(() => {
@@ -29,28 +32,52 @@ export default function InterstitialPreview() {
     return () => el.removeEventListener("click", onFirstUserClick, true)
   }, [armed, open])
 
-  const renderAd = (slotId) => {
-    const sizes = {
-      top_1070x27: "1070x27",
-      sidebar_300x250_1: "300x250",
-      sidebar_300x250_2: "300x250",
-      inline_300x600: "300x600",
-      inline_300x250_1: "300x250",
-      mobile_sticky_320x50: "320x50",
-      mobile_inline_300x250_1: "300x250",
-      mobile_inline_300x250_2: "300x250",
-      mobile_inline_300x250_3: "300x250",
-      mobile_inline_300x600: "300x600",
-    }
+  useEffect(() => {
+    if (instructionState !== "visible") return undefined
 
-    return <DisplayCreative slotId={slotId} size={sizes[slotId] || "300x250"} />
-  }
+    const fadeTimer = window.setTimeout(() => {
+      setInstructionState("fading")
+    }, INSTRUCTION_VISIBLE_MS)
+
+    return () => window.clearTimeout(fadeTimer)
+  }, [instructionState])
+
+  useEffect(() => {
+    if (instructionState !== "fading") return undefined
+
+    const hideTimer = window.setTimeout(() => {
+      setInstructionState("hidden")
+    }, INSTRUCTION_FADE_MS)
+
+    return () => window.clearTimeout(hideTimer)
+  }, [instructionState])
+
+  useEffect(() => {
+    if (open) setInstructionState("hidden")
+  }, [open])
+
+  const renderAd = () => null
 
   return (
     <PreviewFrame maxWidth={1100}>
       <div ref={rootRef}>
         <BaseNewsMock renderAd={renderAd} />
       </div>
+
+      {instructionState !== "hidden" ? (
+        <div
+          aria-hidden="true"
+          className={[
+            "fixed inset-0 z-[3100] flex items-center justify-center bg-neutral-900/70",
+            "transition-opacity duration-[800ms] ease-out pointer-events-none",
+            instructionState === "fading" ? "opacity-0" : "opacity-100",
+          ].join(" ")}
+        >
+          <div className="px-5 py-3 rounded-md text-white text-base md:text-lg font-medium tracking-wide">
+            Click to see interstitial
+          </div>
+        </div>
+      ) : null}
 
       <InterstitialLayer
         isOpen={open}

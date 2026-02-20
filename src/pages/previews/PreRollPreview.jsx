@@ -1,38 +1,17 @@
 import PreviewFrame from "../../components/previews/PreviewFrame"
 import BaseNewsMock from "./BaseNewsMock"
-import DisplayCreative from "../../components/previews/DisplayCreative"
 import PrerollCreative from "../../components/previews/PrerollCreative"
 import { useLocation } from "react-router-dom"
 
-const sizeMap = {
-  top_1070x27: "1070x27",
-  sidebar_300x250_1: "300x250",
-  sidebar_300x250_2: "300x250",
-  inline_300x600: "300x600",
-  inline_300x250_1: "300x250",
-  mobile_sticky_320x50: "320x50",
-  mobile_inline_300x250_1: "300x250",
-  mobile_inline_300x250_2: "300x250",
-  mobile_inline_300x250_3: "300x250",
-  mobile_inline_300x600: "300x600",
-}
-
-const prerollSlots = new Set([
-  "inline_300x600",
-  "inline_300x250_1",
-  "mobile_inline_300x250_1",
-  "mobile_inline_300x250_2",
-  "mobile_inline_300x250_3",
-  "mobile_inline_300x600",
-])
+const DESKTOP_PREROLL_SLOT = "inline_preroll_730x330"
+const MOBILE_PREROLL_SLOT = "mobile_preroll"
 
 export default function PreRollPreview({ formatData }) {
   const location = useLocation()
   const isMobile = new URLSearchParams(location.search).get("vp") === "mobile"
-  let mobilePrerollRendered = false
 
   const renderAd = (slotId) => {
-    if (!isMobile && slotId === "inline_preroll_730x330") {
+    if (!isMobile && slotId === DESKTOP_PREROLL_SLOT) {
       return (
         <PrerollCreative
           mode="primis"
@@ -45,33 +24,33 @@ export default function PreRollPreview({ formatData }) {
           stickyWidth={400}
           stickyHeight={225}
           countdownSeconds={11}
+          autoScrollIntoView
         />
       )
     }
 
-    if (isMobile && slotId === "mobile_inline_300x250_1" && !mobilePrerollRendered) {
-      mobilePrerollRendered = true
+    if (isMobile && slotId === MOBILE_PREROLL_SLOT) {
       return (
         <PrerollCreative
           mode="mobile-inline"
           ctaLabel={formatData?.cta?.label || "Visit Partner"}
           ctaUrl={formatData?.cta?.url || "https://example.com"}
           countdownSeconds={11}
+          autoScrollIntoView
         />
       )
     }
 
-    if (isMobile && prerollSlots.has(slotId)) {
-      const fallbackSize = slotId === "mobile_inline_300x600" ? "300x600" : "300x250"
-      return <DisplayCreative slotId={slotId} size={fallbackSize} />
-    }
-
-    return <DisplayCreative slotId={slotId} size={sizeMap[slotId] || "300x250"} />
+    return null
   }
 
   return (
     <PreviewFrame maxWidth={1100}>
-      <BaseNewsMock renderAd={renderAd} hideMobileVideoMock={isMobile} />
+      <BaseNewsMock
+        renderAd={renderAd}
+        hideMobileVideoMock={isMobile}
+        showMobilePrerollSlot={isMobile}
+      />
     </PreviewFrame>
   )
 }

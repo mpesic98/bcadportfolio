@@ -1,22 +1,24 @@
-import slider from "../assets/slider.png"
+import displayBannerone from "../assets/banner.png"
 import displayBanner from "../assets/displaybanner.png"
 import adtype3 from "../assets/adtype3.png"
+import skin from "../assets/skin.png"
 import skinLeft from "../assets/skinl.png"
 import skinRight from "../assets/skinr.png"
 import exampleImg from "../assets/exampleImg.png"
 import adImg from "../assets/adImg.jpg"
 import interscrollerImg from "../assets/Interscroller.jpg"
+import slider from "../assets/slider.png"
 
 export const nonEndemicCatalog = [
   {
     formatId: "display-banners",
     title: "Display Banners",
     previewKind: "display",
-    cardImage: slider,
+    cardImage: displayBannerone,
     hoverImage: displayBanner,
     showcaseSlides: [
       { id: "a", title: "Display A", image: displayBanner },
-      { id: "b", title: "Display B", image: exampleImg },
+      { id: "b", title: "Display B", image: displayBannerone },
     ],
     specs: {
       sizes: ["Desktop: 970x250, 300x250, 300x600", "Mobile: 320x50, 300x250"],
@@ -34,8 +36,8 @@ export const nonEndemicCatalog = [
     formatId: "skin",
     title: "Skin",
     previewKind: "skin",
-    cardImage: displayBanner,
-    hoverImage: interscrollerImg,
+    cardImage: skin,
+    hoverImage: skin,
     leftImg: skinLeft,
     rightImg: skinRight,
     showcaseSlides: [

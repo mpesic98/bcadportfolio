@@ -1,16 +1,22 @@
-import adA from "../../assets/BClogo.png"
+import adA from "../../assets/300x250.jpg"
 import adB from "../../assets/displaybanner.png"
-import adC from "../../assets/exampleImg.png"
-import adD from "../../assets/Interscroller.jpg"
+import adC from "../../assets/300x250.jpg"
+import adD from "../../assets/300x600.jpg"
 import adE from "../../assets/slider.png"
+import adF from "../../assets/1070x27.png"
+import railL from "../../assets/sideskin.png"
+import railR from "../../assets/sideskin.png"
 
 export default function DisplayCreative({ slotId, size = "300x250" }) {
   const map = {
-    top_1070x27: adB,
+    rail_left_160x600: railL,
+    rail_right_160x600: railR,
+    top_1070x27: adF,
     sidebar_300x250_1: adA,
     sidebar_300x250_2: adC,
     inline_300x600: adD,
     inline_300x250_1: adE,
+    inline_300x250_3: adE,
     mobile_inline_300x600: adD,
     mobile_inline_300x250_1: adA,
     mobile_inline_300x250_2: adC,
