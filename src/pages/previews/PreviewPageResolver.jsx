@@ -2,10 +2,16 @@ import { Navigate, useLocation, useParams } from "react-router-dom"
 import { endemicCatalog, endemicById } from "../../data/endemicCatalog"
 import { nonEndemicCatalog, nonEndemicById } from "../../data/nonEndemicCatalog"
 import { normalizeRegion, normalizeSegment } from "../../data/regionConfig"
+import ContentWidgetPreview from "./ContentWidgetPreview"
+import CubePreview from "./CubePreview"
 import DisplayPreview from "./DisplayPreview"
+import CountdownWidgetPreview from "./CountdownWidgetPreview"
 import GenericFormatPreview from "./GenericFormatPreview"
 import InterstitialPreview from "./InterstitialPreview"
 import InterscrollerPreview from "./InterscrollerPreview"
+import LeadgenPreview from "./LeadgenPreview"
+import LivescorePreview from "./LivescorePreview"
+import NativePreview from "./NativePreview"
 import PreRollPreview from "./PreRollPreview"
 import SkinPreview from "./SkinPreview"
 import VideoBannerPreview from "./VideoBannerPreview"
@@ -56,6 +62,12 @@ export default function PreviewPageResolver() {
     )
   }
 
+  if (canonicalId === "livescore") return <LivescorePreview />
+  if (canonicalId === "countdown-widget") return <CountdownWidgetPreview />
+  if (canonicalId === "leadgen") return <LeadgenPreview />
+  if (canonicalId === "cube") return <CubePreview />
+  if (canonicalId === "native") return <NativePreview />
+  if (canonicalId === "content-widget") return <ContentWidgetPreview />
   if (formatData.previewKind === "display") return <DisplayPreview />
   if (formatData.previewKind === "skin") return <SkinPreview />
   if (formatData.previewKind === "interstitial") return <InterstitialPreview />

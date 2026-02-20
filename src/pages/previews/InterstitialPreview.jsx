@@ -4,7 +4,7 @@ import BaseNewsMock from "./BaseNewsMock"
 import InterstitialLayer from "../../components/previews/InterstitialLayer"
 import adImg from "../../assets/adImg.jpg"
 
-const INSTRUCTION_VISIBLE_MS = 3000
+const INSTRUCTION_VISIBLE_MS = 2000
 const INSTRUCTION_FADE_MS = 800
 
 export default function InterstitialPreview() {

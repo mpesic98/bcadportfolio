@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
-import creativeA from "../../assets/Interscroller.jpg"
-import creativeB from "../../assets/Interscroller.jpg"
-import creativeC from "../../assets/Interscroller.jpg"
+import creativeA from "../../assets/Interscrollercocacola.jpg"
+import creativeB from "../../assets/Interscrollercocacola.jpg"
+import creativeC from "../../assets/Interscrollercocacola.jpg"
 import { usePreviewViewport } from "./previewViewport.jsx"
 
 const MOBILE_HEIGHT_RATIO = 0.8
