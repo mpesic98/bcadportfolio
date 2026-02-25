@@ -1,4 +1,5 @@
-import { useEffect, useMemo, useState } from "react"
+import { useMemo } from "react"
+import { usePreviewViewport } from "./previewViewport.jsx"
 
 const DEFAULT_SAFE_WIDTH = 1080
 const DEFAULT_GAP = 5
@@ -15,16 +16,9 @@ export default function FullWidthSkinLayer({
   backgroundSize = DEFAULT_BG_SIZE,
   backgroundPosition = DEFAULT_BG_POSITION,
 }) {
-  const [viewportWidth, setViewportWidth] = useState(() =>
-    typeof window === "undefined" ? 0 : window.innerWidth || 0
-  )
-
-  useEffect(() => {
-    const onResize = () => setViewportWidth(window.innerWidth || 0)
-    onResize()
-    window.addEventListener("resize", onResize)
-    return () => window.removeEventListener("resize", onResize)
-  }, [])
+  const { width: previewViewportWidth } = usePreviewViewport()
+  const viewportWidth =
+    previewViewportWidth || (typeof window === "undefined" ? 0 : window.innerWidth || 0)
 
   const clickAreaWidth = useMemo(() => {
     const raw = Math.floor((viewportWidth - safeWidth) / 2) - gap
@@ -87,4 +81,3 @@ export default function FullWidthSkinLayer({
     </>
   )
 }
-

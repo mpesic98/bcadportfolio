@@ -14,7 +14,7 @@ export default function DisplayPreview() {
     const sizes = {
       rail_left_160x600: "160x600",
       rail_right_160x600: "160x600",
-      top_1070x27: "1070x27",
+      top_1070x27: "970x90",
       sidebar_300x250_1: "300x250",
       sidebar_300x250_2: "300x250",
       inline_300x600: "300x600",

@@ -1,5 +1,5 @@
 // src/pages/previews/BaseNewsMock.jsx
-import { useEffect, useMemo, useState } from "react"
+import { useMemo } from "react"
 import { createPortal } from "react-dom"
 import AdSlot from "../../components/previews/AdSlot"
 import { usePreviewViewport } from "../../components/previews/previewViewport.jsx"
@@ -145,18 +145,8 @@ function DesktopSiteRails({
   railGap = 24,
   topBarHeight = 72,
   contentMaxWidth = 1070,
+  viewportWidth = 0,
 }) {
-  const [viewportWidth, setViewportWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 0
-  )
-
-  useEffect(() => {
-    const onResize = () => setViewportWidth(window.innerWidth || 0)
-    onResize()
-    window.addEventListener("resize", onResize)
-    return () => window.removeEventListener("resize", onResize)
-  }, [])
-
   const { effectiveGap, effectiveRailWidth, margin } = useMemo(() => {
     const outerMargin = 8
     const available = (viewportWidth - contentMaxWidth) / 2 - outerMargin
@@ -217,7 +207,7 @@ export default function BaseNewsMock({
   showMobilePrerollSlot = false,
   containerClassName,
 }) {
-  const { vp } = usePreviewViewport()
+  const { vp, width: viewportWidth } = usePreviewViewport()
   const isMobile = vp === "mobile"
   const mobilePadding = isMobile
     ? mobileStickyMode === "fixed"
@@ -249,19 +239,23 @@ export default function BaseNewsMock({
         </div>
       </div>
 
-      {!isMobile && (
-        <div className="mx-auto max-w-[1070px] pt-3">
+      {vp === "desktop" && (
+        <div className="mx-auto max-w-[1070px] py-3">
           <div className="w-full flex items-center justify-center">
-            <div className="w-[1070px] max-w-full">
-              <AdSlot slotId="top_1070x27" renderAd={renderAd}>
-                <Block h={27} w="100%" r={6} />
-              </AdSlot>
+            <div className="h-[90px] w-full max-w-[1000px] rounded-md border border-neutral-200 bg-white px-2 py-1 overflow-hidden">
+              <div className="h-full w-full flex items-center justify-center overflow-hidden">
+                <AdSlot slotId="top_1070x27" renderAd={renderAd}>
+                  <Block h={90} w="100%" r={6} />
+                </AdSlot>
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {!isMobile && showDesktopRails && <DesktopSiteRails renderAd={renderAd} />}
+      {!isMobile && showDesktopRails && (
+        <DesktopSiteRails renderAd={renderAd} viewportWidth={viewportWidth} />
+      )}
 
       <main
         className={[
@@ -270,7 +264,13 @@ export default function BaseNewsMock({
           mobilePadding,
         ].join(" ")}
       >
-        <div className="grid grid-cols-1 min-w-0 lg:grid-cols-[730px_320px] lg:gap-5">
+        <div
+          className={
+            isMobile
+              ? "grid grid-cols-1 min-w-0"
+              : "grid grid-cols-1 min-w-0 lg:grid-cols-[730px_320px] lg:gap-5"
+          }
+        >
           <article className="pt-2 min-w-0 w-full max-w-full overflow-x-hidden">
             {isMobile ? (
               <>
@@ -592,7 +592,7 @@ export default function BaseNewsMock({
             )}
           </article>
 
-          <aside className="pt-2 hidden lg:block min-w-0">
+          <aside className={isMobile ? "hidden" : "pt-2 hidden lg:block min-w-0"}>
             <div className="border border-neutral-200 bg-neutral-50 rounded-lg p-3">
               <div className="h-3 w-20 rounded bg-neutral-200 mb-2" />
               <AdSlot slotId="sidebar_300x250_1" renderAd={renderAd}>

@@ -190,28 +190,6 @@ export const nonEndemicCatalog = [
     },
   },
   {
-    formatId: "leadgen",
-    title: "Leadgen",
-    previewKind: "generic",
-    cardImage: adtype3,
-    hoverImage: exampleImg,
-    showcaseSlides: [
-      { id: "a", title: "Leadgen A", image: adtype3 },
-      { id: "b", title: "Leadgen B", image: exampleImg },
-    ],
-    specs: {
-      sizes: ["Inline form block", "300x250 companion", "Mobile full-width card"],
-      kpis: ["Form Completion", "Qualified Leads", "CPL"],
-      description:
-        "Lead capture unit with intent-focused messaging and conversion-first interaction flow.",
-    },
-    descriptionByRegion: {
-      usa: "US leadgen templates prioritize compliant opt-in and CRM-ready payloads.",
-      latam: "LATAM leadgen templates prioritize concise forms and high mobile completion.",
-      europe: "EU leadgen templates prioritize explicit consent states and GDPR-safe copy.",
-    },
-  },
-  {
     formatId: "cube",
     title: "Cube",
     previewKind: "generic",
@@ -253,6 +231,28 @@ export const nonEndemicCatalog = [
       usa: "US native templates emphasize clear sponsorship labels and editorial alignment.",
       latam: "LATAM native templates emphasize concise copy and lightweight visuals.",
       europe: "EU native templates emphasize transparent labeling and contextual matching.",
+    },
+  },
+  {
+    formatId: "leadgen",
+    title: "Leadgen",
+    previewKind: "generic",
+    cardImage: adtype3,
+    hoverImage: exampleImg,
+    showcaseSlides: [
+      { id: "a", title: "Leadgen A", image: adtype3 },
+      { id: "b", title: "Leadgen B", image: exampleImg },
+    ],
+    specs: {
+      sizes: ["Inline form block", "300x250 companion", "Mobile full-width card"],
+      kpis: ["Form Completion", "Qualified Leads", "CPL"],
+      description:
+        "Lead capture unit with intent-focused messaging and conversion-first interaction flow.",
+    },
+    descriptionByRegion: {
+      usa: "US leadgen templates prioritize compliant opt-in and CRM-ready payloads.",
+      latam: "LATAM leadgen templates prioritize concise forms and high mobile completion.",
+      europe: "EU leadgen templates prioritize explicit consent states and GDPR-safe copy.",
     },
   },
   {

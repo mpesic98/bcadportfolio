@@ -1,9 +1,55 @@
-import { useEffect, useLayoutEffect, useMemo, useState } from "react"
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { endemicCatalog } from "../../data/endemicCatalog"
 import { nonEndemicCatalog } from "../../data/nonEndemicCatalog"
 import { normalizeRegion, normalizeSegment } from "../../data/regionConfig"
-import { PreviewViewportProvider } from "./previewViewport.jsx"
+import { PreviewViewportProvider, usePreviewViewport } from "./previewViewport.jsx"
+
+const TABS_SCROLL_STORAGE_KEY = "preview-format-tabs-scroll-left"
+let tabsScrollMemory = 0
+
+function readSavedTabsScroll() {
+  if (typeof window === "undefined") return tabsScrollMemory
+  const raw = window.sessionStorage.getItem(TABS_SCROLL_STORAGE_KEY)
+  if (!raw) return tabsScrollMemory
+  const parsed = Number(raw)
+  return Number.isFinite(parsed) && parsed >= 0 ? parsed : tabsScrollMemory
+}
+
+function saveTabsScroll(value) {
+  const next = Math.max(0, Math.round(value || 0))
+  tabsScrollMemory = next
+
+  if (typeof window !== "undefined") {
+    window.sessionStorage.setItem(TABS_SCROLL_STORAGE_KEY, String(next))
+  }
+}
+
+function DesktopIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
+      <rect x="3" y="4" width="18" height="12" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <path d="M9 20h6M12 16v4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+    </svg>
+  )
+}
+
+function MobileIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
+      <rect x="7" y="2.5" width="10" height="19" rx="2" fill="none" stroke="currentColor" strokeWidth="1.6" />
+      <circle cx="12" cy="18.5" r="1" fill="currentColor" />
+    </svg>
+  )
+}
+
+function resolveMobileTargetSlot(formatId) {
+  if (!formatId) return null
+  if (formatId === "leadgen") return "mobile_inline_300x600"
+  if (formatId === "pre-roll-video") return "mobile_preroll"
+  if (formatId === "interstitial" || formatId === "interscroller") return null
+  return "mobile_inline_300x250_1"
+}
 
 export default function PreviewFrame({
   children,
@@ -35,28 +81,35 @@ export default function PreviewFrame({
     () => new URLSearchParams(location.search),
     [location.search]
   )
+  const headerRef = useRef(null)
+  const tabsRef = useRef(null)
+  const rootViewportRef = useRef(null)
+  const mobileViewportRef = useRef(null)
+
+  const headerViewport = usePreviewViewport(headerRef)
+  const rootViewport = usePreviewViewport(rootViewportRef)
+  const mobileViewport = usePreviewViewport(mobileViewportRef)
+
   const initialVp = search.get("vp") === "mobile" ? "mobile" : "desktop"
   const [vp, setVp] = useState(initialVp)
 
   const deviceW = 390
-  const [deviceH, setDeviceH] = useState(844)
+  const mobileFrameHeight = "clamp(620px, calc(100dvh - 120px), 900px)"
 
-  useEffect(() => {
-    if (vp !== "mobile") return
+  const fallbackWindowWidth = typeof window !== "undefined" ? window.innerWidth || 0 : 0
+  const fallbackWindowHeight = typeof window !== "undefined" ? window.innerHeight || 0 : 0
 
-    const calc = () => {
-      const vh = window.innerHeight || 800
-      const header = 72
-      const pad = 48
-      const raw = vh - header - pad
-      const clamped = Math.max(620, Math.min(900, raw))
-      setDeviceH(clamped)
-    }
+  const viewportWidth =
+    vp === "mobile"
+      ? mobileViewport.width || deviceW
+      : rootViewport.width || fallbackWindowWidth
 
-    calc()
-    window.addEventListener("resize", calc)
-    return () => window.removeEventListener("resize", calc)
-  }, [vp])
+  const viewportHeight =
+    vp === "mobile"
+      ? mobileViewport.height || 844
+      : rootViewport.height || fallbackWindowHeight
+
+  const measuredHeaderHeight = headerViewport.height || 72
 
   useEffect(() => {
     const prevHtml = document.documentElement.style.overflow
@@ -84,6 +137,88 @@ export default function PreviewFrame({
 
   const active = formatId
 
+  useEffect(() => {
+    if (vp !== "mobile") return undefined
+    if (formatId !== "skin") return undefined
+
+    const fallbackTab = tabs.find((tab) => tab.key !== "skin")
+    if (!fallbackTab) return undefined
+
+    const nextSearch = new URLSearchParams(location.search)
+    nextSearch.set("vp", "mobile")
+
+    navigate(`/${region}/${segment}/preview/${fallbackTab.key}?${nextSearch.toString()}`, {
+      replace: true,
+    })
+
+    return undefined
+  }, [formatId, location.search, navigate, region, segment, tabs, vp])
+
+  useEffect(() => {
+    if (vp !== "mobile") return undefined
+
+    const targetSlotId = resolveMobileTargetSlot(formatId)
+    if (!targetSlotId) return undefined
+
+    let raf = 0
+    let timer = 0
+    let attempts = 0
+
+    const scrollToTarget = () => {
+      const scroller = mobileViewportRef.current
+      if (!scroller) {
+        attempts += 1
+        if (attempts >= 20) return
+
+        timer = window.setTimeout(() => {
+          raf = requestAnimationFrame(scrollToTarget)
+        }, 75)
+        return
+      }
+
+      const target = scroller.querySelector(`[data-slotid="${targetSlotId}"]`)
+      const scrollTarget = target?.firstElementChild || target
+      if (scrollTarget) {
+        scrollTarget.scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" })
+        return
+      }
+
+      attempts += 1
+      if (attempts >= 20) return
+
+      timer = window.setTimeout(() => {
+        raf = requestAnimationFrame(scrollToTarget)
+      }, 75)
+    }
+
+    raf = requestAnimationFrame(scrollToTarget)
+
+    return () => {
+      if (raf) cancelAnimationFrame(raf)
+      if (timer) window.clearTimeout(timer)
+    }
+  }, [formatId, vp])
+
+  useEffect(() => {
+    const el = tabsRef.current
+    if (!el) return undefined
+
+    const raf = requestAnimationFrame(() => {
+      el.scrollLeft = readSavedTabsScroll()
+    })
+
+    const onScroll = () => {
+      saveTabsScroll(el.scrollLeft)
+    }
+
+    el.addEventListener("scroll", onScroll, { passive: true })
+
+    return () => {
+      cancelAnimationFrame(raf)
+      el.removeEventListener("scroll", onScroll)
+    }
+  }, [tabs.length])
+
   const setViewport = (next) => {
     const nextSearch = new URLSearchParams(location.search)
     nextSearch.set("vp", next)
@@ -92,6 +227,10 @@ export default function PreviewFrame({
   }
 
   const goToTab = (key) => {
+    if (vp === "mobile" && key === "skin") return
+
+    if (tabsRef.current) saveTabsScroll(tabsRef.current.scrollLeft)
+
     const nextSearch = new URLSearchParams(location.search)
     nextSearch.set("vp", vp)
     navigate(`/${region}/${segment}/preview/${key}?${nextSearch.toString()}`)
@@ -101,72 +240,127 @@ export default function PreviewFrame({
     navigate(`/${region}?segment=${segment}`)
   }
 
+  const handleTabsWheel = (event) => {
+    const el = tabsRef.current
+    if (!el) return
+    if (el.scrollWidth <= el.clientWidth) return
+
+    event.preventDefault()
+    event.stopPropagation()
+
+    const dominantDelta =
+      Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX
+
+    if (!dominantDelta) return
+
+    const maxScroll = Math.max(0, el.scrollWidth - el.clientWidth)
+    const next = Math.max(0, Math.min(maxScroll, el.scrollLeft + dominantDelta))
+    if (next === el.scrollLeft) return
+
+    el.scrollLeft = next
+    saveTabsScroll(next)
+  }
+
   return (
-    <PreviewViewportProvider vp={vp}>
-      <div className="min-h-screen bg-neutral-100 overflow-x-hidden">
-        <div className="fixed top-0 left-0 right-0 z-50 h-[72px] bg-white/80 backdrop-blur border-b border-neutral-200 flex items-center">
+    <PreviewViewportProvider
+      vp={vp}
+      width={viewportWidth}
+      height={viewportHeight}
+      scrollElement={vp === "mobile" ? mobileViewportRef.current : null}
+      isContainerViewport={vp === "mobile"}
+    >
+      <div ref={rootViewportRef} className="min-h-screen bg-neutral-100 overflow-x-hidden">
+        <div
+          ref={headerRef}
+          className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur border-b border-neutral-200 flex items-center"
+          style={{
+            minHeight: "calc(72px + env(safe-area-inset-top))",
+            paddingTop: "env(safe-area-inset-top)",
+          }}
+        >
           <div
-            className="mx-auto w-full px-6 flex items-center justify-between gap-4"
+            className="mx-auto w-full px-4 md:px-6 flex flex-wrap items-center gap-3 md:gap-4"
             style={{ maxWidth: controlsMaxWidth }}
           >
-            <div className="flex items-center gap-3 min-w-0">
-              <button
-                type="button"
-                onClick={goHome}
-                className="px-4 py-1.5 bg-neutral-900 text-white rounded text-sm font-medium hover:bg-neutral-700"
-              >
-                {"<"} Home
-              </button>
-              <div className="hidden md:flex items-center gap-2 overflow-x-auto whitespace-nowrap">
-                {tabs.map((tab) => (
+            <button
+              type="button"
+              onClick={goHome}
+              className="order-1 px-4 py-1.5 bg-neutral-900 text-white rounded text-sm font-medium hover:bg-neutral-700"
+            >
+              {"<"} Home
+            </button>
+
+            <div
+              ref={tabsRef}
+              onWheel={handleTabsWheel}
+              className="preview-tabs-scroll order-3 md:order-none w-full md:w-auto md:flex-1 min-w-0 flex items-center gap-2 overflow-x-auto whitespace-nowrap"
+            >
+              {tabs.map((tab) => {
+                const isSkinDisabled = vp === "mobile" && tab.key === "skin"
+
+                return (
                   <button
                     key={tab.key}
                     type="button"
-                    onClick={() => goToTab(tab.key)}
+                    disabled={isSkinDisabled}
+                    onClick={() => {
+                      if (isSkinDisabled) return
+                      goToTab(tab.key)
+                    }}
                     className={[
-                      "px-3 py-1.5 rounded text-sm font-medium border",
-                      active === tab.key
-                        ? "bg-neutral-900 text-white border-neutral-900"
-                        : "bg-white text-neutral-800 border-neutral-200 hover:bg-neutral-50",
+                      "px-3 py-1.5 rounded text-sm font-medium border shrink-0 transition-colors",
+                      isSkinDisabled
+                        ? "bg-neutral-100 text-neutral-400 border-neutral-200 cursor-not-allowed"
+                        : active === tab.key
+                          ? "bg-neutral-900 text-white border-neutral-900"
+                          : "bg-white text-neutral-800 border-neutral-200 hover:bg-neutral-50",
                     ].join(" ")}
+                    aria-disabled={isSkinDisabled}
                   >
                     {tab.label}
                   </button>
-                ))}
-              </div>
+                )
+              })}
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="order-2 md:order-none ml-auto md:ml-0 inline-flex items-center gap-1 rounded-lg border border-neutral-200 bg-white p-1">
               <button
                 type="button"
                 onClick={() => setViewport("desktop")}
                 className={[
-                  "px-3 py-1.5 rounded text-sm font-medium border",
+                  "h-9 w-9 inline-flex items-center justify-center rounded border text-neutral-700",
                   vp === "desktop"
                     ? "bg-neutral-900 text-white border-neutral-900"
-                    : "bg-white text-neutral-800 border-neutral-200 hover:bg-neutral-50",
+                    : "bg-white border-neutral-200 hover:bg-neutral-50",
                 ].join(" ")}
+                aria-label="Desktop preview"
+                title="Desktop preview"
               >
-                Desktop
+                <DesktopIcon />
               </button>
 
               <button
                 type="button"
                 onClick={() => setViewport("mobile")}
                 className={[
-                  "px-3 py-1.5 rounded text-sm font-medium border",
+                  "h-9 w-9 inline-flex items-center justify-center rounded border text-neutral-700",
                   vp === "mobile"
                     ? "bg-neutral-900 text-white border-neutral-900"
-                    : "bg-white text-neutral-800 border-neutral-200 hover:bg-neutral-50",
+                    : "bg-white border-neutral-200 hover:bg-neutral-50",
                 ].join(" ")}
+                aria-label="Mobile preview"
+                title="Mobile preview"
               >
-                Mobile
+                <MobileIcon />
               </button>
             </div>
           </div>
         </div>
 
-        <main className="relative pt-[72px] z-10">
+        <main
+          className="relative z-10"
+          style={{ paddingTop: measuredHeaderHeight }}
+        >
           {vp === "desktop" ? (
             <div className="mx-auto" style={{ maxWidth }}>
               {children}
@@ -181,7 +375,7 @@ export default function PreviewFrame({
 
                 <div
                   className="bg-white rounded-[26px] overflow-hidden relative w-full max-w-full"
-                  style={{ height: deviceH }}
+                  style={{ height: mobileFrameHeight }}
                 >
                   <div
                     id="preview-overlay-root"
@@ -196,6 +390,7 @@ export default function PreviewFrame({
 
                   <div
                     tabIndex={0}
+                    ref={mobileViewportRef}
                     className="preview-scroll h-full min-h-0 overflow-y-auto overflow-x-hidden relative overscroll-contain touch-pan-y focus:outline-none"
                     style={{ WebkitOverflowScrolling: "touch" }}
                   >

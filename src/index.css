@@ -13,3 +13,12 @@
   width: 0;
   height: 0;
 }
+.preview-tabs-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.preview-tabs-scroll::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
