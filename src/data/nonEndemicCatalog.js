@@ -1,24 +1,92 @@
-import displayBannerone from "../assets/banner.png"
-import displayBanner from "../assets/displaybanner.png"
-import adtype3 from "../assets/adtype3.png"
-import skin from "../assets/skin.png"
-import skinLeft from "../assets/skinl.png"
-import skinRight from "../assets/skinr.png"
-import exampleImg from "../assets/exampleImg.png"
-import adImg from "../assets/adImg.jpg"
-import interscrollerImg from "../assets/Interscroller.jpg"
-import slider from "../assets/slider.png"
+const asset = (relativePath) => new URL(relativePath, import.meta.url).href
+
+const nonEndemicImageRoutes = {
+  displayBanners: {
+    cardImage: asset("../assets/displayb2.png"),
+    hoverImage: asset("../assets/displayb.png"),
+    showcaseAImage: asset("../assets/displayb.png"),
+    showcaseBImage: asset("../assets/displayb2.png"),
+  },
+  skin: {
+    cardImage: asset("../assets/skincards.png"),
+    hoverImage: asset("../assets/skincardp.png"),
+    leftImage: asset("../assets/skinl.png"),
+    rightImage: asset("../assets/skinr.png"),
+    showcaseAImage: asset("../assets/skinl.png"),
+    showcaseBImage: asset("../assets/skinr.png"),
+  },
+  interstitial: {
+    cardImage: asset("../assets/ittcard.png"),
+    hoverImage: asset("../assets/ittcard.png"),
+    showcaseAImage: asset("../assets/adImg.jpg"),
+    showcaseBImage: asset("../assets/Interscroller.jpg"),
+  },
+  interscroller: {
+    cardImage: asset("../assets/interscrollerS.png"),
+    hoverImage: asset("../assets/interscrollerP.gif"),
+    showcaseAImage: asset("../assets/Interscroller.jpg"),
+    showcaseBImage: asset("../assets/adImg.jpg"),
+  },
+  videoBanners: {
+    cardImage: asset("../assets/displayb.png"),
+    hoverImage: asset("../assets/skincard.png"),
+    showcaseAImage: asset("../assets/displayb.png"),
+    showcaseBImage: asset("../assets/skincard.png"),
+  },
+  preRollVideo: {
+    cardImage: asset("../assets/skincard.png"),
+    hoverImage: asset("../assets/Interscroller.jpg"),
+    showcaseAImage: asset("../assets/skincard.png"),
+    showcaseBImage: asset("../assets/Interscroller.jpg"),
+  },
+  livescore: {
+    cardImage: asset("../assets/slider.png"),
+    hoverImage: asset("../assets/displayb.png"),
+    showcaseAImage: asset("../assets/slider.png"),
+    showcaseBImage: asset("../assets/displayb.png"),
+  },
+  countdownWidget: {
+    cardImage: asset("../assets/displayb.png"),
+    hoverImage: asset("../assets/slider.png"),
+    showcaseAImage: asset("../assets/displayb.png"),
+    showcaseBImage: asset("../assets/slider.png"),
+  },
+  cube: {
+    cardImage: asset("../assets/Interscroller.jpg"),
+    hoverImage: asset("../assets/skincard.png"),
+    showcaseAImage: asset("../assets/Interscroller.jpg"),
+    showcaseBImage: asset("../assets/skincard.png"),
+  },
+  native: {
+    cardImage: asset("../assets/exampleImg.png"),
+    hoverImage: asset("../assets/slider.png"),
+    showcaseAImage: asset("../assets/exampleImg.png"),
+    showcaseBImage: asset("../assets/slider.png"),
+  },
+  leadgen: {
+    cardImage: asset("../assets/skincard.png"),
+    hoverImage: asset("../assets/exampleImg.png"),
+    showcaseAImage: asset("../assets/skincard.png"),
+    showcaseBImage: asset("../assets/exampleImg.png"),
+  },
+  contentWidget: {
+    cardImage: asset("../assets/adImg.jpg"),
+    hoverImage: asset("../assets/displayb.png"),
+    showcaseAImage: asset("../assets/adImg.jpg"),
+    showcaseBImage: asset("../assets/displayb.png"),
+  },
+}
 
 export const nonEndemicCatalog = [
   {
     formatId: "display-banners",
     title: "Display Banners",
     previewKind: "display",
-    cardImage: displayBannerone,
-    hoverImage: displayBanner,
+    cardImage: nonEndemicImageRoutes.displayBanners.cardImage,
+    hoverImage: nonEndemicImageRoutes.displayBanners.hoverImage,
     showcaseSlides: [
-      { id: "a", title: "Display A", image: displayBanner },
-      { id: "b", title: "Display B", image: displayBannerone },
+      { id: "a", title: "Display A", image: nonEndemicImageRoutes.displayBanners.showcaseAImage },
+      { id: "b", title: "Display B", image: nonEndemicImageRoutes.displayBanners.showcaseBImage },
     ],
     specs: {
       sizes: ["Desktop: 970x250, 300x250, 300x600", "Mobile: 320x50, 300x250"],
@@ -36,13 +104,13 @@ export const nonEndemicCatalog = [
     formatId: "skin",
     title: "Skin",
     previewKind: "skin",
-    cardImage: skin,
-    hoverImage: skin,
-    leftImg: skinLeft,
-    rightImg: skinRight,
+    cardImage: nonEndemicImageRoutes.skin.cardImage,
+    hoverImage: nonEndemicImageRoutes.skin.hoverImage,
+    leftImg: nonEndemicImageRoutes.skin.leftImage,
+    rightImg: nonEndemicImageRoutes.skin.rightImage,
     showcaseSlides: [
-      { id: "a", title: "Skin Left/Right A", image: skinLeft },
-      { id: "b", title: "Skin Left/Right B", image: skinRight },
+      { id: "a", title: "Skin Left/Right A", image: nonEndemicImageRoutes.skin.showcaseAImage },
+      { id: "b", title: "Skin Left/Right B", image: nonEndemicImageRoutes.skin.showcaseBImage },
     ],
     specs: {
       sizes: ["Desktop rails: 160x900", "Companion: 1070x27 / 300x250", "Mobile: fallback display units"],
@@ -60,11 +128,11 @@ export const nonEndemicCatalog = [
     formatId: "interstitial",
     title: "Interstitial",
     previewKind: "interstitial",
-    cardImage: slider,
-    hoverImage: adImg,
+    cardImage: nonEndemicImageRoutes.interstitial.cardImage,
+    hoverImage: nonEndemicImageRoutes.interstitial.hoverImage,
     showcaseSlides: [
-      { id: "a", title: "Interstitial A", image: adImg },
-      { id: "b", title: "Interstitial B", image: interscrollerImg },
+      { id: "a", title: "Interstitial A", image: nonEndemicImageRoutes.interstitial.showcaseAImage },
+      { id: "b", title: "Interstitial B", image: nonEndemicImageRoutes.interstitial.showcaseBImage },
     ],
     specs: {
       sizes: ["Mobile: 320x480", "Desktop: 300x600 / 320x480", "Trigger: first interaction"],
@@ -82,11 +150,11 @@ export const nonEndemicCatalog = [
     formatId: "interscroller",
     title: "Interscroller",
     previewKind: "interscroller",
-    cardImage: interscrollerImg,
-    hoverImage: adImg,
+    cardImage: nonEndemicImageRoutes.interscroller.cardImage,
+    hoverImage: nonEndemicImageRoutes.interscroller.hoverImage,
     showcaseSlides: [
-      { id: "a", title: "Interscroller A", image: interscrollerImg },
-      { id: "b", title: "Interscroller B", image: adImg },
+      { id: "a", title: "Interscroller A", image: nonEndemicImageRoutes.interscroller.showcaseAImage },
+      { id: "b", title: "Interscroller B", image: nonEndemicImageRoutes.interscroller.showcaseBImage },
     ],
     specs: {
       sizes: ["Desktop: 300x600, 300x250", "Mobile: 300x250, 300x600", "Behavior: scroll reveal"],
@@ -104,11 +172,11 @@ export const nonEndemicCatalog = [
     formatId: "video-banners",
     title: "Video Banners",
     previewKind: "video-banners",
-    cardImage: displayBanner,
-    hoverImage: adtype3,
+    cardImage: nonEndemicImageRoutes.videoBanners.cardImage,
+    hoverImage: nonEndemicImageRoutes.videoBanners.hoverImage,
     showcaseSlides: [
-      { id: "a", title: "Video Banner A", image: displayBanner },
-      { id: "b", title: "Video Banner B", image: adtype3 },
+      { id: "a", title: "Video Banner A", image: nonEndemicImageRoutes.videoBanners.showcaseAImage },
+      { id: "b", title: "Video Banner B", image: nonEndemicImageRoutes.videoBanners.showcaseBImage },
     ],
     specs: {
       sizes: ["Desktop: 300x250, 300x600", "In-article: 970x250", "Mobile: 300x250"],
@@ -126,11 +194,11 @@ export const nonEndemicCatalog = [
     formatId: "pre-roll-video",
     title: "Pre-Roll Video",
     previewKind: "pre-roll",
-    cardImage: adtype3,
-    hoverImage: interscrollerImg,
+    cardImage: nonEndemicImageRoutes.preRollVideo.cardImage,
+    hoverImage: nonEndemicImageRoutes.preRollVideo.hoverImage,
     showcaseSlides: [
-      { id: "a", title: "Pre-Roll A", image: adtype3 },
-      { id: "b", title: "Pre-Roll B", image: interscrollerImg },
+      { id: "a", title: "Pre-Roll A", image: nonEndemicImageRoutes.preRollVideo.showcaseAImage },
+      { id: "b", title: "Pre-Roll B", image: nonEndemicImageRoutes.preRollVideo.showcaseBImage },
     ],
     specs: {
       sizes: ["Video: 16:9 and 1:1", "Duration: 6s, 15s, 30s", "Delivery: autoplay muted"],
@@ -149,11 +217,11 @@ export const nonEndemicCatalog = [
     formatId: "livescore",
     title: "Livescore",
     previewKind: "generic",
-    cardImage: slider,
-    hoverImage: displayBanner,
+    cardImage: nonEndemicImageRoutes.livescore.cardImage,
+    hoverImage: nonEndemicImageRoutes.livescore.hoverImage,
     showcaseSlides: [
-      { id: "a", title: "Livescore A", image: slider },
-      { id: "b", title: "Livescore B", image: displayBanner },
+      { id: "a", title: "Livescore A", image: nonEndemicImageRoutes.livescore.showcaseAImage },
+      { id: "b", title: "Livescore B", image: nonEndemicImageRoutes.livescore.showcaseBImage },
     ],
     specs: {
       sizes: ["Widget: fluid", "Desktop rail + inline", "Mobile inline card"],
@@ -171,11 +239,11 @@ export const nonEndemicCatalog = [
     formatId: "countdown-widget",
     title: "Countdown Widget",
     previewKind: "generic",
-    cardImage: displayBanner,
-    hoverImage: slider,
+    cardImage: nonEndemicImageRoutes.countdownWidget.cardImage,
+    hoverImage: nonEndemicImageRoutes.countdownWidget.hoverImage,
     showcaseSlides: [
-      { id: "a", title: "Countdown A", image: displayBanner },
-      { id: "b", title: "Countdown B", image: slider },
+      { id: "a", title: "Countdown A", image: nonEndemicImageRoutes.countdownWidget.showcaseAImage },
+      { id: "b", title: "Countdown B", image: nonEndemicImageRoutes.countdownWidget.showcaseBImage },
     ],
     specs: {
       sizes: ["Widget: fluid / responsive", "Desktop inline", "Mobile card"],
@@ -193,11 +261,11 @@ export const nonEndemicCatalog = [
     formatId: "cube",
     title: "Cube",
     previewKind: "generic",
-    cardImage: interscrollerImg,
-    hoverImage: adtype3,
+    cardImage: nonEndemicImageRoutes.cube.cardImage,
+    hoverImage: nonEndemicImageRoutes.cube.hoverImage,
     showcaseSlides: [
-      { id: "a", title: "Cube A", image: interscrollerImg },
-      { id: "b", title: "Cube B", image: adtype3 },
+      { id: "a", title: "Cube A", image: nonEndemicImageRoutes.cube.showcaseAImage },
+      { id: "b", title: "Cube B", image: nonEndemicImageRoutes.cube.showcaseBImage },
     ],
     specs: {
       sizes: ["Interactive module", "Desktop sidebar", "Mobile inline"],
@@ -215,11 +283,11 @@ export const nonEndemicCatalog = [
     formatId: "native",
     title: "Native",
     previewKind: "generic",
-    cardImage: exampleImg,
-    hoverImage: slider,
+    cardImage: nonEndemicImageRoutes.native.cardImage,
+    hoverImage: nonEndemicImageRoutes.native.hoverImage,
     showcaseSlides: [
-      { id: "a", title: "Native A", image: exampleImg },
-      { id: "b", title: "Native B", image: slider },
+      { id: "a", title: "Native A", image: nonEndemicImageRoutes.native.showcaseAImage },
+      { id: "b", title: "Native B", image: nonEndemicImageRoutes.native.showcaseBImage },
     ],
     specs: {
       sizes: ["Feed card: responsive", "Desktop inline list", "Mobile feed card"],
@@ -237,11 +305,11 @@ export const nonEndemicCatalog = [
     formatId: "leadgen",
     title: "Leadgen",
     previewKind: "generic",
-    cardImage: adtype3,
-    hoverImage: exampleImg,
+    cardImage: nonEndemicImageRoutes.leadgen.cardImage,
+    hoverImage: nonEndemicImageRoutes.leadgen.hoverImage,
     showcaseSlides: [
-      { id: "a", title: "Leadgen A", image: adtype3 },
-      { id: "b", title: "Leadgen B", image: exampleImg },
+      { id: "a", title: "Leadgen A", image: nonEndemicImageRoutes.leadgen.showcaseAImage },
+      { id: "b", title: "Leadgen B", image: nonEndemicImageRoutes.leadgen.showcaseBImage },
     ],
     specs: {
       sizes: ["Inline form block", "300x250 companion", "Mobile full-width card"],
@@ -259,11 +327,11 @@ export const nonEndemicCatalog = [
     formatId: "content-widget",
     title: "Content Widget",
     previewKind: "generic",
-    cardImage: adImg,
-    hoverImage: displayBanner,
+    cardImage: nonEndemicImageRoutes.contentWidget.cardImage,
+    hoverImage: nonEndemicImageRoutes.contentWidget.hoverImage,
     showcaseSlides: [
-      { id: "a", title: "Content Widget A", image: adImg },
-      { id: "b", title: "Content Widget B", image: displayBanner },
+      { id: "a", title: "Content Widget A", image: nonEndemicImageRoutes.contentWidget.showcaseAImage },
+      { id: "b", title: "Content Widget B", image: nonEndemicImageRoutes.contentWidget.showcaseBImage },
     ],
     specs: {
       sizes: ["Module: responsive", "Desktop inline and sidebar", "Mobile full-width block"],

@@ -1,8 +1,8 @@
 import { useMemo } from "react"
 import { useLocation } from "react-router-dom"
 import { usePreviewViewport } from "./previewViewport.jsx"
-import skinL from "../../assets/skinl.png"
-import skinR from "../../assets/skinr.png"
+import skinL from "../../assets/sideskin.png"
+import skinR from "../../assets/sideskin.png"
 
 export default function SkinRails({
   railWidth = 160,

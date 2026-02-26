@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import PreviewFrame from "../../components/previews/PreviewFrame"
 import BaseNewsMock from "./BaseNewsMock"
 import InterstitialLayer from "../../components/previews/InterstitialLayer"
-import adImg from "../../assets/adImg.jpg"
+import adImg from "../../assets/300x600.jpg"
 
 const INSTRUCTION_VISIBLE_MS = 2000
 const INSTRUCTION_FADE_MS = 800

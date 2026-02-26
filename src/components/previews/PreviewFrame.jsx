@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useMemo, useRef } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { endemicCatalog } from "../../data/endemicCatalog"
 import { nonEndemicCatalog } from "../../data/nonEndemicCatalog"
@@ -81,6 +81,9 @@ export default function PreviewFrame({
     () => new URLSearchParams(location.search),
     [location.search]
   )
+  const queryVp = search.get("vp")
+  const forcedVp = queryVp === "mobile" || queryVp === "desktop" ? queryVp : null
+
   const headerRef = useRef(null)
   const tabsRef = useRef(null)
   const rootViewportRef = useRef(null)
@@ -90,24 +93,30 @@ export default function PreviewFrame({
   const rootViewport = usePreviewViewport(rootViewportRef)
   const mobileViewport = usePreviewViewport(mobileViewportRef)
 
-  const initialVp = search.get("vp") === "mobile" ? "mobile" : "desktop"
-  const [vp, setVp] = useState(initialVp)
-
   const deviceW = 390
   const mobileFrameHeight = "clamp(620px, calc(100dvh - 120px), 900px)"
 
   const fallbackWindowWidth = typeof window !== "undefined" ? window.innerWidth || 0 : 0
   const fallbackWindowHeight = typeof window !== "undefined" ? window.innerHeight || 0 : 0
+  const rootViewportWidth = rootViewport.width || fallbackWindowWidth
+  const rootViewportHeight = rootViewport.height || fallbackWindowHeight
+  const vp = forcedVp ?? (rootViewportWidth < 900 ? "mobile" : "desktop")
 
   const viewportWidth =
     vp === "mobile"
       ? mobileViewport.width || deviceW
-      : rootViewport.width || fallbackWindowWidth
+      : rootViewportWidth
 
   const viewportHeight =
     vp === "mobile"
       ? mobileViewport.height || 844
-      : rootViewport.height || fallbackWindowHeight
+      : rootViewportHeight
+
+  const shouldScaleDesktop =
+    vp === "desktop" && rootViewportWidth > 0 && rootViewportWidth < 900
+  const desktopScale = shouldScaleDesktop
+    ? Math.max(0.55, Math.min(rootViewportWidth / Math.max(1, maxWidth), 1))
+    : 1
 
   const measuredHeaderHeight = headerViewport.height || 72
 
@@ -145,14 +154,22 @@ export default function PreviewFrame({
     if (!fallbackTab) return undefined
 
     const nextSearch = new URLSearchParams(location.search)
-    nextSearch.set("vp", "mobile")
+    if (forcedVp) {
+      nextSearch.set("vp", forcedVp)
+    } else {
+      nextSearch.delete("vp")
+    }
 
-    navigate(`/${region}/${segment}/preview/${fallbackTab.key}?${nextSearch.toString()}`, {
-      replace: true,
-    })
+    const queryString = nextSearch.toString()
+    navigate(
+      `/${region}/${segment}/preview/${fallbackTab.key}${queryString ? `?${queryString}` : ""}`,
+      {
+        replace: true,
+      }
+    )
 
     return undefined
-  }, [formatId, location.search, navigate, region, segment, tabs, vp])
+  }, [forcedVp, formatId, location.search, navigate, region, segment, tabs, vp])
 
   useEffect(() => {
     if (vp !== "mobile") return undefined
@@ -219,11 +236,33 @@ export default function PreviewFrame({
     }
   }, [tabs.length])
 
+  useEffect(() => {
+    const el = tabsRef.current
+    if (!el) return undefined
+
+    const handler = (event) => {
+      if (el.scrollWidth <= el.clientWidth) return
+
+      event.preventDefault()
+      event.stopPropagation()
+      event.stopImmediatePropagation?.()
+
+      el.scrollLeft += event.deltaY
+      saveTabsScroll(el.scrollLeft)
+    }
+
+    el.addEventListener("wheel", handler, { passive: false })
+
+    return () => {
+      el.removeEventListener("wheel", handler)
+    }
+  }, [tabs.length])
+
   const setViewport = (next) => {
     const nextSearch = new URLSearchParams(location.search)
     nextSearch.set("vp", next)
-    setVp(next)
-    navigate(`${location.pathname}?${nextSearch.toString()}`, { replace: true })
+    const queryString = nextSearch.toString()
+    navigate(`${location.pathname}${queryString ? `?${queryString}` : ""}`, { replace: true })
   }
 
   const goToTab = (key) => {
@@ -232,33 +271,17 @@ export default function PreviewFrame({
     if (tabsRef.current) saveTabsScroll(tabsRef.current.scrollLeft)
 
     const nextSearch = new URLSearchParams(location.search)
-    nextSearch.set("vp", vp)
-    navigate(`/${region}/${segment}/preview/${key}?${nextSearch.toString()}`)
+    if (forcedVp) {
+      nextSearch.set("vp", forcedVp)
+    } else {
+      nextSearch.delete("vp")
+    }
+    const queryString = nextSearch.toString()
+    navigate(`/${region}/${segment}/preview/${key}${queryString ? `?${queryString}` : ""}`)
   }
 
   const goHome = () => {
     navigate(`/${region}?segment=${segment}`)
-  }
-
-  const handleTabsWheel = (event) => {
-    const el = tabsRef.current
-    if (!el) return
-    if (el.scrollWidth <= el.clientWidth) return
-
-    event.preventDefault()
-    event.stopPropagation()
-
-    const dominantDelta =
-      Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX
-
-    if (!dominantDelta) return
-
-    const maxScroll = Math.max(0, el.scrollWidth - el.clientWidth)
-    const next = Math.max(0, Math.min(maxScroll, el.scrollLeft + dominantDelta))
-    if (next === el.scrollLeft) return
-
-    el.scrollLeft = next
-    saveTabsScroll(next)
   }
 
   return (
@@ -272,28 +295,27 @@ export default function PreviewFrame({
       <div ref={rootViewportRef} className="min-h-screen bg-neutral-100 overflow-x-hidden">
         <div
           ref={headerRef}
-          className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur border-b border-neutral-200 flex items-center"
+          className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur border-b border-neutral-200"
           style={{
-            minHeight: "calc(72px + env(safe-area-inset-top))",
+            minHeight: "calc(80px + env(safe-area-inset-top))",
             paddingTop: "env(safe-area-inset-top)",
           }}
         >
           <div
-            className="mx-auto w-full px-4 md:px-6 flex flex-wrap items-center gap-3 md:gap-4"
+            className="mx-auto grid w-full grid-cols-[minmax(0,1fr)_auto] md:grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 md:gap-y-0 px-4 py-2.5 md:px-6 md:py-3"
             style={{ maxWidth: controlsMaxWidth }}
           >
             <button
               type="button"
               onClick={goHome}
-              className="order-1 px-4 py-1.5 bg-neutral-900 text-white rounded text-sm font-medium hover:bg-neutral-700"
+              className="px-4 py-1.5 bg-neutral-900 text-white rounded text-sm font-medium hover:bg-neutral-700"
             >
               {"<"} Home
             </button>
 
             <div
               ref={tabsRef}
-              onWheel={handleTabsWheel}
-              className="preview-tabs-scroll order-3 md:order-none w-full md:w-auto md:flex-1 min-w-0 flex items-center gap-2 overflow-x-auto whitespace-nowrap"
+              className="preview-tabs-scroll col-span-2 row-start-2 md:col-span-1 md:row-start-1 md:col-start-2 min-w-0 flex items-center gap-2 overflow-x-auto whitespace-nowrap"
             >
               {tabs.map((tab) => {
                 const isSkinDisabled = vp === "mobile" && tab.key === "skin"
@@ -323,7 +345,7 @@ export default function PreviewFrame({
               })}
             </div>
 
-            <div className="order-2 md:order-none ml-auto md:ml-0 inline-flex items-center gap-1 rounded-lg border border-neutral-200 bg-white p-1">
+            <div className="row-start-1 justify-self-end md:col-start-3 inline-flex items-center gap-1 rounded-lg border border-neutral-200 bg-white p-1">
               <button
                 type="button"
                 onClick={() => setViewport("desktop")}
@@ -362,9 +384,25 @@ export default function PreviewFrame({
           style={{ paddingTop: measuredHeaderHeight }}
         >
           {vp === "desktop" ? (
-            <div className="mx-auto" style={{ maxWidth }}>
-              {children}
-            </div>
+            shouldScaleDesktop ? (
+              <div className="mx-auto px-2 py-4 flex justify-center overflow-x-hidden">
+                <div
+                  className="shrink-0"
+                  style={{
+                    width: maxWidth,
+                    maxWidth,
+                    transform: `scale(${desktopScale})`,
+                    transformOrigin: "top center",
+                  }}
+                >
+                  {children}
+                </div>
+              </div>
+            ) : (
+              <div className="mx-auto" style={{ maxWidth }}>
+                {children}
+              </div>
+            )
           ) : (
             <div className="mx-auto px-4 py-6 flex justify-center overflow-x-hidden">
               <div

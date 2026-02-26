@@ -1,5 +1,5 @@
 import slider from "../assets/slider.png"
-import displayBanner from "../assets/displaybanner.png"
+import displayBannerS from "../assets/displaybanner.png"
 import adtype3 from "../assets/adtype3.png"
 import exampleImg from "../assets/exampleImg.png"
 import adImg from "../assets/adImg.jpg"
@@ -11,10 +11,10 @@ export const endemicCatalog = [
     title: "Bet Boost",
     previewKind: "generic",
     cardImage: slider,
-    hoverImage: displayBanner,
+    hoverImage: displayBannerS,
     showcaseSlides: [
       { id: "a", title: "Bet Boost A", image: slider },
-      { id: "b", title: "Bet Boost B", image: displayBanner },
+      { id: "b", title: "Bet Boost B", image: displayBannerS },
     ],
     specs: {
       sizes: ["Widget: responsive", "Inline card", "Mobile sticky card"],
@@ -32,10 +32,10 @@ export const endemicCatalog = [
     formatId: "endemic-pro-acca",
     title: "Pro Acca",
     previewKind: "generic",
-    cardImage: displayBanner,
+    cardImage: displayBannerS,
     hoverImage: adtype3,
     showcaseSlides: [
-      { id: "a", title: "Pro Acca A", image: displayBanner },
+      { id: "a", title: "Pro Acca A", image: displayBannerS },
       { id: "b", title: "Pro Acca B", image: adtype3 },
     ],
     specs: {
@@ -99,10 +99,10 @@ export const endemicCatalog = [
     title: "Game Center",
     previewKind: "generic",
     cardImage: adImg,
-    hoverImage: displayBanner,
+    hoverImage: displayBannerS,
     showcaseSlides: [
       { id: "a", title: "Game Center A", image: adImg },
-      { id: "b", title: "Game Center B", image: displayBanner },
+      { id: "b", title: "Game Center B", image: displayBannerS },
     ],
     specs: {
       sizes: ["Full-width module", "Desktop split view", "Mobile tabbed view"],
