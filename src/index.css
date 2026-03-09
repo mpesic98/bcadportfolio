@@ -22,3 +22,8 @@
   height: 0;
   display: none;
 }
+
+.home-dark {
+  background-color: #0b0d10;
+  background-image: linear-gradient(180deg, #0f141b 0%, #0b0d10 22%, #0b0d10 100%);
+}

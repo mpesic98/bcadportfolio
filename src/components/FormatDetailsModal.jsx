@@ -96,7 +96,7 @@ export default function FormatDetailsModal({
           <div
             aria-hidden="true"
             onClick={onClose}
-            className="absolute inset-0 bg-black/55"
+            className="absolute inset-0 bg-black/70"
           />
 
           <Motion.section
@@ -104,7 +104,7 @@ export default function FormatDetailsModal({
             role="dialog"
             aria-modal="true"
             aria-labelledby={titleId}
-            className="relative w-full max-w-[1160px] overflow-hidden rounded-2xl bg-white shadow-2xl"
+            className="relative w-full max-w-[1160px] overflow-hidden rounded-2xl border border-white/10 bg-[#11161D]/95 text-white shadow-2xl shadow-black/50"
             initial={{ y: 14, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 10, opacity: 0 }}
@@ -114,13 +114,13 @@ export default function FormatDetailsModal({
               type="button"
               onClick={onClose}
               aria-label="Close"
-              className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-sm font-semibold text-neutral-700 hover:bg-neutral-100"
+              className="absolute right-3 top-3 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-black/50 text-sm font-semibold text-white/70 hover:bg-white/10"
             >
               X
             </button>
 
             <div className="grid min-h-[620px] md:grid-cols-[3fr_2fr]">
-              <div className="relative min-h-[340px] border-b border-neutral-200 md:min-h-[620px] md:border-b-0 md:border-r">
+              <div className="relative min-h-[340px] border-b border-white/10 md:min-h-[620px] md:border-b-0 md:border-r md:border-white/10">
                 <FormatShowcaseCarousel
                   title={formatData.title}
                   slides={formatData.showcaseSlides}
@@ -128,19 +128,19 @@ export default function FormatDetailsModal({
               </div>
 
               <div className="flex flex-col p-6 md:p-8">
-                <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">
+                <p className="text-xs font-semibold uppercase tracking-wide text-green-300">
                   {regionLabel} - {segmentLabel}
                 </p>
-                <h2 id={titleId} className="mt-2 text-2xl font-semibold text-neutral-900">
+                <h2 id={titleId} className="mt-2 text-2xl font-semibold text-white">
                   {formatData.title}
                 </h2>
-                <p className="mt-3 text-sm leading-relaxed text-neutral-600">
+                <p className="mt-3 text-sm leading-relaxed text-white/70">
                   {formatData.descriptionByRegion?.[region] || formatData.specs?.description}
                 </p>
 
                 <div className="mt-6">
-                  <h3 className="text-sm font-semibold text-neutral-900">Sizes</h3>
-                  <ul className="mt-2 space-y-1 text-sm text-neutral-700">
+                  <h3 className="text-sm font-semibold text-white">Sizes</h3>
+                  <ul className="mt-2 space-y-1 text-sm text-white/70">
                     {(formatData.specs?.sizes || []).map((size) => (
                       <li key={size}>- {size}</li>
                     ))}
@@ -148,8 +148,8 @@ export default function FormatDetailsModal({
                 </div>
 
                 <div className="mt-6">
-                  <h3 className="text-sm font-semibold text-neutral-900">Recommended KPIs</h3>
-                  <ul className="mt-2 space-y-1 text-sm text-neutral-700">
+                  <h3 className="text-sm font-semibold text-white">Recommended KPIs</h3>
+                  <ul className="mt-2 space-y-1 text-sm text-white/70">
                     {(formatData.specs?.kpis || []).map((kpi) => (
                       <li key={kpi}>- {kpi}</li>
                     ))}
@@ -160,7 +160,7 @@ export default function FormatDetailsModal({
                   <button
                     type="button"
                     onClick={onOpenFullPreview}
-                    className="w-full rounded-lg bg-neutral-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-neutral-700"
+                    className="w-full rounded-lg bg-green-500 px-5 py-3 text-sm font-medium text-black transition-colors hover:bg-green-400"
                   >
                     Open Full Preview
                   </button>

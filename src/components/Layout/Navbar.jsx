@@ -1,11 +1,10 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
-import closeImg from "../../assets/close.png"
-import menuImg from "../../assets/menu.png"
 import logo from "../../assets/BClogo.png"
 import { endemicCatalog } from "../../data/endemicCatalog"
 import { nonEndemicCatalog } from "../../data/nonEndemicCatalog"
 import {
+  buildLandingPath,
   normalizeSegment,
   resolveRegionFromPath,
 } from "../../data/regionConfig"
@@ -25,15 +24,19 @@ function Navbar() {
     return normalizeSegment(search.get("segment"))
   }, [location.search])
 
+  useEffect(() => {
+    setIsOpen(false)
+  }, [location.pathname, location.search])
+
   const getLinkClass = ({ isActive }) =>
-    `cursor-pointer transition-all duration-200 pb-1 ${
+    `cursor-pointer border-b-2 border-transparent pb-1 text-sm font-medium tracking-wide transition-colors duration-200 ${
       isActive
-        ? "text-green-500 border-b-2 border-green-500"
-        : "hover:text-green-500 text-black"
+        ? "border-green-500 text-white"
+        : "text-white/70 hover:text-white"
     }`
 
   const buildRegionLink = (nextRegion) => ({
-    pathname: `/${nextRegion}`,
+    pathname: buildLandingPath(nextRegion),
     search: `?segment=${segment}`,
   })
 
@@ -46,76 +49,93 @@ function Navbar() {
   }
 
   return (
-    <nav className="flex justify-between items-center p-6 border-b border-gray-300 text-xl shadow-lg relative bg-white z-50">
-      <img src={logo} alt="logo-img" className="w-20 h-20 rounded-md shadow-lg" />
+    <nav className="sticky top-0 z-50 h-[72px] border-b border-white/10 bg-black/30 backdrop-blur-xl">
+      <div className="mx-auto grid h-full max-w-[1120px] grid-cols-[1fr_auto_1fr] items-center px-4 md:px-6">
+        <NavLink to={buildRegionLink(region)} className="inline-flex w-fit items-center">
+          <img src={logo} alt="Better Collective Ads" className="h-10 w-auto rounded-md" />
+        </NavLink>
 
-      <ul className="hidden md:flex gap-16">
-        <li>
-          <NavLink to={buildRegionLink("usa")} className={getLinkClass} end>
-            USA
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to={buildRegionLink("latam")} className={getLinkClass}>
-            LATAM
-          </NavLink>
-        </li>
-        <li>
-          <NavLink to={buildRegionLink("europe")} className={getLinkClass}>
-            EUROPE
-          </NavLink>
-        </li>
-      </ul>
+        <ul className="hidden items-center gap-10 md:flex">
+          <li>
+            <NavLink to={buildRegionLink("usa")} className={getLinkClass} end>
+              USA
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to={buildRegionLink("latam")} className={getLinkClass}>
+              LATAM
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to={buildRegionLink("europe")} className={getLinkClass}>
+              EUROPE
+            </NavLink>
+          </li>
+        </ul>
 
-      <button
-        type="button"
-        onClick={openPreview}
-        className="hidden md:inline-flex relative items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-teal-300 to-lime-300 group-hover:from-teal-300 group-hover:to-lime-300 focus:ring-4 focus:outline-none focus:ring-lime-200"
-      >
-        <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white text-black rounded-md group-hover:bg-transparent">
-          Ads Preview
-        </span>
-      </button>
+        <div className="hidden justify-end md:flex">
+          <button
+            type="button"
+            onClick={openPreview}
+            className="rounded-full border border-green-400/40 px-5 py-2.5 text-sm font-medium text-green-200 transition-colors hover:bg-green-500/10"
+          >
+            Ads Preview
+          </button>
+        </div>
 
-      <button
-        type="button"
-        className="block md:hidden"
-        onClick={() => setIsOpen((prev) => !prev)}
-      >
-        <img
-          src={isOpen ? closeImg : menuImg}
-          alt="menu toggle"
-          className="w-6 h-6"
-        />
-      </button>
+        <button
+          type="button"
+          onClick={() => setIsOpen((prev) => !prev)}
+          className="col-start-3 justify-self-end rounded-full border border-white/20 p-2 md:hidden"
+          aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
+        >
+          <span className="relative block h-4 w-5">
+            <span
+              className={`absolute left-0 top-0 h-0.5 w-5 bg-white transition-all ${
+                isOpen ? "top-[7px] rotate-45" : ""
+              }`}
+            />
+            <span
+              className={`absolute left-0 top-[7px] h-0.5 w-5 bg-white transition-opacity ${
+                isOpen ? "opacity-0" : "opacity-100"
+              }`}
+            />
+            <span
+              className={`absolute left-0 top-[14px] h-0.5 w-5 bg-white transition-all ${
+                isOpen ? "top-[7px] -rotate-45" : ""
+              }`}
+            />
+          </span>
+        </button>
+      </div>
 
       {isOpen && (
-        <div className="absolute top-[100%] left-0 w-full bg-white shadow-md md:hidden z-40">
-          <ul className="flex flex-col items-center gap-4 py-6">
-            <li onClick={() => setIsOpen(false)}>
+        <div className="border-t border-white/10 bg-[#0D1118]/95 px-4 py-4 md:hidden">
+          <ul className="flex flex-col gap-2">
+            <li>
               <NavLink to={buildRegionLink("usa")} className={getLinkClass} end>
                 USA
               </NavLink>
             </li>
-            <li onClick={() => setIsOpen(false)}>
+            <li>
               <NavLink to={buildRegionLink("latam")} className={getLinkClass}>
                 LATAM
               </NavLink>
             </li>
-            <li onClick={() => setIsOpen(false)}>
+            <li>
               <NavLink to={buildRegionLink("europe")} className={getLinkClass}>
                 EUROPE
               </NavLink>
             </li>
-
-            <button
-              type="button"
-              onClick={openPreview}
-              className="border border-gray-400 px-4 py-2 rounded hover:bg-gray-100"
-            >
-              Ads Preview
-            </button>
           </ul>
+
+          <button
+            type="button"
+            onClick={openPreview}
+            className="mt-4 w-full rounded-full border border-green-400/40 px-4 py-2.5 text-sm font-medium text-green-200 transition-colors hover:bg-green-500/10"
+          >
+            Ads Preview
+          </button>
         </div>
       )}
     </nav>
