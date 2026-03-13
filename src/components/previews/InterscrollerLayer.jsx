@@ -3,6 +3,8 @@ import { createPortal } from "react-dom"
 import creativeA from "../../assets/Interscrollercocacola.jpg"
 import creativeB from "../../assets/Interscrollercocacola.jpg"
 import creativeC from "../../assets/Interscrollercocacola.jpg"
+import { resolveCreativeAsset } from "../../features/proposals/creativeResolver"
+import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
 import { usePreviewViewport } from "./previewViewport.jsx"
 
 const MOBILE_HEIGHT_RATIO = 0.8
@@ -13,6 +15,7 @@ export default function InterscrollerLayer({
   size = "300x600",
   autoScrollIntoView = false,
 }) {
+  const { campaign } = usePreviewCampaign()
   const {
     vp,
     width: viewportWidth,
@@ -34,10 +37,12 @@ export default function InterscrollerLayer({
       : null
 
   const img = useMemo(() => {
+    const dynamicCreative = resolveCreativeAsset(campaign, "interscroller")
+    if (dynamicCreative) return dynamicCreative
     if (slotId === "inline_300x600") return creativeC
     if (slotId === "inline_300x250_1") return creativeA
     return creativeB
-  }, [slotId])
+  }, [campaign, slotId])
 
   useEffect(() => {
     if (!autoScrollIntoView) return undefined

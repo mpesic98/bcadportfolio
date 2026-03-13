@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" fill="none">
+  <rect width="600" height="360" rx="28" fill="#05152A"/>
+  <rect x="18" y="18" width="564" height="324" rx="24" fill="#FFFFFF"/>
+  <rect x="34" y="34" width="184" height="292" rx="18" fill="url(#g)"/>
+  <text x="250" y="96" fill="#0A1C36" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">CONTENT WIDGET</text>
+  <text x="250" y="142" fill="#0A1C36" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">Pepsi's summer playbook lives here.</text>
+  <text x="250" y="206" fill="#4E657F" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="600">Editorial-style recommendation block with branded momentum.</text>
+  <defs>
+    <linearGradient id="g" x1="34" y1="34" x2="218" y2="326" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#004B93"/>
+      <stop offset="1" stop-color="#E32934"/>
+    </linearGradient>
+  </defs>
+</svg>

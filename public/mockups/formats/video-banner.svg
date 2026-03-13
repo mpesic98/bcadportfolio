@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" fill="none">
+  <rect width="1600" height="1000" rx="48" fill="#F3F6FA"/>
+  <rect x="94" y="96" width="1412" height="808" rx="40" fill="#FFFFFF" stroke="#D8E0EA" stroke-width="16"/>
+  <rect x="138" y="138" width="1324" height="34" rx="17" fill="#0F172A"/>
+  <rect x="176" y="232" width="828" height="466" rx="34" fill="#0F172A"/>
+  <rect x="216" y="272" width="748" height="386" rx="28" fill="#D7FF64"/>
+  <circle cx="590" cy="465" r="84" fill="rgba(15,23,42,0.18)"/>
+  <path d="M548 402l108 63-108 63V402Z" fill="#0F172A"/>
+  <rect x="1050" y="232" width="300" height="250" rx="28" fill="#EEF2F7"/>
+  <text x="214" y="800" fill="#6C7C90" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="600">Video player framing with adjacent banner inventory</text>
+</svg>

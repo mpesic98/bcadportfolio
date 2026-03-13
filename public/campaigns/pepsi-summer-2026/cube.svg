@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" fill="none">
+  <rect width="300" height="300" rx="24" fill="#06162D"/>
+  <rect x="18" y="18" width="264" height="264" rx="20" fill="url(#g)"/>
+  <rect x="76" y="76" width="148" height="148" rx="28" fill="rgba(255,255,255,0.18)"/>
+  <rect x="98" y="98" width="104" height="104" rx="22" fill="#FFFFFF"/>
+  <text x="54" y="258" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">PEPSI CUBE</text>
+  <defs>
+    <linearGradient id="g" x1="18" y1="18" x2="282" y2="282" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#004B93"/>
+      <stop offset="1" stop-color="#E32934"/>
+    </linearGradient>
+  </defs>
+</svg>

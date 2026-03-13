@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" fill="none">
+  <rect width="1600" height="1000" rx="48" fill="#F3F6FA"/>
+  <rect x="112" y="112" width="1376" height="776" rx="42" fill="#0F172A"/>
+  <rect x="158" y="158" width="1284" height="684" rx="34" fill="#FFFFFF"/>
+  <rect x="198" y="198" width="940" height="604" rx="28" fill="#0F172A"/>
+  <rect x="234" y="234" width="868" height="532" rx="24" fill="#D7FF64"/>
+  <circle cx="668" cy="500" r="88" fill="rgba(15,23,42,0.18)"/>
+  <path d="M626 438l108 62-108 62V438Z" fill="#0F172A"/>
+  <rect x="1168" y="198" width="234" height="604" rx="28" fill="#EEF2F7"/>
+  <rect x="230" y="230" width="156" height="40" rx="20" fill="#FFFFFF"/>
+  <text x="266" y="257" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">PRE-ROLL</text>
+  <text x="402" y="936" fill="#6C7C90" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="600">Player-first format identity with countdown and companion content area</text>
+</svg>

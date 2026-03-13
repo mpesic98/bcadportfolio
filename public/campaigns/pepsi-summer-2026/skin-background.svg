@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" fill="none">
+  <rect width="1920" height="1080" fill="#05152A"/>
+  <rect x="80" y="80" width="1760" height="920" rx="70" fill="url(#g)"/>
+  <circle cx="960" cy="540" r="232" fill="rgba(255,255,255,0.08)"/>
+  <circle cx="960" cy="540" r="168" fill="#fff"/>
+  <path d="M808 565c68-50 161-65 276-44 55 10 104 30 149 60-38 63-104 107-183 126-90 22-182 8-242-36V565Z" fill="#E32934"/>
+  <path d="M808 495c63 44 161 57 276 38 55-10 104-30 149-60-45-64-104-108-183-127-90-22-182-8-242 36v113Z" fill="#004B93"/>
+  <text x="598" y="300" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="96" font-weight="700">PEPSI SUMMER 2026</text>
+  <text x="618" y="386" fill="#D8EAFF" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="600">Better Collective Sports Media Network</text>
+  <defs>
+    <linearGradient id="g" x1="170" y1="112" x2="1760" y2="968" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#004B93"/>
+      <stop offset="0.55" stop-color="#0E63B8"/>
+      <stop offset="1" stop-color="#E32934"/>
+    </linearGradient>
+  </defs>
+</svg>

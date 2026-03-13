@@ -3,15 +3,23 @@ import PreviewFrame from "../../components/previews/PreviewFrame"
 import BaseNewsMock from "./BaseNewsMock"
 import InterstitialLayer from "../../components/previews/InterstitialLayer"
 import adImg from "../../assets/300x600.jpg"
+import {
+  assetLooksLikeVideo,
+  resolveCreativeAsset,
+} from "../../features/proposals/creativeResolver"
+import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
 
 const INSTRUCTION_VISIBLE_MS = 2000
 const INSTRUCTION_FADE_MS = 800
 
 export default function InterstitialPreview() {
+  const { campaign } = usePreviewCampaign()
   const [armed, setArmed] = useState(true)
   const [open, setOpen] = useState(false)
   const [instructionState, setInstructionState] = useState("visible")
   const rootRef = useRef(null)
+  const creativeAsset = resolveCreativeAsset(campaign, "interstitial", adImg)
+  const clickUrl = campaign?.landingPageUrl || "https://example.com"
 
   useEffect(() => {
     const el = rootRef.current
@@ -82,10 +90,21 @@ export default function InterstitialPreview() {
       <InterstitialLayer
         isOpen={open}
         onClose={() => setOpen(false)}
-        clickUrl="https://example.com"
+        clickUrl={clickUrl}
         creative={
           <div className="w-[320px] h-[480px] md:w-[300px] md:h-[600px] overflow-hidden">
-            <img src={adImg} alt="" className="w-full h-full object-cover" />
+            {assetLooksLikeVideo(creativeAsset) ? (
+              <video
+                src={creativeAsset}
+                className="w-full h-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+              />
+            ) : (
+              <img src={creativeAsset} alt="" className="w-full h-full object-cover" />
+            )}
           </div>
         }
       />

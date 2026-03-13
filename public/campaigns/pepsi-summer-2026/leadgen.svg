@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" fill="none">
+  <rect width="600" height="360" rx="28" fill="#05152A"/>
+  <rect x="18" y="18" width="564" height="324" rx="24" fill="url(#g)"/>
+  <text x="42" y="92" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">PEPSI VIP ACCESS</text>
+  <text x="42" y="142" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="38" font-weight="700">Win your summer matchday kit.</text>
+  <rect x="42" y="192" width="242" height="40" rx="20" fill="#FFFFFF"/>
+  <rect x="42" y="246" width="180" height="38" rx="19" fill="#0A1E3A"/>
+  <text x="88" y="270" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="700">SIGN ME UP</text>
+  <defs>
+    <linearGradient id="g" x1="18" y1="18" x2="582" y2="342" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#004B93"/>
+      <stop offset="1" stop-color="#E32934"/>
+    </linearGradient>
+  </defs>
+</svg>

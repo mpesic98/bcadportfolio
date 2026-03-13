@@ -2,6 +2,7 @@ import { createPortal } from "react-dom"
 import { useEffect, useState } from "react"
 import PreviewFrame from "../../components/previews/PreviewFrame"
 import PrerollCreative from "../../components/previews/PrerollCreative"
+import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
 import { usePreviewViewport } from "../../components/previews/previewViewport.jsx"
 import BaseNewsMock from "./BaseNewsMock"
 
@@ -10,12 +11,13 @@ const MOBILE_PREROLL_SLOT = "mobile_preroll"
 const MOBILE_PREROLL_VISIBILITY_THRESHOLD = 0.25
 
 function PreRollContent({ formatData }) {
+  const { campaign } = usePreviewCampaign()
   const { vp, scrollElement } = usePreviewViewport()
   const isMobile = vp === "mobile"
   const [showMobileSticky, setShowMobileSticky] = useState(false)
 
-  const ctaLabel = formatData?.cta?.label || "Visit Partner"
-  const ctaUrl = formatData?.cta?.url || "https://example.com"
+  const ctaLabel = campaign?.ctaLabel || formatData?.cta?.label || "Visit Partner"
+  const ctaUrl = campaign?.landingPageUrl || formatData?.cta?.url || "https://example.com"
 
   const stickyRoot =
     typeof document !== "undefined"

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" fill="none">
+  <rect width="1600" height="1000" rx="48" fill="#F3F6FA"/>
+  <rect x="96" y="144" width="220" height="720" rx="34" fill="#D7FF64" stroke="#192432" stroke-width="12"/>
+  <rect x="1284" y="144" width="220" height="720" rx="34" fill="#D7FF64" stroke="#192432" stroke-width="12"/>
+  <rect x="362" y="112" width="876" height="776" rx="42" fill="#0F172A"/>
+  <rect x="394" y="144" width="812" height="712" rx="30" fill="#FFFFFF"/>
+  <rect x="440" y="194" width="720" height="36" rx="18" fill="#D8E0EA"/>
+  <rect x="440" y="268" width="688" height="30" rx="15" fill="#E4EAF1"/>
+  <rect x="440" y="318" width="650" height="30" rx="15" fill="#E4EAF1"/>
+  <rect x="440" y="368" width="610" height="30" rx="15" fill="#E4EAF1"/>
+  <text x="598" y="520" fill="#1A2433" font-family="Arial, Helvetica, sans-serif" font-size="64" font-weight="700">Skin takeover</text>
+  <text x="486" y="930" fill="#6C7C90" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="600">Stable desktop shell with branded left and right rails</text>
+</svg>

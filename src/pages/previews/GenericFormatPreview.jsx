@@ -1,6 +1,8 @@
 import PreviewFrame from "../../components/previews/PreviewFrame"
 import BaseNewsMock from "./BaseNewsMock"
 import DisplayCreative from "../../components/previews/DisplayCreative"
+import { resolveFormatPreviewAsset } from "../../features/proposals/creativeResolver"
+import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
 
 const sizeMap = {
   top_1070x27: "970x90",
@@ -16,9 +18,11 @@ const sizeMap = {
 }
 
 export default function GenericFormatPreview({ formatData }) {
+  const { campaign, proposalFormat } = usePreviewCampaign()
   const renderAd = (slotId) => (
     <DisplayCreative slotId={slotId} size={sizeMap[slotId] || "300x250"} />
   )
+  const brandedPreview = resolveFormatPreviewAsset(proposalFormat, campaign)
 
   return (
     <PreviewFrame maxWidth={1100}>
@@ -34,6 +38,15 @@ export default function GenericFormatPreview({ formatData }) {
             {formatData?.specs?.description ||
               "This format is scaffolded with placeholder creative blocks and can be replaced with final assets without changing routing."}
           </p>
+          {brandedPreview ? (
+            <div className="mt-4 overflow-hidden rounded border border-neutral-200">
+              <img
+                src={brandedPreview}
+                alt={`${formatData?.title || "Format"} branded preview`}
+                className="h-56 w-full object-cover"
+              />
+            </div>
+          ) : null}
         </div>
       </div>
 

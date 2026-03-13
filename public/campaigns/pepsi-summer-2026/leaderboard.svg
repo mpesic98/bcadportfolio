@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 970 90" fill="none">
+  <rect width="970" height="90" rx="18" fill="#031224"/>
+  <rect x="10" y="10" width="950" height="70" rx="16" fill="url(#g)"/>
+  <circle cx="68" cy="45" r="24" fill="#fff"/>
+  <path d="M47 48c10-8 23-10 41-7 10 2 18 5 24 9-6 9-15 15-27 18-15 4-28 1-38-6V48Z" fill="#E32934"/>
+  <path d="M47 42c9 7 23 9 41 6 10-2 18-5 24-9-6-9-15-16-27-19-15-4-28-1-38 6v16Z" fill="#004B93"/>
+  <text x="112" y="39" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">PEPSI LATAM SUMMER BURST</text>
+  <text x="112" y="62" fill="#D4E7FF" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="600">OWN THE TOURNAMENT OPENING WHISTLE</text>
+  <rect x="726" y="23" width="200" height="44" rx="22" fill="#FFFFFF"/>
+  <text x="770" y="51" fill="#092041" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">DISCOVER MORE</text>
+  <defs>
+    <linearGradient id="g" x1="42" y1="8" x2="924" y2="82" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#004B93"/>
+      <stop offset="0.55" stop-color="#0F6BC5"/>
+      <stop offset="1" stop-color="#E32934"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" fill="none">
+  <rect width="1600" height="1000" rx="48" fill="#F3F6FA"/>
+  <rect x="106" y="96" width="1388" height="808" rx="40" fill="#FFFFFF" stroke="#D8E0EA" stroke-width="16"/>
+  <rect x="150" y="138" width="1300" height="34" rx="17" fill="#0F172A"/>
+  <rect x="182" y="232" width="760" height="48" rx="24" fill="#D8E0EA"/>
+  <rect x="182" y="308" width="658" height="36" rx="18" fill="#E3E9F0"/>
+  <rect x="182" y="368" width="696" height="36" rx="18" fill="#E3E9F0"/>
+  <rect x="182" y="428" width="630" height="36" rx="18" fill="#E3E9F0"/>
+  <rect x="980" y="238" width="320" height="540" rx="34" fill="#D7FF64" stroke="#192432" stroke-width="12"/>
+  <text x="1018" y="500" fill="#1A2433" font-family="Arial, Helvetica, sans-serif" font-size="60" font-weight="700">Half</text>
+  <text x="1018" y="570" fill="#1A2433" font-family="Arial, Helvetica, sans-serif" font-size="60" font-weight="700">Page</text>
+  <text x="182" y="820" fill="#6C7C90" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="600">Tall-format storytelling area anchored beside editorial content</text>
+</svg>

@@ -71,6 +71,11 @@ function Navbar() {
               EUROPE
             </NavLink>
           </li>
+          <li>
+            <NavLink to="/admin" className={getLinkClass}>
+              Proposal Studio
+            </NavLink>
+          </li>
         </ul>
 
         <div className="hidden justify-end md:flex">
@@ -125,6 +130,11 @@ function Navbar() {
             <li>
               <NavLink to={buildRegionLink("europe")} className={getLinkClass}>
                 EUROPE
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/admin" className={getLinkClass}>
+                Proposal Studio
               </NavLink>
             </li>
           </ul>

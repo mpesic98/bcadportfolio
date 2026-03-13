@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 250" fill="none">
+  <rect width="300" height="250" rx="24" fill="#05162E"/>
+  <rect x="16" y="16" width="268" height="218" rx="22" fill="url(#g)"/>
+  <circle cx="70" cy="61" r="26" fill="#fff"/>
+  <path d="M46 64c11-8 24-11 44-7 9 2 17 5 24 10-6 10-16 17-29 20-14 3-28 1-39-6V64Z" fill="#E32934"/>
+  <path d="M46 55c10 7 25 9 44 6 9-2 17-5 24-10-6-10-16-17-29-20-14-4-28-1-39 6v18Z" fill="#004B93"/>
+  <text x="34" y="128" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">BOLD</text>
+  <text x="34" y="160" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700">SUMMER</text>
+  <text x="34" y="188" fill="#D8EAFF" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="600">Fuel the next matchday moment.</text>
+  <rect x="34" y="202" width="128" height="24" rx="12" fill="#FFFFFF"/>
+  <text x="60" y="218" fill="#0B203F" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="700">EXPLORE PEPSI</text>
+  <defs>
+    <linearGradient id="g" x1="24" y1="18" x2="276" y2="232" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#004B93"/>
+      <stop offset="1" stop-color="#E32934"/>
+    </linearGradient>
+  </defs>
+</svg>

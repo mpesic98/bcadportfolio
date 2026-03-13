@@ -2,6 +2,9 @@ import { useEffect, useLayoutEffect, useMemo, useRef } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
 import { endemicCatalog } from "../../data/endemicCatalog"
 import { nonEndemicCatalog } from "../../data/nonEndemicCatalog"
+import { getProposalFormatById } from "../../data/proposalFormats"
+import { PreviewCampaignProvider } from "../../features/proposals/PreviewCampaignContext.jsx"
+import { useProposalStore } from "../../features/proposals/ProposalStore"
 import { normalizeRegion, normalizeSegment } from "../../data/regionConfig"
 import { PreviewViewportProvider, usePreviewViewport } from "./previewViewport.jsx"
 
@@ -51,6 +54,20 @@ function resolveMobileTargetSlot(formatId) {
   return "mobile_inline_300x250_1"
 }
 
+const routeDefaultProposalFormatMap = {
+  skin: "skin",
+  interscroller: "interscroller",
+  interstitial: "interstitial",
+  "video-banners": "video-banner",
+  "pre-roll-video": "pre-roll-video",
+  native: "native",
+  cube: "cube",
+  leadgen: "leadgen",
+  livescore: "livescore",
+  "countdown-widget": "countdown-widget",
+  "content-widget": "content-widget",
+}
+
 export default function PreviewFrame({
   children,
   maxWidth = 1100,
@@ -59,6 +76,7 @@ export default function PreviewFrame({
   const navigate = useNavigate()
   const location = useLocation()
   const { region: regionParam, segment: segmentParam, formatId } = useParams()
+  const { proposalById, campaignById } = useProposalStore()
 
   const region = normalizeRegion(regionParam)
   const segment = normalizeSegment(segmentParam)
@@ -83,6 +101,8 @@ export default function PreviewFrame({
   )
   const queryVp = search.get("vp")
   const forcedVp = queryVp === "mobile" || queryVp === "desktop" ? queryVp : null
+  const proposalId = search.get("proposal")
+  const requestedProposalFormatKey = search.get("proposalFormat")
 
   const headerRef = useRef(null)
   const tabsRef = useRef(null)
@@ -145,6 +165,24 @@ export default function PreviewFrame({
   }, [location.pathname, location.search])
 
   const active = formatId
+  const proposal = proposalId ? proposalById[proposalId] || null : null
+  const campaign = proposal ? campaignById[proposal.campaignId] || null : null
+  const resolvedProposalFormatKey =
+    getProposalFormatById(requestedProposalFormatKey)?.id ||
+    routeDefaultProposalFormatMap[formatId] ||
+    null
+  const proposalFormat = resolvedProposalFormatKey
+    ? getProposalFormatById(resolvedProposalFormatKey)
+    : null
+  const previewCampaignValue = useMemo(
+    () => ({
+      proposal,
+      campaign,
+      proposalFormatKey: resolvedProposalFormatKey,
+      proposalFormat,
+    }),
+    [campaign, proposal, proposalFormat, resolvedProposalFormatKey]
+  )
 
   useEffect(() => {
     if (vp !== "mobile") return undefined
@@ -285,14 +323,15 @@ export default function PreviewFrame({
   }
 
   return (
-    <PreviewViewportProvider
-      vp={vp}
-      width={viewportWidth}
-      height={viewportHeight}
-      scrollElement={vp === "mobile" ? mobileViewportRef.current : null}
-      isContainerViewport={vp === "mobile"}
-    >
-      <div ref={rootViewportRef} className="min-h-screen bg-neutral-100 overflow-x-hidden">
+    <PreviewCampaignProvider value={previewCampaignValue}>
+      <PreviewViewportProvider
+        vp={vp}
+        width={viewportWidth}
+        height={viewportHeight}
+        scrollElement={vp === "mobile" ? mobileViewportRef.current : null}
+        isContainerViewport={vp === "mobile"}
+      >
+        <div ref={rootViewportRef} className="min-h-screen bg-neutral-100 overflow-x-hidden">
         <div
           ref={headerRef}
           className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur border-b border-neutral-200"
@@ -441,7 +480,8 @@ export default function PreviewFrame({
             </div>
           )}
         </main>
-      </div>
-    </PreviewViewportProvider>
+        </div>
+      </PreviewViewportProvider>
+    </PreviewCampaignProvider>
   )
 }

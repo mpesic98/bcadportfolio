@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360" fill="none">
+  <rect width="600" height="360" rx="28" fill="#05152A"/>
+  <rect x="18" y="18" width="564" height="324" rx="24" fill="url(#g)"/>
+  <text x="42" y="96" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700">PEPSI COUNTDOWN</text>
+  <text x="42" y="142" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="42" font-weight="700">04 : 12 : 36</text>
+  <text x="42" y="192" fill="#D8EAFF" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="600">Until kickoff and Pepsi's next premium activation.</text>
+  <defs>
+    <linearGradient id="g" x1="18" y1="18" x2="582" y2="342" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#004B93"/>
+      <stop offset="1" stop-color="#E32934"/>
+    </linearGradient>
+  </defs>
+</svg>

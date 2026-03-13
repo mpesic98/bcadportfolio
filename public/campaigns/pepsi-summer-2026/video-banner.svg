@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 250" fill="none">
+  <rect width="300" height="250" rx="24" fill="#05152B"/>
+  <rect x="16" y="16" width="268" height="218" rx="22" fill="url(#g)"/>
+  <circle cx="150" cy="122" r="42" fill="rgba(255,255,255,0.18)"/>
+  <path d="M137 96l42 26-42 26V96Z" fill="#FFFFFF"/>
+  <text x="26" y="208" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="20" font-weight="700">PEPSI VIDEO MOMENT</text>
+  <defs>
+    <linearGradient id="g" x1="16" y1="16" x2="284" y2="234" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#004B93"/>
+      <stop offset="1" stop-color="#E32934"/>
+    </linearGradient>
+  </defs>
+</svg>

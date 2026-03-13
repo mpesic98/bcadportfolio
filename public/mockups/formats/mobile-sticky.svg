@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" fill="none">
+  <rect width="1600" height="1000" rx="48" fill="#F3F6FA"/>
+  <rect x="520" y="86" width="560" height="828" rx="60" fill="#0F172A"/>
+  <rect x="558" y="124" width="484" height="752" rx="44" fill="#FFFFFF"/>
+  <rect x="690" y="154" width="220" height="24" rx="12" fill="#CBD4DF"/>
+  <rect x="602" y="226" width="396" height="34" rx="17" fill="#D8E0EA"/>
+  <rect x="602" y="284" width="356" height="24" rx="12" fill="#E4EAF1"/>
+  <rect x="602" y="332" width="370" height="24" rx="12" fill="#E4EAF1"/>
+  <rect x="602" y="380" width="328" height="24" rx="12" fill="#E4EAF1"/>
+  <rect x="584" y="752" width="432" height="72" rx="28" fill="#D7FF64" stroke="#192432" stroke-width="10"/>
+  <text x="662" y="797" fill="#1A2433" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="700">Mobile sticky</text>
+  <text x="420" y="936" fill="#6C7C90" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="600">Bottom-fixed format identity shown on a mobile frame</text>
+</svg>

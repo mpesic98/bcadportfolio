@@ -6,6 +6,8 @@ import skinBg from "../../assets/skincocacola.png"
 import defaultLeftRail from "../../assets/sideskin.png"
 import defaultRightRail from "../../assets/sideskin.png"
 import FullWidthSkinLayer from "../../components/previews/FullWidthSkinLayer.jsx"
+import { resolveCreativeAsset } from "../../features/proposals/creativeResolver"
+import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
 
 const VERSION_LABELS = {
   v1: "Fullwidth sin fondo",
@@ -15,13 +17,17 @@ const VERSION_LABELS = {
 
 export default function SkinPreview() {
   const location = useLocation()
+  const { campaign } = usePreviewCampaign()
   const isMobile = new URLSearchParams(location.search).get("vp") === "mobile"
   const [version, setVersion] = useState("v1")
   const state = location.state || {}
 
-  const leftRail = state.leftImg || defaultLeftRail
-  const rightRail = state.rightImg || defaultRightRail
-  const clickUrl = state.clickUrl
+  const leftRail =
+    resolveCreativeAsset(campaign, "skin_left") || state.leftImg || defaultLeftRail
+  const rightRail =
+    resolveCreativeAsset(campaign, "skin_right") || state.rightImg || defaultRightRail
+  const backgroundCreative = resolveCreativeAsset(campaign, "skin_background") || skinBg
+  const clickUrl = campaign?.landingPageUrl || state.clickUrl
 
   const renderSkinRailsOnly = useMemo(() => {
     const railStyle = "w-full h-full overflow-hidden rounded border border-neutral-300 bg-neutral-100"
@@ -103,7 +109,7 @@ export default function SkinPreview() {
       {version === "v1" ? (
         <>
           <FullWidthSkinLayer
-            imageUrl={skinBg}
+            imageUrl={backgroundCreative}
             clickUrl={clickUrl}
             showBehindContent={false}
             safeWidth={1080}
@@ -126,7 +132,7 @@ export default function SkinPreview() {
       {version === "v3" ? (
         <>
           <FullWidthSkinLayer
-            imageUrl={skinBg}
+            imageUrl={backgroundCreative}
             clickUrl={clickUrl}
             showBehindContent
             safeWidth={1080}

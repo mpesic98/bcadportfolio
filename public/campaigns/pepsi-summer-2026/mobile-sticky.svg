@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 50" fill="none">
+  <rect width="320" height="50" rx="14" fill="#031224"/>
+  <rect x="6" y="6" width="308" height="38" rx="12" fill="url(#g)"/>
+  <text x="18" y="31" fill="#FFFFFF" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="700">PEPSI SUMMER 2026</text>
+  <rect x="220" y="13" width="82" height="24" rx="12" fill="#FFFFFF"/>
+  <text x="238" y="29" fill="#0A1E3B" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="700">EXPLORE</text>
+  <defs>
+    <linearGradient id="g" x1="12" y1="6" x2="308" y2="44" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#004B93"/>
+      <stop offset="1" stop-color="#E32934"/>
+    </linearGradient>
+  </defs>
+</svg>

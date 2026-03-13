@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" fill="none">
+  <rect width="1600" height="1000" rx="48" fill="#F3F6FA"/>
+  <rect x="148" y="122" width="1304" height="756" rx="44" fill="#FFFFFF" stroke="#D8E0EA" stroke-width="16"/>
+  <rect x="214" y="208" width="1172" height="170" rx="30" fill="#EEF2F7"/>
+  <rect x="214" y="430" width="1172" height="170" rx="30" fill="#EEF2F7"/>
+  <rect x="214" y="652" width="1172" height="170" rx="30" fill="#EEF2F7"/>
+  <rect x="248" y="242" width="262" height="102" rx="22" fill="#D7FF64"/>
+  <rect x="248" y="464" width="262" height="102" rx="22" fill="#D7FF64"/>
+  <rect x="248" y="686" width="262" height="102" rx="22" fill="#D7FF64"/>
+  <text x="586" y="948" fill="#6C7C90" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="600">Recommendation and storytelling widget with modular content blocks</text>
+</svg>

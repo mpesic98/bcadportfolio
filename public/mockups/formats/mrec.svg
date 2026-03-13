@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" fill="none">
+  <rect width="1600" height="1000" rx="48" fill="#F3F6FA"/>
+  <rect x="106" y="96" width="1388" height="808" rx="40" fill="#FFFFFF" stroke="#D8E0EA" stroke-width="16"/>
+  <rect x="150" y="138" width="1300" height="34" rx="17" fill="#0F172A"/>
+  <rect x="182" y="230" width="720" height="48" rx="24" fill="#D8E0EA"/>
+  <rect x="182" y="306" width="650" height="36" rx="18" fill="#E3E9F0"/>
+  <rect x="182" y="366" width="688" height="36" rx="18" fill="#E3E9F0"/>
+  <rect x="182" y="426" width="610" height="36" rx="18" fill="#E3E9F0"/>
+  <rect x="952" y="248" width="360" height="300" rx="30" fill="#D7FF64" stroke="#192432" stroke-width="12"/>
+  <rect x="182" y="516" width="500" height="180" rx="28" fill="#EEF2F7"/>
+  <rect x="722" y="594" width="210" height="102" rx="24" fill="#EEF2F7"/>
+  <text x="1002" y="402" fill="#1A2433" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700">MREC</text>
+  <text x="182" y="784" fill="#6C7C90" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="600">Article layout with a reserved medium rectangle slot</text>
+</svg>

@@ -1,7 +1,13 @@
 import { useEffect, useMemo, useRef, useState } from "react"
+import {
+  assetLooksLikeVideo,
+  resolveCreativeAsset,
+} from "../../features/proposals/creativeResolver"
+import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
 
 function VideoPane({
   source,
+  isVideo,
   muted,
   onToggleMute,
   onVideoError,
@@ -15,29 +21,39 @@ function VideoPane({
 }) {
   return (
     <div className={["relative overflow-hidden bg-black", className].join(" ")} style={style}>
-      <video
-        src={source}
-        autoPlay
-        muted={muted}
-        playsInline
-        loop
-        preload="metadata"
-        onError={onVideoError}
-        className="absolute inset-0 h-full w-full object-cover"
-      />
+      {isVideo ? (
+        <video
+          src={source}
+          autoPlay
+          muted={muted}
+          playsInline
+          loop
+          preload="metadata"
+          onError={onVideoError}
+          className="absolute inset-0 h-full w-full object-cover"
+        />
+      ) : (
+        <img src={source} alt="" className="absolute inset-0 h-full w-full object-cover" />
+      )}
 
       <div className="absolute left-2 top-2 rounded bg-black/70 px-2 py-1 text-[11px] font-medium text-yellow-300">
         {countdownLabel}
       </div>
 
-      <button
-        type="button"
-        onClick={onToggleMute}
-        className="absolute right-2 top-2 rounded bg-black/70 px-2 py-1 text-[11px] text-white"
-        aria-label="Toggle video sound"
-      >
-        {muted ? "Muted" : "Sound on"}
-      </button>
+      {isVideo ? (
+        <button
+          type="button"
+          onClick={onToggleMute}
+          className="absolute right-2 top-2 rounded bg-black/70 px-2 py-1 text-[11px] text-white"
+          aria-label="Toggle video sound"
+        >
+          {muted ? "Muted" : "Sound on"}
+        </button>
+      ) : (
+        <div className="absolute right-2 top-2 rounded bg-black/70 px-2 py-1 text-[11px] text-white">
+          Poster
+        </div>
+      )}
 
       {showClose ? (
         <button
@@ -80,6 +96,7 @@ export default function PrerollCreative({
   stickyHeight = 225,
   autoScrollIntoView = false,
 }) {
+  const { campaign } = usePreviewCampaign()
   const containerRef = useRef(null)
   const scrollAnchorRef = useRef(null)
   const hasEnteredViewportRef = useRef(false)
@@ -90,8 +107,13 @@ export default function PrerollCreative({
   const [sourceIndex, setSourceIndex] = useState(0)
   const [secondsLeft, setSecondsLeft] = useState(countdownSeconds)
 
-  const sources = useMemo(() => [videoUrl, fallbackVideoUrl], [videoUrl, fallbackVideoUrl])
+  const campaignSource = resolveCreativeAsset(campaign, "pre_roll", videoUrl)
+  const sources = useMemo(
+    () => [campaignSource, fallbackVideoUrl].filter(Boolean),
+    [campaignSource, fallbackVideoUrl]
+  )
   const activeSource = sources[Math.min(sourceIndex, sources.length - 1)]
+  const isVideoSource = assetLooksLikeVideo(activeSource)
   const [standardW, standardH] = size.split("x").map(Number)
 
   // Stickiness depends only on viewport visibility of the original player block.
@@ -162,6 +184,7 @@ export default function PrerollCreative({
       <div ref={scrollAnchorRef} className="w-full">
         <VideoPane
           source={activeSource}
+          isVideo={isVideoSource}
           muted={muted}
           onToggleMute={() => setMuted((prev) => !prev)}
           onVideoError={handleVideoError}
@@ -180,6 +203,7 @@ export default function PrerollCreative({
       <div ref={scrollAnchorRef} className="w-full flex justify-center">
         <VideoPane
           source={activeSource}
+          isVideo={isVideoSource}
           muted={muted}
           onToggleMute={() => setMuted((prev) => !prev)}
           onVideoError={handleVideoError}
@@ -211,6 +235,7 @@ export default function PrerollCreative({
         >
           <VideoPane
             source={activeSource}
+            isVideo={isVideoSource}
             muted={muted}
             onToggleMute={() => setMuted((prev) => !prev)}
             onVideoError={handleVideoError}
@@ -233,6 +258,7 @@ export default function PrerollCreative({
         <div className="fixed bottom-5 right-5 z-[3400] overflow-hidden rounded border border-neutral-300 bg-black shadow-2xl" style={{ width: stickyWidth, height: stickyHeight }}>
           <VideoPane
             source={activeSource}
+            isVideo={isVideoSource}
             muted={muted}
             onToggleMute={() => setMuted((prev) => !prev)}
             onVideoError={handleVideoError}

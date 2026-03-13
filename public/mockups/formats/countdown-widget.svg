@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" fill="none">
+  <rect width="1600" height="1000" rx="48" fill="#F3F6FA"/>
+  <rect x="168" y="154" width="1264" height="692" rx="42" fill="#FFFFFF" stroke="#D8E0EA" stroke-width="16"/>
+  <rect x="228" y="238" width="1144" height="524" rx="36" fill="#0F172A"/>
+  <rect x="276" y="286" width="1048" height="428" rx="32" fill="#EEF2F7"/>
+  <text x="448" y="452" fill="#0F172A" font-family="Arial, Helvetica, sans-serif" font-size="110" font-weight="700">04 : 12 : 36</text>
+  <text x="430" y="552" fill="#6C7C90" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="600">Countdown widget identity with timer-led messaging</text>
+  <rect x="276" y="620" width="360" height="42" rx="21" fill="#D7FF64"/>
+</svg>

@@ -6,8 +6,11 @@ import adE from "../../assets/300x250.jpg"
 import adF from "../../assets/728x90.jpg"
 import railL from "../../assets/sideskin.png"
 import railR from "../../assets/sideskin.png"
+import { resolveCreativeForSlot } from "../../features/proposals/creativeResolver"
+import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
 
 export default function DisplayCreative({ slotId, size = "300x250" }) {
+  const { campaign } = usePreviewCampaign()
   const map = {
     rail_left_160x600: railL,
     rail_right_160x600: railR,
@@ -27,7 +30,8 @@ export default function DisplayCreative({ slotId, size = "300x250" }) {
   const [rawW, rawH] = size.split("x").map(Number)
   const w = Number.isFinite(rawW) ? rawW : 300
   const h = Number.isFinite(rawH) ? rawH : 250
-  const src = map[slotId] || adA
+  const fallbackSrc = map[slotId] || adA
+  const src = resolveCreativeForSlot(campaign, slotId, fallbackSrc)
   const isLeaderboard = slotId === "top_1070x27"
 
   return (
