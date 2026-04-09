@@ -482,13 +482,10 @@ export default function BaseNewsMock({
                   <Lines n={6} />
                 </div>
 
-                <div className="mt-6 border border-neutral-200 bg-neutral-50 rounded-lg p-3">
-                  <div className="h-3 w-24 rounded bg-neutral-200 mb-2 mx-auto" />
-                  <div className="flex justify-center">
-                    <AdSlot slotId="inline_preroll_730x330" renderAd={renderAd}>
-                      <div className="h-[250px] w-[300px] rounded bg-neutral-200" />
-                    </AdSlot>
-                  </div>
+                <div className="mt-6">
+                  <AdSlot slotId="inline_preroll_730x330" renderAd={renderAd}>
+                    <div className="h-[330px] w-[730px] bg-neutral-200" />
+                  </AdSlot>
                 </div>
 
                 <div className="mt-6 grid gap-3">

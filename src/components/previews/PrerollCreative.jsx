@@ -4,6 +4,28 @@ import {
   resolveCreativeAsset,
 } from "../../features/proposals/creativeResolver"
 import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
+import thumb55 from "../../assets/55_thumb.png"
+import thumb60 from "../../assets/60_thumb.jpg"
+import thumb66 from "../../assets/66_thumb.jpg"
+import thumb67 from "../../assets/67_thumb.jpg"
+
+const sidebarThumbs = [thumb55, thumb60, thumb66, thumb67]
+
+function SidebarThumb({ src, isPlaying = false }) {
+  return (
+    <div className="relative h-[73px] w-[128px] shrink-0 overflow-hidden bg-black">
+      <img src={src} alt="" className="h-full w-full object-cover" />
+      {isPlaying ? (
+        <div className="absolute inset-0 bg-black/32">
+          <div className="absolute right-2 top-2 text-right text-[8px] font-bold uppercase tracking-[0.12em] text-white">
+            <div>Playing</div>
+            <div>Now</div>
+          </div>
+        </div>
+      ) : null}
+    </div>
+  )
+}
 
 function VideoPane({
   source,
@@ -83,8 +105,8 @@ function VideoPane({
 export default function PrerollCreative({
   mode = "standard",
   size = "300x250",
-  videoUrl = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
-  fallbackVideoUrl = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+  videoUrl = "https://bettercollective.com/wp-content/uploads/2024/05/50-8bit-420.webm",
+  fallbackVideoUrl = "https://bettercollective.com/wp-content/uploads/2024/05/50-8bit-420.webm",
   countdownSeconds = 11,
   ctaLabel = "Visit Partner",
   ctaUrl = "https://example.com",
@@ -218,9 +240,8 @@ export default function PrerollCreative({
   }
 
   const resolvedSidebarWidth = Math.max(0, Math.min(sidebarWidth, containerWidth))
-  const resolvedVideoWidth = Math.max(0, containerWidth - resolvedSidebarWidth)
-  const appliedVideoWidth = Math.min(videoWidth, resolvedVideoWidth)
-  const finalVideoWidth = appliedVideoWidth === resolvedVideoWidth ? appliedVideoWidth : resolvedVideoWidth
+  const maxVideoWidth = Math.max(0, containerWidth - resolvedSidebarWidth)
+  const finalVideoWidth = Math.max(0, Math.min(videoWidth, maxVideoWidth))
 
   return (
     <>
@@ -231,7 +252,10 @@ export default function PrerollCreative({
       >
         <div
           className="grid h-full w-full"
-          style={{ gridTemplateColumns: `${finalVideoWidth}px ${resolvedSidebarWidth}px` }}
+          style={{
+            gridTemplateColumns: `${finalVideoWidth}px ${resolvedSidebarWidth}px`,
+            justifyContent: "center",
+          }}
         >
           <VideoPane
             source={activeSource}
@@ -244,11 +268,11 @@ export default function PrerollCreative({
             ctaUrl={ctaUrl}
           />
 
-          <div className="h-full border-l border-white/10 bg-neutral-300">
-            <div className="h-full overflow-hidden">
-              <div className="h-[110px] border-b border-white/25 bg-[url('https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?auto=format&fit=crop&w=500&q=60')] bg-cover bg-center opacity-90" />
-              <div className="h-[110px] border-b border-white/25 bg-[url('https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=500&q=60')] bg-cover bg-center opacity-90" />
-              <div className="h-[110px] bg-[url('https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=500&q=60')] bg-cover bg-center opacity-90" />
+          <div className="flex h-full items-center justify-center border-l border-white/10 bg-[#d8dbe0] px-1 py-[7px]">
+            <div className="flex h-full w-full flex-col items-center justify-center gap-1 overflow-hidden">
+              {sidebarThumbs.map((thumb, index) => (
+                <SidebarThumb key={thumb} src={thumb} isPlaying={index === 0} />
+              ))}
             </div>
           </div>
         </div>

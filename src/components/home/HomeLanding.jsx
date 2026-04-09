@@ -4,7 +4,6 @@ import FormatDetailsModal from "../FormatDetailsModal"
 import { endemicCatalog } from "../../data/endemicCatalog"
 import { nonEndemicCatalog } from "../../data/nonEndemicCatalog"
 import {
-  REGION_LABELS,
   buildLandingPath,
   normalizeSegment,
   resolveRegionFromPath,
@@ -13,11 +12,7 @@ import HomeFeatured from "./HomeFeatured"
 import HomeFormatsGrid from "./HomeFormatsGrid"
 import HomeHero from "./HomeHero"
 import HomeValueProps from "./HomeValueProps"
-
-const segmentOptions = [
-  { value: "non-endemic", label: "Non-Endemic" },
-  { value: "endemic", label: "Endemic" },
-]
+import actionLaptop from "../../assets/action-laptop.png"
 
 export default function HomeLanding() {
   const location = useLocation()
@@ -46,25 +41,13 @@ export default function HomeLanding() {
 
   const displayedItems = segment === "endemic" ? endemicCatalog : nonEndemicCatalog
   const featuredItems = displayedItems.slice(0, 3)
-  const heroImage =
-    featuredItems[0]?.hoverImage ||
-    featuredItems[0]?.cardImage ||
-    nonEndemicCatalog[0]?.cardImage ||
-    ""
-  const regionLabel = REGION_LABELS[region] || REGION_LABELS.usa
+  const heroImage = actionLaptop
 
   useEffect(() => {
     if (!openItem) return
     const stillExists = displayedItems.some((item) => item.formatId === openItem.formatId)
     if (!stillExists) setOpenItem(null)
   }, [displayedItems, openItem])
-
-  const handleSegmentChange = (nextSegment) => {
-    if (nextSegment === segment) return
-    const next = new URLSearchParams(location.search)
-    next.set("segment", nextSegment)
-    navigate(`${buildLandingPath(region)}?${next.toString()}`)
-  }
 
   const openPreview = (item) => {
     navigate(`/${region}/${segment}/preview/${item.formatId}`, {
@@ -91,7 +74,6 @@ export default function HomeLanding() {
 
         <div className="relative mx-auto max-w-[1120px] px-4 pb-16 pt-3 md:px-6 md:pb-20">
           <HomeHero
-            regionLabel={regionLabel}
             heroImage={heroImage}
             onExplore={() =>
               document.getElementById("featured-solutions")?.scrollIntoView({ behavior: "smooth" })
@@ -101,25 +83,6 @@ export default function HomeLanding() {
           <div className="mt-14 md:mt-20">
             <HomeValueProps />
           </div>
-
-          <section className="mt-14 flex justify-center md:mt-20">
-            <div className="inline-flex rounded-full border border-white/10 bg-white/5 p-1">
-              {segmentOptions.map((option) => (
-                <button
-                  key={option.value}
-                  type="button"
-                  onClick={() => handleSegmentChange(option.value)}
-                  className={`rounded-full px-5 py-2 text-sm font-medium transition-colors ${
-                    segment === option.value
-                      ? "bg-green-500 text-black"
-                      : "text-white/70 hover:bg-white/10"
-                  }`}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          </section>
 
           <div id="featured-solutions" className="mt-14 md:mt-20">
             <HomeFeatured items={featuredItems} region={region} onPreview={openPreview} />
@@ -140,7 +103,6 @@ export default function HomeLanding() {
         open={Boolean(openItem)}
         formatData={openItem}
         region={region}
-        segment={segment}
         onClose={() => setOpenItem(null)}
         onOpenFullPreview={() => {
           if (!openItem) return

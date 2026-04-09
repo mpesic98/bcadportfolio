@@ -1,8 +1,9 @@
 import CountdownCreative from "../../components/previews/CountdownCreative"
 import PreviewFrame from "../../components/previews/PreviewFrame"
+import countdown300x250 from "../../assets/300x250_countdown.png"
+import countdown300x600 from "../../assets/300x600_countdown.png"
 import BaseNewsMock from "./BaseNewsMock"
 
-const COUNTDOWN_IMAGE_300X600 = "https://tpc.googlesyndication.com/simgad/10200231783928757156?"
 const SLOTS_300X600 = new Set(["inline_300x600", "mobile_inline_300x600"])
 const SLOTS_300X250 = new Set([
   "sidebar_300x250_1",
@@ -19,7 +20,7 @@ export default function CountdownWidgetPreview() {
     if (SLOTS_300X600.has(slotId)) {
       return (
         <div className="mx-auto" style={{ width: 300, height: 600, overflow: "hidden" }}>
-          <CountdownCreative width={300} height={600} imageUrl={COUNTDOWN_IMAGE_300X600} />
+          <CountdownCreative width={300} height={600} imageUrl={countdown300x600} />
         </div>
       )
     }
@@ -27,7 +28,7 @@ export default function CountdownWidgetPreview() {
     if (SLOTS_300X250.has(slotId)) {
       return (
         <div className="mx-auto" style={{ width: 300, height: 250, overflow: "hidden" }}>
-          <CountdownCreative width={300} height={250} />
+          <CountdownCreative width={300} height={250} imageUrl={countdown300x250} />
         </div>
       )
     }

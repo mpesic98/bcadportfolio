@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import PreviewFrame from "../../components/previews/PreviewFrame"
 import BaseNewsMock from "./BaseNewsMock"
 import InterstitialLayer from "../../components/previews/InterstitialLayer"
-import adImg from "../../assets/300x600.jpg"
+import adImg from "../../assets/display_300x600.png"
 import {
   assetLooksLikeVideo,
   resolveCreativeAsset,

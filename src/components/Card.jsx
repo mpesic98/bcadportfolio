@@ -87,7 +87,7 @@ function Card({ item, onOpen, onPreview }) {
               }}
               onKeyDown={(event) => event.stopPropagation()}
               aria-label={`Preview ${title}`}
-              className="px-4 py-2 bg-black text-white rounded-lg cursor-pointer hover:bg-neutral-800 transition-colors"
+              className="bc-button bc-button--dark bc-button--sm"
             >
               See Preview
             </button>

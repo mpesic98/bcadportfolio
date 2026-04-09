@@ -8,7 +8,7 @@ import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignCont
 export default function VideoBannerCreative({
   slotId,
   size = "300x250",
-  videoUrl = "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+  videoUrl = "https://bettercollective.com/wp-content/uploads/2024/05/50-8bit-420.webm",
 }) {
   const { campaign } = usePreviewCampaign()
   const [w, h] = size.split("x").map(Number)

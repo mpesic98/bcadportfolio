@@ -82,7 +82,7 @@ function Navbar() {
           <button
             type="button"
             onClick={openPreview}
-            className="rounded-full border border-green-400/40 px-5 py-2.5 text-sm font-medium text-green-200 transition-colors hover:bg-green-500/10"
+            className="bc-button bc-button--green bc-button--sm"
           >
             Ads Preview
           </button>
@@ -142,7 +142,7 @@ function Navbar() {
           <button
             type="button"
             onClick={openPreview}
-            className="mt-4 w-full rounded-full border border-green-400/40 px-4 py-2.5 text-sm font-medium text-green-200 transition-colors hover:bg-green-500/10"
+            className="bc-button bc-button--green bc-button--sm bc-button--full mt-4"
           >
             Ads Preview
           </button>

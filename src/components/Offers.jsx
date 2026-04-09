@@ -52,13 +52,6 @@ function Offers() {
     if (!stillExists) setOpenItem(null)
   }, [displayedItems, openItem])
 
-  const handleSegmentChange = (nextSegment) => {
-    if (nextSegment === segment) return
-    const next = new URLSearchParams(location.search)
-    next.set("segment", nextSegment)
-    navigate(`/${region}?${next.toString()}`)
-  }
-
   const openPreview = (item) => {
     navigate(`/${region}/${segment}/preview/${item.formatId}`, {
       state: {
@@ -73,32 +66,6 @@ function Offers() {
   return (
     <>
       <div className="max-w-[1440px] mx-auto px-6 md:px-16 mt-10">
-        <Motion.div className="flex justify-center gap-4 md:gap-20 py-5 border-b border-t border-gray-300 mb-10">
-          <button
-            type="button"
-            onClick={() => handleSegmentChange("non-endemic")}
-            className={`border border-green-600 rounded-3xl px-4 py-2.5 text-sm transition-all ${
-              segment === "non-endemic"
-                ? "bg-green-600 text-white scale-105"
-                : "bg-white text-green-600"
-            }`}
-          >
-            Non-Endemic
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleSegmentChange("endemic")}
-            className={`border border-green-600 rounded-3xl px-4 py-2.5 text-sm transition-all ${
-              segment === "endemic"
-                ? "bg-green-600 text-white scale-105"
-                : "bg-white text-green-600"
-            }`}
-          >
-            Endemic
-          </button>
-        </Motion.div>
-
         <AnimatePresence mode="wait">
           <Motion.div
             key={segment}
@@ -127,7 +94,6 @@ function Offers() {
         open={Boolean(openItem)}
         formatData={openItem}
         region={region}
-        segment={segment}
         onClose={() => setOpenItem(null)}
         onOpenFullPreview={() => {
           if (!openItem) return

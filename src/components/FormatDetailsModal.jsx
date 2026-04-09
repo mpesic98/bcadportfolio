@@ -18,13 +18,11 @@ export default function FormatDetailsModal({
   onOpenFullPreview,
   formatData,
   region,
-  segment,
 }) {
   const dialogRef = useRef(null)
   const previouslyFocusedRef = useRef(null)
 
   const regionLabel = REGION_LABELS[region] || REGION_LABELS.usa
-  const segmentLabel = segment === "endemic" ? "Endemic" : "Non-Endemic"
 
   const titleId = useMemo(() => `format-modal-title-${formatData?.formatId || "default"}`, [formatData])
 
@@ -129,7 +127,7 @@ export default function FormatDetailsModal({
 
               <div className="flex flex-col p-6 md:p-8">
                 <p className="text-xs font-semibold uppercase tracking-wide text-green-300">
-                  {regionLabel} - {segmentLabel}
+                  {regionLabel}
                 </p>
                 <h2 id={titleId} className="mt-2 text-2xl font-semibold text-white">
                   {formatData.title}
@@ -160,7 +158,7 @@ export default function FormatDetailsModal({
                   <button
                     type="button"
                     onClick={onOpenFullPreview}
-                    className="w-full rounded-lg bg-green-500 px-5 py-3 text-sm font-medium text-black transition-colors hover:bg-green-400"
+                    className="bc-button bc-button--green bc-button--full"
                   >
                     Open Full Preview
                   </button>

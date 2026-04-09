@@ -1,11 +1,106 @@
 @import "tailwindcss";
 
-.btn {
-  @apply text-green-700 w-[200px] hover:text-white border border-green-700 hover:bg-green-800 focus:ring-4 
-  focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center 
-  me-2 mb-2 dark:border-green-500 dark:text-green-500 dark:hover:text-white 
-  dark:hover:bg-green-600 dark:focus:ring-green-800;
+:root {
+  --bc-green: #1fc157;
+  --bc-green-strong: #18a64a;
+  --bc-black: #0b0d10;
+  --bc-black-soft: #1a212a;
 }
+
+.bc-button {
+  --bc-button-bg: var(--bc-green);
+  --bc-button-color: #ffffff;
+  --bc-button-hover: var(--bc-black);
+  --bc-button-edge: 0.95rem;
+  appearance: none;
+  background: var(--bc-button-bg);
+  border: 0;
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--bc-button-edge)),
+    calc(100% - var(--bc-button-edge)) 100%,
+    0 100%,
+    0 var(--bc-button-edge)
+  );
+  color: var(--bc-button-color);
+  cursor: pointer;
+  display: inline-grid;
+  font-family: Roboto, sans-serif;
+  font-size: 0.94rem;
+  font-weight: 700;
+  isolation: isolate;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  min-height: 46px;
+  overflow: hidden;
+  padding: 0.9rem 1.45rem 0.82rem;
+  place-content: center;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    transform 0.22s ease,
+    color 0.28s ease,
+    box-shadow 0.28s ease;
+  white-space: nowrap;
+}
+
+.bc-button::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--bc-button-hover) 0%, var(--bc-button-hover) 100%);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+  z-index: -1;
+}
+
+.bc-button:hover,
+.bc-button:focus-visible {
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+.bc-button:hover::before,
+.bc-button:focus-visible::before {
+  transform: scaleX(1);
+}
+
+.bc-button:active {
+  transform: translateY(0);
+}
+
+.bc-button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.24);
+  outline-offset: 3px;
+}
+
+.bc-button--green {
+  --bc-button-bg: var(--bc-green);
+  --bc-button-hover: var(--bc-black);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.22);
+}
+
+.bc-button--dark {
+  --bc-button-bg: rgba(255, 255, 255, 0.06);
+  --bc-button-hover: var(--bc-black-soft);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 18px 40px rgba(0, 0, 0, 0.2);
+}
+
+.bc-button--sm {
+  font-size: 0.82rem;
+  min-height: 40px;
+  padding: 0.74rem 1.15rem 0.68rem;
+}
+
+.bc-button--full {
+  width: 100%;
+}
+
 .preview-scroll {
   scrollbar-width: none;
 }

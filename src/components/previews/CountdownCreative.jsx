@@ -1,56 +1,84 @@
 import { useEffect, useMemo, useState } from "react"
 
-const EVENT_DATE_STRING = "2026-08-05T14:00:00-03:00"
-const UPDATE_INTERVAL_MS = 60000
-
-const DEFAULT_IMAGE_URL = "https://tpc.googlesyndication.com/simgad/13050797919982899298?"
 const DEFAULT_CLICK_URL =
   "https://adclick.g.doubleclick.net/pcs/click?xai=AKAOjsvm4ecLFeSx8y3atFhLVl2cFV2K1nOD-0HIvIM1O2ke_Dx3ghbO6ypqCriWIehTLmVAhDdE91nunntttaHgXE9392JhtzrIBhEUONBnI6C4ak8nF2iaco3GYWir-_RVDE_-BS4zqZMO0qLSJSWkh_bGw_YP89xUU-5azBaEvDxDz5N9rEWY1_5oqY_t7sx-vgihSm4up82xUX1gjEjG7yXSSnQ2F22IfUQyOg&sai=AMfl-YQ5K0gnE3QZXOi9geTw1M5wbwjS-WKNpTHmgYjOfvQapeAA8lf1RK2iukSzFauBrOobtCjoXkSGz6nQbQ0KiV3HHKJgp1n6sYlvzWas9xF_7f20RFjpfr1dEYlGPlCr5Cj-en12-dbFxGwc1TqjEyZbImv_HhZDXBoph64AYKHbimxualV4GNtxb3p1PvA_z49DUzHOFmx8fm-Yvoop6DM0RJprghgocs-94OREU1o&sig=Cg0ArKJSzGOfYL2RCGVnEAE&fbs_aeid=%5Bgw_fbsaeid%5D&urlfix=1&adurl=https://www.adidas.com.ar/futbol-hombre"
 
-function getCountdownState(eventDateString) {
-  const eventTimeMs = new Date(eventDateString).getTime()
-  const nowMs = Date.now()
-  const diffMs = eventTimeMs - nowMs
+const COUNTDOWN_TICK_MS = 1000
+const RESET_THRESHOLD_SECONDS = 8
+const SHORT_RESET_THRESHOLD_SECONDS = 20 * 60
+const LONG_RESET_MIN_SECONDS = 2 * 60 * 60 + 14 * 60 + 18
+const LONG_RESET_MAX_SECONDS = 18 * 60 * 60 + 47 * 60 + 42
+const SHORT_RESET_MIN_SECONDS = 36 * 60 + 12
+const SHORT_RESET_MAX_SECONDS = 3 * 60 * 60 + 8 * 60 + 33
 
-  if (!Number.isFinite(eventTimeMs) || diffMs <= 0) {
-    return { days: 0, hours: 0, minutes: 0, ended: true }
-  }
-
-  const totalMinutes = Math.floor(diffMs / 60000)
-  const days = Math.floor(totalMinutes / 1440)
-  const hours = Math.floor((totalMinutes % 1440) / 60)
-  const minutes = totalMinutes % 60
-
-  return { days, hours, minutes, ended: false }
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min
 }
 
-function CountdownBox({ value, label, tall }) {
+function createMockCountdown({ shortWindow = false } = {}) {
+  if (shortWindow) {
+    return randomInt(SHORT_RESET_MIN_SECONDS, SHORT_RESET_MAX_SECONDS)
+  }
+
+  return randomInt(LONG_RESET_MIN_SECONDS, LONG_RESET_MAX_SECONDS)
+}
+
+function formatSegment(value) {
+  return String(value).padStart(2, "0")
+}
+
+function getCountdownParts(totalSeconds) {
+  const hours = Math.floor(totalSeconds / 3600)
+  const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
+
+  return {
+    hours: formatSegment(hours),
+    minutes: formatSegment(minutes),
+    seconds: formatSegment(seconds),
+  }
+}
+
+function CountdownUnit({ value, label, isTall }) {
   return (
     <div
       style={{
-        position: "relative",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        width: tall ? 46 : 42,
-        height: tall ? 44 : 40,
-        backgroundColor: "#ffffff",
-        borderRadius: "30%",
-        fontSize: tall ? 23 : 21,
-        fontWeight: 700,
-        color: "#000000",
+        minWidth: isTall ? 70 : 58,
+        display: "grid",
+        gap: isTall ? 8 : 6,
+        justifyItems: "center",
       }}
     >
-      {value}
+      <div
+        style={{
+          width: "100%",
+          height: isTall ? 72 : 60,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: isTall ? 16 : 14,
+          background: "rgba(255, 255, 255, 0.92)",
+          border: "1px solid rgba(255, 255, 255, 0.55)",
+          boxShadow: "0 12px 28px rgba(0, 0, 0, 0.22)",
+          fontSize: isTall ? 31 : 26,
+          fontWeight: 800,
+          lineHeight: 1,
+          color: "#111827",
+          fontVariantNumeric: "tabular-nums",
+          letterSpacing: "-0.04em",
+        }}
+      >
+        {value}
+      </div>
+
       <span
         style={{
-          position: "absolute",
-          display: "block",
-          bottom: tall ? -22 : -20,
-          textShadow: "0px 0px 1px #000000b3",
-          fontSize: 12,
-          color: "#ffffff",
-          whiteSpace: "nowrap",
+          fontSize: isTall ? 11 : 10,
+          fontWeight: 700,
+          letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          color: "rgba(255, 255, 255, 0.96)",
+          textShadow: "0 2px 10px rgba(0, 0, 0, 0.35)",
         }}
       >
         {label}
@@ -62,40 +90,38 @@ function CountdownBox({ value, label, tall }) {
 export default function CountdownCreative({
   width = 300,
   height = 250,
-  imageUrl = DEFAULT_IMAGE_URL,
+  imageUrl,
   clickUrl = DEFAULT_CLICK_URL,
 }) {
-  const [countdown, setCountdown] = useState(() => getCountdownState(EVENT_DATE_STRING))
   const isTall = height >= 600
+  const [secondsLeft, setSecondsLeft] = useState(() => createMockCountdown())
 
-  const countdownPosition = useMemo(
+  const countdown = useMemo(() => getCountdownParts(secondsLeft), [secondsLeft])
+  const countdownLayout = useMemo(
     () => ({
-      bottom: isTall ? "18%" : "22%",
-      gap: isTall ? 20 : 18,
-      transform: `translateX(-50%) scale(${isTall ? 1.08 : 1})`,
+      gap: isTall ? 12 : 10,
+      bottom: isTall ? 42 : 26,
+      padding: isTall ? "14px 16px 12px" : "12px 12px 10px",
+      borderRadius: isTall ? 22 : 18,
     }),
     [isTall]
   )
 
   useEffect(() => {
-    let intervalId = null
+    const intervalId = window.setInterval(() => {
+      setSecondsLeft((current) => {
+        const next = current - 1
 
-    const updateCountdown = () => {
-      const nextCountdown = getCountdownState(EVENT_DATE_STRING)
-      setCountdown(nextCountdown)
+        if (next <= RESET_THRESHOLD_SECONDS) {
+          const shortWindow = current <= SHORT_RESET_THRESHOLD_SECONDS
+          return createMockCountdown({ shortWindow })
+        }
 
-      if (nextCountdown.ended && intervalId) {
-        window.clearInterval(intervalId)
-        intervalId = null
-      }
-    }
+        return next
+      })
+    }, COUNTDOWN_TICK_MS)
 
-    updateCountdown()
-    intervalId = window.setInterval(updateCountdown, UPDATE_INTERVAL_MS)
-
-    return () => {
-      if (intervalId) window.clearInterval(intervalId)
-    }
+    return () => window.clearInterval(intervalId)
   }, [])
 
   return (
@@ -105,13 +131,9 @@ export default function CountdownCreative({
         width,
         height,
         margin: "0 auto",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        fontFamily: "sans-serif",
-        textAlign: "center",
         overflow: "hidden",
+        background: "#0f172a",
+        fontFamily: "Inter, system-ui, sans-serif",
       }}
     >
       <a
@@ -135,45 +157,39 @@ export default function CountdownCreative({
           width: "100%",
           height: "100%",
           objectFit: "cover",
-          zIndex: 1,
         }}
       />
 
-      {!countdown.ended && (
-        <div
-          style={{
-            fontFamily: "Roboto, -apple-system, sans-serif",
-            position: "absolute",
-            display: "flex",
-            gap: countdownPosition.gap,
-            zIndex: 2,
-            bottom: countdownPosition.bottom,
-            left: "50%",
-            transform: countdownPosition.transform,
-          }}
-        >
-          <CountdownBox value={countdown.days} label="DIAS" tall={isTall} />
-          <CountdownBox value={countdown.hours} label="HORAS" tall={isTall} />
-          <CountdownBox value={countdown.minutes} label="MINUTOS" tall={isTall} />
-        </div>
-      )}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(180deg, rgba(7, 13, 24, 0.08) 0%, rgba(7, 13, 24, 0.22) 52%, rgba(7, 13, 24, 0.56) 100%)",
+        }}
+      />
 
-      {countdown.ended && (
-        <div
-          style={{
-            position: "absolute",
-            zIndex: 2,
-            bottom: isTall ? "18%" : "22%",
-            color: "#ffffff",
-            fontSize: isTall ? 20 : 18,
-            fontWeight: 700,
-            padding: "0 0 10px 0",
-            textShadow: "0px 0px 1px #000000b3",
-          }}
-        >
-          SORTEO EN VIVO
-        </div>
-      )}
+      <div
+        style={{
+          position: "absolute",
+          left: "50%",
+          bottom: countdownLayout.bottom,
+          transform: "translateX(-50%)",
+          display: "flex",
+          alignItems: "center",
+          gap: countdownLayout.gap,
+          padding: countdownLayout.padding,
+          borderRadius: countdownLayout.borderRadius,
+          background: "rgba(8, 15, 31, 0.36)",
+          backdropFilter: "blur(6px)",
+          boxShadow: "0 18px 40px rgba(0, 0, 0, 0.24)",
+          zIndex: 2,
+        }}
+      >
+        <CountdownUnit value={countdown.hours} label="Hours" isTall={isTall} />
+        <CountdownUnit value={countdown.minutes} label="Minutes" isTall={isTall} />
+        <CountdownUnit value={countdown.seconds} label="Seconds" isTall={isTall} />
+      </div>
     </div>
   )
 }

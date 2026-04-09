@@ -1,14 +1,10 @@
 import { useMemo, useState } from "react"
+import cuboImage from "../../assets/cubo.png"
 
 const DEFAULT_CLICK_URL =
   "https://adclick.g.doubleclick.net/pcs/click?xai=AKAOjstvqUwPljrUuwQ-mWUTjyL5KNUrZoUzxXkgPMP8-Lx5BlzZUbmJEA8XgJwH0z9yjBvfUEU-s5xTZO7ijMYvY9ib7D854KcUAN3Vt3YTWumrrKcKZpGYDLntQMAvUFZuEnhrhNTHhDoOOjqE4pxUj49ziZ5Ny6WpLfHsturkt5nxUOemgqoZRmbwug0R9OfX4N4L0Z_LVrrMPhIJd3gDnrwtR5aZSAwFuvtNdg&sai=AMfl-YQmFB6l7IJqzzRX8xZuRA9Bn5WQLNyTzHzBqVXIawBoa4O3qQLwq4ERm01x1J4MM5kbmZckPzRqsaHiumw5yuo8TbgZQYL_-PdYiM6iMBSJ2G_SIn9G460aRklIXyqX72Rk5lQGwLQfB5Y34Ic1j8WTV9fhZmDzkCyDzQGLZw9sYXbuZGbl445oZj8LXVWdcpYR5mgjabtCCw6kQE78ZEtrPrGdxv1mL6SSkW_buZw&sig=Cg0ArKJSzPTdhr44lzN9EAE&fbs_aeid=%5Bgw_fbsaeid%5D&urlfix=1&adurl=https://www.google.com/"
 
-const DEFAULT_IMAGES = [
-  "https://tpc.googlesyndication.com/simgad/6237543862516787629?",
-  "https://img1.niftyimages.com/hw1h/cehp/mpsf",
-  "https://tpc.googlesyndication.com/simgad/6237543862516787629?",
-  "https://img1.niftyimages.com/hw1h/cehp/mpsf",
-]
+const DEFAULT_IMAGES = [cuboImage, cuboImage, cuboImage, cuboImage]
 
 function Face({ imageUrl, transform }) {
   return (
@@ -23,17 +19,6 @@ function Face({ imageUrl, transform }) {
         transform,
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          inset: -12,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          filter: "blur(10px)",
-          transform: "scale(1.1)",
-          backgroundImage: `url("${imageUrl.replace(/"/g, '\\"')}")`,
-        }}
-      />
       <img
         src={imageUrl}
         alt=""
@@ -42,7 +27,7 @@ function Face({ imageUrl, transform }) {
           inset: 0,
           width: "100%",
           height: "100%",
-          objectFit: "contain",
+          objectFit: "cover",
           display: "block",
         }}
       />
@@ -68,8 +53,8 @@ export default function CubeCreative({
 
   const animationDuration = isHovering ? safeHoverSpinSeconds : safeSpinSeconds
   const faces = useMemo(() => {
-    const [img1, img2, img3, img4] = images
-    return [img1, img2, img3, img4]
+    const fallback = DEFAULT_IMAGES[0]
+    return Array.from({ length: 4 }, (_, index) => images[index] || fallback)
   }, [images])
 
   return (

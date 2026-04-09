@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { createPortal } from "react-dom"
-import creativeA from "../../assets/Interscrollercocacola.jpg"
-import creativeB from "../../assets/Interscrollercocacola.jpg"
-import creativeC from "../../assets/Interscrollercocacola.jpg"
+import interscrollerCreative from "../../assets/interscroller.png"
 import { resolveCreativeAsset } from "../../features/proposals/creativeResolver"
 import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
 import { usePreviewViewport } from "./previewViewport.jsx"
@@ -39,10 +37,8 @@ export default function InterscrollerLayer({
   const img = useMemo(() => {
     const dynamicCreative = resolveCreativeAsset(campaign, "interscroller")
     if (dynamicCreative) return dynamicCreative
-    if (slotId === "inline_300x600") return creativeC
-    if (slotId === "inline_300x250_1") return creativeA
-    return creativeB
-  }, [campaign, slotId])
+    return interscrollerCreative
+  }, [campaign])
 
   useEffect(() => {
     if (!autoScrollIntoView) return undefined

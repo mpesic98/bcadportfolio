@@ -78,8 +78,8 @@ function PreRollContent({ formatData }) {
           ctaUrl={ctaUrl}
           containerWidth={730}
           containerHeight={330}
-          videoWidth={546}
-          sidebarWidth={184}
+          videoWidth={586}
+          sidebarWidth={140}
           stickyWidth={400}
           stickyHeight={225}
           countdownSeconds={11}

@@ -17,7 +17,7 @@ export default function HomeFormatsGrid({
       <div className="mb-6 md:mb-8">
         <h2 className="text-2xl font-semibold text-white md:text-3xl">Browse all formats</h2>
         <p className="mt-2 text-sm text-white/60 md:text-base">
-          Explore the complete solution set by segment and open full previews for each format.
+          Explore the complete solution set and open full previews for each format.
         </p>
       </div>
 
@@ -51,14 +51,14 @@ export default function HomeFormatsGrid({
                 <button
                   type="button"
                   onClick={() => onPreview(item)}
-                  className="text-sm font-medium text-green-300 transition-colors hover:text-green-200"
+                  className="bc-button bc-button--green bc-button--sm"
                 >
                   View preview
                 </button>
                 <button
                   type="button"
                   onClick={() => onOpenDetails(item)}
-                  className="rounded-full border border-white/20 px-3 py-1.5 text-xs text-white/80 transition-colors hover:bg-white/10"
+                  className="bc-button bc-button--dark bc-button--sm"
                 >
                   Details
                 </button>

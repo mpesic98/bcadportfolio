@@ -1,0 +1,261 @@
+.livescore-widget-shell {
+  width: 100%;
+  height: 100%;
+}
+
+.livescore-widget-shell--iframe {
+  padding: 8px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #eef2f6 0%, #dfe6ee 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.livescore-widget-shell--iframe .livescore-widget-shell__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 18px;
+  padding: 0 8px;
+  margin-bottom: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  color: #64748b;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.livescore-widget-shell--card .livescore-widget-shell__bar {
+  display: none;
+}
+
+.livescore-widget {
+  position: relative;
+  width: 100%;
+  height: calc(100% - var(--lw-shell-offset, 0px));
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.18), transparent 34%),
+    linear-gradient(160deg, #0f172a 0%, #162136 48%, #0b1220 100%);
+  color: #f8fafc;
+  box-shadow: 0 18px 44px rgba(15, 23, 42, 0.26);
+}
+
+.livescore-widget--tall {
+  border-radius: 22px;
+}
+
+.livescore-widget__glow {
+  position: absolute;
+  inset: auto auto -40px -32px;
+  width: 160px;
+  height: 160px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.26), transparent 72%);
+  pointer-events: none;
+}
+
+.livescore-widget__glow--top {
+  inset: -60px -50px auto auto;
+  width: 190px;
+  height: 190px;
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.16), transparent 68%);
+}
+
+.livescore-widget__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 14px;
+}
+
+.livescore-widget--tall .livescore-widget__inner {
+  padding: 18px 16px 16px;
+}
+
+.livescore-widget__topline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.livescore-widget__league {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.livescore-widget__live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #10b981;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.16);
+}
+
+.livescore-widget__league-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.livescore-widget__minute {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 56px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(248, 250, 252, 0.96);
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.livescore-widget--tall .livescore-widget__minute {
+  min-width: 68px;
+  font-size: 14px;
+}
+
+.livescore-widget__body {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+}
+
+.livescore-widget--tall .livescore-widget__body {
+  gap: 10px;
+}
+
+.livescore-widget__team {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  text-align: center;
+}
+
+.livescore-widget__team-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  padding: 5px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(248, 250, 252, 0.92);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.livescore-widget__team-name {
+  max-width: 90px;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.livescore-widget--tall .livescore-widget__team-name {
+  max-width: 92px;
+  font-size: 14px;
+}
+
+.livescore-widget__score {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+
+.livescore-widget__score-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.livescore-widget__score-number {
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.06em;
+}
+
+.livescore-widget--tall .livescore-widget__score-number {
+  font-size: 54px;
+}
+
+.livescore-widget__score-divider {
+  font-size: 20px;
+  font-weight: 700;
+  color: rgba(148, 163, 184, 0.88);
+}
+
+.livescore-widget__score-label {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(59, 130, 246, 0.14);
+  color: #bfdbfe;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.livescore-widget__sponsor {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.livescore-widget--tall .livescore-widget__sponsor {
+  margin-top: 16px;
+  border-radius: 16px;
+}
+
+.livescore-widget__sponsor-label {
+  color: #94a3b8;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.livescore-widget__sponsor-name {
+  color: #f8fafc;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.1;
+  text-align: right;
+}
+
+.livescore-widget--tall .livescore-widget__sponsor-name {
+  font-size: 13px;
+}

@@ -1,9 +1,8 @@
 import { useState } from "react"
+import bcLogo from "../../assets/BClogo.png"
 
 const BACKGROUND_IMAGE_URL =
   "https://static.nike.com/a/images/f_auto,cs_srgb/w_1536,c_limit/8f1c0681-46a5-4cd6-b4c6-b8fbc0b7b3aa/p%C3%A1gina-principal-de-running.png"
-const LOGO_IMAGE_URL =
-  "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/2560px-Logo_NIKE.svg.png"
 const TRACKING_COUNTER_NAME = "LeadForm_Submit"
 
 function isValidEmail(email) {
@@ -106,8 +105,8 @@ export default function LeadgenCreative({ width = 300, height = 600 }) {
         }}
       >
         <img
-          src={LOGO_IMAGE_URL}
-          alt="Logo de Nike"
+          src={bcLogo}
+          alt="Better Collective logo"
           style={{
             position: "relative",
             width: 90,

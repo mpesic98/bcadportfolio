@@ -1,38 +1,48 @@
-import adA from "../../assets/300x250.jpg"
-import adB from "../../assets/320x50.jpg"
-import adC from "../../assets/300x250.jpg"
-import adD from "../../assets/300x600.jpg"
-import adE from "../../assets/300x250.jpg"
-import adF from "../../assets/728x90.jpg"
-import railL from "../../assets/sideskin.png"
-import railR from "../../assets/sideskin.png"
+import display160x600 from "../../assets/display_160x600.png"
+import display300x250 from "../../assets/display_300x250.png"
+import display300x600 from "../../assets/display_300x600.png"
+import display320x50 from "../../assets/display_320x50.png"
+import display336x280 from "../../assets/display_336x280.png"
+import display728x90 from "../../assets/display_728x90.png"
+import display970x90 from "../../assets/display_970x90.png"
 import { resolveCreativeForSlot } from "../../features/proposals/creativeResolver"
 import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
 
+const slotFallbacks = {
+  rail_left_160x600: display160x600,
+  rail_right_160x600: display160x600,
+  top_1070x27: display970x90,
+  sidebar_300x250_1: display300x250,
+  sidebar_300x250_2: display300x250,
+  inline_300x600: display300x600,
+  inline_300x250_1: display300x250,
+  inline_300x250_3: display300x250,
+  mobile_inline_300x600: display300x600,
+  mobile_inline_300x250_1: display300x250,
+  mobile_inline_300x250_2: display300x250,
+  mobile_inline_300x250_3: display300x250,
+  mobile_sticky_320x50: display320x50,
+}
+
+const sizeFallbacks = {
+  "160x600": display160x600,
+  "300x250": display300x250,
+  "300x600": display300x600,
+  "320x50": display320x50,
+  "336x280": display336x280,
+  "728x90": display728x90,
+  "970x90": display970x90,
+}
+
 export default function DisplayCreative({ slotId, size = "300x250" }) {
   const { campaign } = usePreviewCampaign()
-  const map = {
-    rail_left_160x600: railL,
-    rail_right_160x600: railR,
-    top_1070x27: adF,
-    sidebar_300x250_1: adA,
-    sidebar_300x250_2: adC,
-    inline_300x600: adD,
-    inline_300x250_1: adE,
-    inline_300x250_3: adE,
-    mobile_inline_300x600: adD,
-    mobile_inline_300x250_1: adA,
-    mobile_inline_300x250_2: adC,
-    mobile_inline_300x250_3: adE,
-    mobile_sticky_320x50: adB,
-  }
 
   const [rawW, rawH] = size.split("x").map(Number)
   const w = Number.isFinite(rawW) ? rawW : 300
   const h = Number.isFinite(rawH) ? rawH : 250
-  const fallbackSrc = map[slotId] || adA
+  const fallbackSrc = slotFallbacks[slotId] || sizeFallbacks[size] || display300x250
   const src = resolveCreativeForSlot(campaign, slotId, fallbackSrc)
-  const isLeaderboard = slotId === "top_1070x27"
+  const isLeaderboard = w >= 728 && h <= 90
 
   return (
     <div className="w-full flex justify-center">
