@@ -126,7 +126,10 @@ export default function FormatDetailsModal({
               </div>
 
               <div className="flex flex-col p-6 md:p-8">
-                <p className="text-xs font-semibold uppercase tracking-wide text-green-300">
+                <p
+                  className="text-xs font-semibold uppercase tracking-wide"
+                  style={{ color: "var(--bc-green-soft)" }}
+                >
                   {regionLabel}
                 </p>
                 <h2 id={titleId} className="mt-2 text-2xl font-semibold text-white">

@@ -1,7 +1,7 @@
 function getDescription(item, region) {
   return (
-    item?.descriptionByRegion?.[region] ||
     item?.specs?.description ||
+    item?.descriptionByRegion?.[region] ||
     "Format details available."
   )
 }
@@ -46,7 +46,9 @@ export default function HomeFormatsGrid({
             </button>
 
             <div className="p-4">
-              <p className="truncate text-sm text-white/60">{getDescription(item, region)}</p>
+              <p className="min-h-[4.5rem] text-sm leading-relaxed text-white/60">
+                {getDescription(item, region)}
+              </p>
               <div className="mt-4 flex items-center justify-between gap-2">
                 <button
                   type="button"
@@ -59,6 +61,7 @@ export default function HomeFormatsGrid({
                   type="button"
                   onClick={() => onOpenDetails(item)}
                   className="bc-button bc-button--dark bc-button--sm"
+                  style={{ display: "none" }}
                 >
                   Details
                 </button>

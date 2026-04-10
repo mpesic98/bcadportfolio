@@ -1,7 +1,11 @@
 import { Navigate, useLocation, useParams } from "react-router-dom"
 import { endemicCatalog, endemicById } from "../../data/endemicCatalog"
 import { nonEndemicCatalog, nonEndemicById } from "../../data/nonEndemicCatalog"
-import { normalizeRegion, normalizeSegment } from "../../data/regionConfig"
+import {
+  getSegmentUrlValue,
+  normalizeRegion,
+  normalizeSegment,
+} from "../../data/regionConfig"
 import ContentWidgetPreview from "./ContentWidgetPreview"
 import CubePreview from "./CubePreview"
 import DisplayPreview from "./DisplayPreview"
@@ -30,15 +34,16 @@ export default function PreviewPageResolver() {
 
   const normalizedRegion = normalizeRegion(region)
   const normalizedSegment = normalizeSegment(segment)
+  const segmentUrlValue = getSegmentUrlValue(normalizedSegment)
 
   const requestedId = formatId || ""
   const canonicalId = aliasMap[requestedId] || requestedId
   const searchSuffix = location.search || ""
 
-  if (region !== normalizedRegion || segment !== normalizedSegment || requestedId !== canonicalId) {
+  if (region !== normalizedRegion || segment !== segmentUrlValue || requestedId !== canonicalId) {
     return (
       <Navigate
-        to={`/${normalizedRegion}/${normalizedSegment}/preview/${canonicalId}${searchSuffix}`}
+        to={`/${normalizedRegion}/${segmentUrlValue}/preview/${canonicalId}${searchSuffix}`}
         replace
       />
     )
@@ -56,7 +61,7 @@ export default function PreviewPageResolver() {
     const fallbackId = catalog[0]?.formatId || "display-banners"
     return (
       <Navigate
-        to={`/${normalizedRegion}/${normalizedSegment}/preview/${fallbackId}${searchSuffix}`}
+        to={`/${normalizedRegion}/${segmentUrlValue}/preview/${fallbackId}${searchSuffix}`}
         replace
       />
     )

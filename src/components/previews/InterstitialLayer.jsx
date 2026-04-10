@@ -156,7 +156,7 @@ export default function InterstitialLayer({
                 opacity: 0.9,
               }}
             >
-              CERRAR
+              CLOSE
             </span>
           </button>
 

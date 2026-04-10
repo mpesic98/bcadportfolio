@@ -6,6 +6,7 @@ import Europe from "../pages/Europe"
 import {
   DEFAULT_SEGMENT,
   buildLandingPath,
+  getSegmentUrlValue,
   normalizeRegion,
   normalizeSegment,
 } from "../data/regionConfig"
@@ -30,16 +31,17 @@ export default function RegionLandingResolver() {
     const search = new URLSearchParams(location.search)
     const incomingSegment = search.get("segment")
     const normalizedSegment = normalizeSegment(incomingSegment)
+    const segmentUrlValue = getSegmentUrlValue(normalizedSegment)
     const hasRegionInPath = Boolean(regionParam)
     const normalizedPath = hasRegionInPath ? `/${normalizedRegion}` : buildLandingPath(normalizedRegion)
 
     const requiresPathFix = location.pathname !== normalizedPath
 
-    const requiresSegmentFix = incomingSegment !== normalizedSegment
+    const requiresSegmentFix = incomingSegment !== segmentUrlValue
 
     if (!requiresPathFix && !requiresSegmentFix) return
 
-    search.set("segment", normalizedSegment || DEFAULT_SEGMENT)
+    search.set("segment", segmentUrlValue || getSegmentUrlValue(DEFAULT_SEGMENT))
     navigate(`${normalizedPath}?${search.toString()}`, { replace: true })
   }, [location.pathname, location.search, navigate, normalizedRegion, regionParam])
 

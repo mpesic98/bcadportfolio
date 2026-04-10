@@ -6,6 +6,7 @@ import FormatDetailsModal from "./FormatDetailsModal"
 import { endemicCatalog } from "../data/endemicCatalog"
 import { nonEndemicCatalog } from "../data/nonEndemicCatalog"
 import {
+  getSegmentUrlValue,
   normalizeSegment,
   resolveRegionFromPath,
 } from "../data/regionConfig"
@@ -35,14 +36,15 @@ function Offers() {
   )
   const incomingSegment = searchParams.get("segment")
   const segment = normalizeSegment(incomingSegment)
+  const segmentUrlValue = getSegmentUrlValue(segment)
 
   useEffect(() => {
-    if (incomingSegment === segment) return
+    if (incomingSegment === segmentUrlValue) return
 
     const next = new URLSearchParams(location.search)
-    next.set("segment", segment)
+    next.set("segment", segmentUrlValue)
     navigate(`/${region}?${next.toString()}`, { replace: true })
-  }, [incomingSegment, location.search, navigate, region, segment])
+  }, [incomingSegment, location.search, navigate, region, segmentUrlValue])
 
   const displayedItems = segment === "endemic" ? endemicCatalog : nonEndemicCatalog
 
@@ -53,7 +55,7 @@ function Offers() {
   }, [displayedItems, openItem])
 
   const openPreview = (item) => {
-    navigate(`/${region}/${segment}/preview/${item.formatId}`, {
+    navigate(`/${region}/${segmentUrlValue}/preview/${item.formatId}`, {
       state: {
         title: item.title,
         leftImg: item.leftImg || null,

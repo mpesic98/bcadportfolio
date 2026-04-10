@@ -9,8 +9,11 @@ import ProposalsAdminPage from "./pages/admin/ProposalsAdminPage"
 import ProposalPage from "./pages/proposals/ProposalPage"
 import RegionLandingResolver from "./router/RegionLandingResolver"
 import PreviewRouter from "./router/PreviewRouter"
+import { getSegmentUrlValue } from "./data/regionConfig"
 
 function App() {
+  const defaultSegmentUrl = getSegmentUrlValue("non-endemic")
+
   return (
     <ProposalStoreProvider>
       <BrowserRouter>
@@ -30,7 +33,7 @@ function App() {
           <Route path="/admin/preview/:proposalId" element={<ProposalPage mode="internal" />} />
           <Route path="/p/:proposalId" element={<ProposalPage mode="external" />} />
           <Route path="/:region/:segment/preview/:formatId" element={<PreviewRouter />} />
-          <Route path="*" element={<Navigate to="/?segment=non-endemic" replace />} />
+          <Route path="*" element={<Navigate to={`/?segment=${defaultSegmentUrl}`} replace />} />
         </Routes>
       </BrowserRouter>
     </ProposalStoreProvider>

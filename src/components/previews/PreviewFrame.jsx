@@ -5,7 +5,11 @@ import { nonEndemicCatalog } from "../../data/nonEndemicCatalog"
 import { getProposalFormatById } from "../../data/proposalFormats"
 import { PreviewCampaignProvider } from "../../features/proposals/PreviewCampaignContext.jsx"
 import { useProposalStore } from "../../features/proposals/ProposalStore"
-import { normalizeRegion, normalizeSegment } from "../../data/regionConfig"
+import {
+  getSegmentUrlValue,
+  normalizeRegion,
+  normalizeSegment,
+} from "../../data/regionConfig"
 import { PreviewViewportProvider, usePreviewViewport } from "./previewViewport.jsx"
 
 const TABS_SCROLL_STORAGE_KEY = "preview-format-tabs-scroll-left"
@@ -80,6 +84,7 @@ export default function PreviewFrame({
 
   const region = normalizeRegion(regionParam)
   const segment = normalizeSegment(segmentParam)
+  const segmentUrlValue = getSegmentUrlValue(segment)
 
   const catalog = segment === "endemic" ? endemicCatalog : nonEndemicCatalog
   const tabs = useMemo(() => {
@@ -200,14 +205,14 @@ export default function PreviewFrame({
 
     const queryString = nextSearch.toString()
     navigate(
-      `/${region}/${segment}/preview/${fallbackTab.key}${queryString ? `?${queryString}` : ""}`,
+      `/${region}/${segmentUrlValue}/preview/${fallbackTab.key}${queryString ? `?${queryString}` : ""}`,
       {
         replace: true,
       }
     )
 
     return undefined
-  }, [forcedVp, formatId, location.search, navigate, region, segment, tabs, vp])
+  }, [forcedVp, formatId, location.search, navigate, region, segmentUrlValue, tabs, vp])
 
   useEffect(() => {
     if (vp !== "mobile") return undefined
@@ -315,11 +320,11 @@ export default function PreviewFrame({
       nextSearch.delete("vp")
     }
     const queryString = nextSearch.toString()
-    navigate(`/${region}/${segment}/preview/${key}${queryString ? `?${queryString}` : ""}`)
+    navigate(`/${region}/${segmentUrlValue}/preview/${key}${queryString ? `?${queryString}` : ""}`)
   }
 
   const goHome = () => {
-    navigate(`/${region}?segment=${segment}`)
+    navigate(`/${region}?segment=${segmentUrlValue}`)
   }
 
   return (

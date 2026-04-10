@@ -5,6 +5,7 @@ import { endemicCatalog } from "../../data/endemicCatalog"
 import { nonEndemicCatalog } from "../../data/nonEndemicCatalog"
 import {
   buildLandingPath,
+  getSegmentUrlValue,
   normalizeSegment,
   resolveRegionFromPath,
 } from "../../data/regionConfig"
@@ -30,14 +31,15 @@ export default function HomeLanding() {
   )
   const incomingSegment = searchParams.get("segment")
   const segment = normalizeSegment(incomingSegment)
+  const segmentUrlValue = getSegmentUrlValue(segment)
 
   useEffect(() => {
-    if (incomingSegment === segment) return
+    if (incomingSegment === segmentUrlValue) return
 
     const next = new URLSearchParams(location.search)
-    next.set("segment", segment)
+    next.set("segment", segmentUrlValue)
     navigate(`${buildLandingPath(region)}?${next.toString()}`, { replace: true })
-  }, [incomingSegment, location.search, navigate, region, segment])
+  }, [incomingSegment, location.search, navigate, region, segmentUrlValue])
 
   const displayedItems = segment === "endemic" ? endemicCatalog : nonEndemicCatalog
   const featuredItems = displayedItems.slice(0, 3)
@@ -50,7 +52,7 @@ export default function HomeLanding() {
   }, [displayedItems, openItem])
 
   const openPreview = (item) => {
-    navigate(`/${region}/${segment}/preview/${item.formatId}`, {
+    navigate(`/${region}/${segmentUrlValue}/preview/${item.formatId}`, {
       state: {
         title: item.title,
         leftImg: item.leftImg || null,
@@ -68,7 +70,7 @@ export default function HomeLanding() {
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(680px circle at 70% 20%, rgba(34,197,94,0.12), transparent 62%)",
+              "radial-gradient(680px circle at 70% 20%, rgba(0,167,103,0.14), transparent 62%)",
           }}
         />
 

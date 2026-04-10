@@ -2,6 +2,7 @@ import { Link, useParams } from "react-router-dom"
 import { useState } from "react"
 import ProposalPresentation from "../../components/proposals/ProposalPresentation"
 import { getProposalFormatById } from "../../data/proposalFormats"
+import { getSegmentUrlValue } from "../../data/regionConfig"
 import { useProposalStore } from "../../features/proposals/ProposalStore"
 
 function ProposalFallback({ mode, message }) {
@@ -106,7 +107,7 @@ export default function ProposalPage({ mode = "external" }) {
       proposalFormat: format.id,
     })
 
-    return `/${previewRoute.region}/${previewRoute.segment}/preview/${previewRoute.formatId}?${search.toString()}`
+    return `/${previewRoute.region}/${getSegmentUrlValue(previewRoute.segment)}/preview/${previewRoute.formatId}?${search.toString()}`
   }
 
   return (

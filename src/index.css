@@ -1,8 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --bc-green: #1fc157;
-  --bc-green-strong: #18a64a;
+  --bc-green: #00a767;
+  --bc-green-strong: #008955;
+  --bc-green-soft: #58d3a9;
+  --bc-green-softest: #9ce8cf;
+  --bc-green-wash: rgba(0, 167, 103, 0.12);
+  --bc-green-border: rgba(0, 167, 103, 0.3);
   --bc-black: #0b0d10;
   --bc-black-soft: #1a212a;
 }

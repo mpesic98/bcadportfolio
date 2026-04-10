@@ -24,10 +24,14 @@ export default function HomeValueProps() {
           >
             <div
               aria-hidden="true"
-              className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-green-300/70 to-transparent"
+              className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent to-transparent"
+              style={{
+                backgroundImage:
+                  "linear-gradient(to right, transparent, rgba(0,167,103,0.7), transparent)",
+              }}
             />
             <p className="text-[2.8rem] font-semibold leading-none tracking-tight text-white md:text-[3.4rem]">
-              <span className="text-green-300">{entry.value}</span>
+              <span style={{ color: "var(--bc-green-soft)" }}>{entry.value}</span>
             </p>
             <h2 className="mt-4 max-w-[16ch] text-base font-medium leading-snug text-white/78 md:text-lg">
               {entry.label}

@@ -5,6 +5,7 @@ import { endemicCatalog } from "../../data/endemicCatalog"
 import { nonEndemicCatalog } from "../../data/nonEndemicCatalog"
 import {
   buildLandingPath,
+  getSegmentUrlValue,
   normalizeSegment,
   resolveRegionFromPath,
 } from "../../data/regionConfig"
@@ -24,6 +25,8 @@ function Navbar() {
     return normalizeSegment(search.get("segment"))
   }, [location.search])
 
+  const segmentUrlValue = getSegmentUrlValue(segment)
+
   useEffect(() => {
     setIsOpen(false)
   }, [location.pathname, location.search])
@@ -31,13 +34,13 @@ function Navbar() {
   const getLinkClass = ({ isActive }) =>
     `cursor-pointer border-b-2 border-transparent pb-1 text-sm font-medium tracking-wide transition-colors duration-200 ${
       isActive
-        ? "border-green-500 text-white"
+        ? "border-[#00a767] text-white"
         : "text-white/70 hover:text-white"
     }`
 
   const buildRegionLink = (nextRegion) => ({
     pathname: buildLandingPath(nextRegion),
-    search: `?segment=${segment}`,
+    search: `?segment=${segmentUrlValue}`,
   })
 
   const previewTarget = segment === "endemic" ? endemicCatalog[0] : nonEndemicCatalog[0]
@@ -45,7 +48,7 @@ function Navbar() {
   const openPreview = () => {
     if (!previewTarget) return
     setIsOpen(false)
-    navigate(`/${region}/${segment}/preview/${previewTarget.formatId}`)
+    navigate(`/${region}/${segmentUrlValue}/preview/${previewTarget.formatId}`)
   }
 
   return (

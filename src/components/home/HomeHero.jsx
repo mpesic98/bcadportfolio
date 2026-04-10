@@ -8,9 +8,9 @@ export default function HomeHero({ heroImage, onExplore }) {
 
         <h1 className="mt-5 max-w-[620px] text-4xl font-semibold leading-tight text-white md:text-[3.4rem]">
           Unlock the power of{" "}
-          <span className="text-green-300">premium sports media</span>
+          <span style={{ color: "var(--bc-green-soft)" }}>premium sports media</span>
           {" "}to connect with millions of{" "}
-          <span className="text-green-300">passionate fans</span>
+          <span style={{ color: "var(--bc-green-soft)" }}>passionate fans</span>
         </h1>
 
         <p className="mt-5 max-w-[520px] text-base leading-relaxed text-white/70 md:text-lg">
@@ -34,6 +34,7 @@ export default function HomeHero({ heroImage, onExplore }) {
           <a
             href="mailto:ads@bettercollective.com"
             className="bc-button bc-button--dark"
+            style={{ display: "none" }}
           >
             Get in touch
           </a>
@@ -44,7 +45,11 @@ export default function HomeHero({ heroImage, onExplore }) {
       <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.03] px-4 py-8 shadow-[0_35px_90px_rgba(0,0,0,0.5)] md:px-6">
         <div
           aria-hidden="true"
-          className="absolute left-1/2 top-1/2 h-[320px] w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(74,222,128,0.28)_0%,rgba(16,185,129,0.14)_42%,rgba(11,13,16,0)_74%)] blur-xl md:h-[420px] md:w-[420px]"
+          className="absolute left-1/2 top-1/2 h-[320px] w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-xl md:h-[420px] md:w-[420px]"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(0,167,103,0.3) 0%, rgba(0,137,85,0.16) 42%, rgba(11,13,16,0) 74%)",
+          }}
         />
         <div
           aria-hidden="true"

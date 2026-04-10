@@ -8,8 +8,8 @@ function getTag(item, index) {
 
 function getDescription(item, region) {
   return (
-    item?.descriptionByRegion?.[region] ||
     item?.specs?.description ||
+    item?.descriptionByRegion?.[region] ||
     "Premium ad experience tailored to your campaign goals."
   )
 }
@@ -42,12 +42,21 @@ export default function HomeFeatured({ items, region, onPreview }) {
             </div>
 
             <div className="flex flex-1 flex-col p-5">
-              <span className="inline-flex w-fit rounded-full border border-green-400/30 bg-green-500/10 px-3 py-1 text-xs text-green-200">
+              <span
+                className="inline-flex w-fit rounded-full px-3 py-1 text-xs"
+                style={{
+                  border: "1px solid var(--bc-green-border)",
+                  background: "var(--bc-green-wash)",
+                  color: "var(--bc-green-softest)",
+                }}
+              >
                 {getTag(item, index)}
               </span>
               <h3 className="mt-3 text-xl font-semibold text-white">{item.title}</h3>
-              <p className="mt-2 truncate text-sm text-white/60">{getDescription(item, region)}</p>
-              <span className="mt-auto pt-6 text-sm font-medium text-green-300">
+              <p className="mt-2 min-h-[4.5rem] text-sm leading-relaxed text-white/60">
+                {getDescription(item, region)}
+              </p>
+              <span className="mt-auto pt-6 text-sm font-medium" style={{ color: "var(--bc-green-soft)" }}>
                 View format <span aria-hidden="true">-&gt;</span>
               </span>
             </div>
