@@ -24,7 +24,13 @@ export function createLocalStorageProposalAdapter({
     },
     setRuntimeState(runtimeState) {
       if (!storage) return
-      storage.setItem(storageKey, JSON.stringify(normalizeRuntimeState(runtimeState)))
+      try {
+        storage.setItem(storageKey, JSON.stringify(normalizeRuntimeState(runtimeState)))
+      } catch {
+        throw new Error(
+          "The local draft could not be saved. It may exceed browser storage; use public asset URLs instead of uploaded Data URLs."
+        )
+      }
     },
   }
 }

@@ -1,11 +1,20 @@
 import PreviewFrame from "../../components/previews/PreviewFrame"
 import BaseNewsMock from "./BaseNewsMock"
 import VideoBannerCreative from "../../components/previews/VideoBannerCreative"
+import VideoCountdownBannerCreative from "../../components/previews/VideoCountdownBannerCreative"
+import PreviewVariantSwitcher from "../../components/previews/PreviewVariantSwitcher"
 import { useLocation } from "react-router-dom"
+import { useState } from "react"
+
+const VARIANTS = [
+  { value: "video", label: "Video" },
+  { value: "countdown", label: "Countdown" },
+]
 
 export default function VideoBannerPreview() {
   const contentMaxWidth = 1100
   const location = useLocation()
+  const [variant, setVariant] = useState("video")
   const isMobile = new URLSearchParams(location.search).get("vp") === "mobile"
 
   const renderAd = (slotId) => {
@@ -34,11 +43,25 @@ export default function VideoBannerPreview() {
       mobile_inline_300x600: "300x600",
     }
 
-    return <VideoBannerCreative slotId={slotId} size={sizes[slotId] || "300x250"} />
+    const size = sizes[slotId] || "300x250"
+
+    return variant === "countdown" ? (
+      size === "300x250" || size === "300x600" ? (
+        <VideoCountdownBannerCreative size={size} />
+      ) : null
+    ) : (
+      <VideoBannerCreative slotId={slotId} size={size} />
+    )
   }
 
   return (
     <PreviewFrame maxWidth={contentMaxWidth}>
+      <PreviewVariantSwitcher
+        value={variant}
+        options={VARIANTS}
+        onChange={setVariant}
+        label="Video banner creative type"
+      />
       <BaseNewsMock renderAd={renderAd} />
     </PreviewFrame>
   )

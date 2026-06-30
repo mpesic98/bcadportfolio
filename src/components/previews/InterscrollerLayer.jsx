@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import interscrollerCreative from "../../assets/interscroller.png"
+import interscrollerVideo from "../../assets/video/50-8bit-420-mobile.webm"
 import { resolveCreativeAsset } from "../../features/proposals/creativeResolver"
 import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
 import { usePreviewViewport } from "./previewViewport.jsx"
@@ -12,6 +13,7 @@ export default function InterscrollerLayer({
   slotId,
   size = "300x600",
   autoScrollIntoView = false,
+  mediaType = "image",
 }) {
   const { campaign } = usePreviewCampaign()
   const {
@@ -23,11 +25,16 @@ export default function InterscrollerLayer({
   const isMobile = vp === "mobile"
   const [w, h] = size.split("x").map(Number)
   const wrapRef = useRef(null)
+  const videoRef = useRef(null)
   const [clip, setClip] = useState("inset(0px 0px 0px 0px)")
   const [show, setShow] = useState(false)
   const [leftPx, setLeftPx] = useState(0)
   const [overlayWidth, setOverlayWidth] = useState(w)
   const [mobileSlotHeight, setMobileSlotHeight] = useState(h)
+  const [controlsTop, setControlsTop] = useState(12)
+  const [paused, setPaused] = useState(false)
+  const [muted, setMuted] = useState(true)
+  const [ended, setEnded] = useState(false)
 
   const overlayRoot =
     typeof document !== "undefined"
@@ -39,6 +46,11 @@ export default function InterscrollerLayer({
     if (dynamicCreative) return dynamicCreative
     return interscrollerCreative
   }, [campaign])
+
+  const videoUrl = useMemo(
+    () => resolveCreativeAsset(campaign, "interscroller_video", interscrollerVideo),
+    [campaign]
+  )
 
   useEffect(() => {
     if (!autoScrollIntoView) return undefined
@@ -127,6 +139,7 @@ export default function InterscrollerLayer({
       const rightInset = Math.max(0, boundsRight - visRight)
 
       setClip(`inset(${topInset}px ${rightInset}px ${bottomInset}px ${leftInset}px)`)
+      setControlsTop(topInset + 12)
     }
 
     const queueCalc = () => {
@@ -155,6 +168,33 @@ export default function InterscrollerLayer({
     }
   }, [h, isMobile, scrollElement, viewportHeight, viewportWidth, w])
 
+  const togglePlay = () => {
+    const video = videoRef.current
+    if (!video) return
+
+    if (video.paused) {
+      video.play().catch(() => {})
+    } else {
+      video.pause()
+    }
+  }
+
+  const toggleMute = () => {
+    const video = videoRef.current
+    if (!video) return
+    video.muted = !video.muted
+    setMuted(video.muted)
+    video.play().catch(() => {})
+  }
+
+  const replay = () => {
+    const video = videoRef.current
+    if (!video) return
+    video.currentTime = 0
+    setEnded(false)
+    video.play().catch(() => {})
+  }
+
   const overlayLayer = (
     <div
       className={isMobile && overlayRoot ? "absolute inset-0 z-[5000] pointer-events-none" : "fixed inset-0 z-[5000] pointer-events-none"}
@@ -164,12 +204,67 @@ export default function InterscrollerLayer({
         className="absolute"
         style={{ top: 0, bottom: 0, left: leftPx, width: overlayWidth }}
       >
-        <img
-          src={img}
-          alt="Interscroller creative"
-          draggable="false"
-          className="w-full h-full object-cover"
-        />
+        {mediaType === "video" ? (
+          <>
+            <video
+              ref={videoRef}
+              src={videoUrl}
+              poster={img}
+              muted={muted}
+              autoPlay
+              playsInline
+              preload="auto"
+              onPlay={() => {
+                setPaused(false)
+                setEnded(false)
+              }}
+              onPause={() => setPaused(true)}
+              onEnded={() => {
+                setPaused(true)
+                setEnded(true)
+              }}
+              className="h-full w-full object-cover"
+            />
+            <div
+              className="pointer-events-auto absolute right-3 flex items-center gap-2"
+              style={{ top: controlsTop }}
+            >
+              <button
+                type="button"
+                onClick={toggleMute}
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-black/65 text-xs text-white shadow"
+                aria-label={muted ? "Unmute video" : "Mute video"}
+              >
+                <span aria-hidden="true">{muted ? "🔇" : "🔊"}</span>
+              </button>
+              <button
+                type="button"
+                onClick={togglePlay}
+                className="flex h-9 w-9 items-center justify-center rounded-full bg-black/65 text-xs text-white shadow"
+                aria-label={paused ? "Play video" : "Pause video"}
+              >
+                <span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span>
+              </button>
+              {ended ? (
+                <button
+                  type="button"
+                  onClick={replay}
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-black/65 text-xs text-white shadow"
+                  aria-label="Replay video"
+                >
+                  <span aria-hidden="true">↻</span>
+                </button>
+              ) : null}
+            </div>
+          </>
+        ) : (
+          <img
+            src={img}
+            alt="Interscroller creative"
+            draggable="false"
+            className="h-full w-full object-cover"
+          />
+        )}
       </div>
     </div>
   )

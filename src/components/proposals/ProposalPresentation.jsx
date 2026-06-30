@@ -38,7 +38,7 @@ function formatDateLabel(value) {
 
 function Tag({ children }) {
   return (
-    <span className="rounded-full border border-white/12 bg-white/6 px-3 py-1.5 text-[11px] uppercase tracking-[0.24em] text-white/72">
+    <span className="bc-pill bc-pill--glass uppercase tracking-[0.18em]">
       {children}
     </span>
   )
@@ -49,7 +49,7 @@ function MetricCard({ label, value, accent }) {
     <div className="rounded-[24px] border border-white/10 bg-white/5 p-4">
       <div
         className="h-1.5 w-16 rounded-full"
-        style={{ backgroundColor: accent || "#D7FF64" }}
+        style={{ backgroundColor: accent || "var(--bc-green-soft)" }}
       />
       <p className="mt-4 text-[11px] uppercase tracking-[0.28em] text-white/46">
         {label}
@@ -178,7 +178,7 @@ function MockupStage({
 
       <div
         className="absolute bottom-4 left-4 h-1.5 w-24 rounded-full"
-        style={{ backgroundColor: theme.primary || "#D7FF64" }}
+        style={{ backgroundColor: theme.primary || "var(--bc-green-soft)" }}
       />
     </div>
   )
@@ -211,18 +211,18 @@ export default function ProposalPresentation({
 
   return (
     <div
-      className="min-h-full rounded-[30px] border border-white/10 bg-[#0B111B] text-white"
+      className="min-h-full rounded-xl border border-white/10 bg-[var(--bc-black)] text-white"
       style={{
         backgroundImage: `
           radial-gradient(980px circle at 0% 0%, ${hexToRgba(theme.secondary, 0.14)}, transparent 58%),
           radial-gradient(900px circle at 100% 10%, ${hexToRgba(theme.primary, 0.18)}, transparent 60%),
-          linear-gradient(180deg, rgba(7,12,20,0.98), rgba(10,15,24,0.98))
+          linear-gradient(180deg, rgba(1,72,58,0.98), rgba(8,33,28,0.99))
         `,
       }}
     >
       <section className="border-b border-white/10 px-5 py-6 md:px-8 md:py-8">
         <div className="grid gap-5 xl:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]">
-          <div className="rounded-[28px] border border-white/10 bg-white/6 p-5 md:p-6">
+          <div className="rounded-xl border border-white/10 bg-white/6 p-5 md:p-6">
             <p className="text-[11px] uppercase tracking-[0.3em] text-white/46">
               Better Collective Sports Media Network
             </p>
@@ -280,7 +280,7 @@ export default function ProposalPresentation({
             </div>
 
             {headerActions ? (
-              <div className="flex flex-wrap gap-2 rounded-[24px] border border-white/10 bg-white/5 p-4">
+              <div className="flex flex-wrap gap-2 rounded-xl border border-white/10 bg-white/5 p-4">
                 {headerActions}
               </div>
             ) : null}
@@ -309,7 +309,7 @@ export default function ProposalPresentation({
           {visibleFormats.map((format) => (
             <article
               key={format.id}
-              className="overflow-hidden rounded-[28px] border border-white/10 bg-white/6 shadow-xl shadow-black/15 transition-transform hover:-translate-y-0.5"
+              className="overflow-hidden rounded-xl border border-white/10 bg-white/6 shadow-xl shadow-black/15 transition-transform hover:-translate-y-0.5"
             >
               <button
                 type="button"
@@ -338,7 +338,7 @@ export default function ProposalPresentation({
                   <button
                     type="button"
                     onClick={() => setOpenFormatId(format.id)}
-                    className="rounded-full border border-white/12 px-3 py-1.5 text-xs font-medium text-white/78 transition-colors hover:bg-white/9 hover:text-white"
+                    className="bc-button bc-button--dark bc-button--sm"
                   >
                     View format
                   </button>
@@ -356,13 +356,13 @@ export default function ProposalPresentation({
                     ).map((site) => (
                       <span
                         key={site.id}
-                        className="rounded-full bg-white/8 px-3 py-1.5 text-sm text-white/72"
+                        className="bc-pill bc-pill--glass"
                       >
                         {site.name}
                       </span>
                     ))}
                     {format.proposalSites.length > 2 ? (
-                      <span className="rounded-full bg-white/8 px-3 py-1.5 text-sm text-white/56">
+                      <span className="bc-pill bc-pill--glass">
                         +{format.proposalSites.length - 2} more
                       </span>
                     ) : null}
@@ -372,7 +372,7 @@ export default function ProposalPresentation({
                     type="button"
                     onClick={() => setOpenFormatId(format.id)}
                     className="text-sm font-medium"
-                    style={{ color: theme.primary || "#D7FF64" }}
+                    style={{ color: theme.primary || "var(--bc-green-soft)" }}
                   >
                     Explore format {"->"}
                   </button>
@@ -392,7 +392,7 @@ export default function ProposalPresentation({
             className="absolute inset-0 bg-[#04070C]/76"
           />
 
-          <section className="relative z-10 grid w-full max-w-[1240px] overflow-hidden rounded-[32px] border border-white/10 bg-[#09101A] shadow-2xl shadow-black/40 lg:grid-cols-[1.05fr_0.95fr]">
+          <section className="relative z-10 grid w-full max-w-[1240px] overflow-hidden rounded-xl border border-white/10 bg-[var(--bc-black)] shadow-2xl shadow-black/40 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="bg-[#EEF3F8]">
               <div className="p-4 md:p-6">
                 <MockupStage
@@ -434,7 +434,7 @@ export default function ProposalPresentation({
                 <button
                   type="button"
                   onClick={() => setOpenFormatId(null)}
-                  className="rounded-full border border-white/12 bg-white/6 px-3 py-2 text-sm text-white/74 transition-colors hover:bg-white/10 hover:text-white"
+                  className="bc-button bc-button--dark bc-button--sm"
                 >
                   Close
                 </button>
@@ -485,8 +485,11 @@ export default function ProposalPresentation({
                 <div className="mt-auto pt-8">
                   <Link
                     to={buildLivePreviewHref(activeFormat)}
-                    className="inline-flex rounded-full px-5 py-3 text-sm font-medium text-[#07111F]"
-                    style={{ backgroundColor: theme.primary || "#D7FF64" }}
+                    className="bc-button"
+                    style={{
+                      "--bc-button-bg": theme.primary || "var(--bc-green)",
+                      "--bc-button-hover": "var(--bc-black-soft)",
+                    }}
                   >
                     Open full placement preview
                   </Link>

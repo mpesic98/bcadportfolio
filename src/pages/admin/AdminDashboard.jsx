@@ -4,13 +4,13 @@ import { useProposalStore } from "../../features/proposals/ProposalStore"
 function StatCard({ label, value, tone = "default" }) {
   const tones = {
     default: "from-white/9 to-white/4",
-    lime: "from-[#D7FF64]/18 to-[#D7FF64]/6",
-    ember: "from-[#FF8446]/20 to-[#FF8446]/6",
+    lime: "from-[var(--bc-green-soft)]/18 to-[var(--bc-green-soft)]/6",
+    ember: "from-[var(--bc-cream)]/16 to-[var(--bc-cream)]/5",
   }
 
   return (
     <div
-      className={`rounded-[24px] border border-white/10 bg-gradient-to-br ${tones[tone]} p-5`}
+      className={`rounded-xl border border-white/10 bg-gradient-to-br ${tones[tone]} p-5`}
     >
       <p className="text-[11px] uppercase tracking-[0.28em] text-white/45">
         {label}
@@ -28,8 +28,8 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-[28px] border border-white/10 bg-white/4 p-5 md:p-6">
-        <p className="text-[11px] uppercase tracking-[0.3em] text-[#D7FF64]">
+      <section className="rounded-xl border border-white/10 bg-white/5 p-5 md:p-6">
+        <p className="text-[11px] uppercase tracking-[0.3em] text-[var(--bc-green-soft)]">
           Control Room
         </p>
         <div className="mt-3 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
@@ -38,23 +38,22 @@ export default function AdminDashboard() {
               Campaign and proposal management in one place
             </h2>
             <p className="mt-3 text-sm leading-7 text-white/62 md:text-base">
-              Use this workspace to define reusable campaign branding, curate
-              proposal-specific format mixes and open branded previews before
-              sharing them with clients.
+              Campaigns store reusable branding and creative assets. Proposals
+              select the format mix, copy and sites for each Client Preview.
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
             <Link
               to="/admin/campaigns"
-              className="rounded-full border border-white/12 px-4 py-2.5 text-sm text-white/80 transition-colors hover:bg-white/8 hover:text-white"
+              className="bc-button bc-button--dark bc-button--sm"
             >
               Manage campaigns
             </Link>
             <Link
               to="/admin/proposals/new"
-              className="rounded-full bg-[#D7FF64] px-4 py-2.5 text-sm font-medium text-[#0A1220]"
+              className="bc-button bc-button--hero bc-button--sm"
             >
-              New proposal
+              New Client Preview
             </Link>
           </div>
         </div>
@@ -67,19 +66,19 @@ export default function AdminDashboard() {
       </section>
 
       <section className="grid gap-5 xl:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-[28px] border border-white/10 bg-white/4 p-5">
+        <div className="rounded-xl border border-white/10 bg-white/5 p-5">
           <div className="flex items-center justify-between gap-3">
             <div>
               <p className="text-[11px] uppercase tracking-[0.28em] text-white/45">
                 Recent proposals
               </p>
               <h3 className="mt-2 text-2xl font-semibold text-white">
-                Client-ready links
+                Client Preview workspace
               </h3>
             </div>
             <Link
               to="/admin/proposals"
-              className="rounded-full border border-white/12 px-4 py-2 text-sm text-white/75 transition-colors hover:bg-white/8 hover:text-white"
+              className="bc-button bc-button--dark bc-button--sm"
             >
               All proposals
             </Link>
@@ -89,7 +88,7 @@ export default function AdminDashboard() {
             {proposals.map((proposal) => (
               <article
                 key={proposal.id}
-                className="flex flex-col gap-4 rounded-[24px] border border-white/10 bg-[#0A1019] p-4 md:flex-row md:items-center md:justify-between"
+                className="flex flex-col gap-4 rounded-lg border border-white/10 bg-black/10 p-4 md:flex-row md:items-center md:justify-between"
               >
                 <div className="min-w-0">
                   <p className="text-xs uppercase tracking-[0.24em] text-white/45">
@@ -105,15 +104,9 @@ export default function AdminDashboard() {
                 <div className="flex flex-wrap gap-2">
                   <Link
                     to={`/admin/preview/${proposal.id}`}
-                    className="rounded-full border border-white/12 px-4 py-2 text-sm text-white/78 transition-colors hover:bg-white/8 hover:text-white"
+                    className="bc-button bc-button--hero bc-button--sm"
                   >
                     Internal preview
-                  </Link>
-                  <Link
-                    to={`/p/${proposal.id}`}
-                    className="rounded-full bg-white px-4 py-2 text-sm font-medium text-[#09111B]"
-                  >
-                    External view
                   </Link>
                 </div>
               </article>
@@ -121,17 +114,17 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="rounded-[28px] border border-white/10 bg-white/4 p-5">
+        <div className="rounded-xl border border-white/10 bg-white/5 p-5">
           <p className="text-[11px] uppercase tracking-[0.28em] text-white/45">
             Workflow
           </p>
           <h3 className="mt-2 text-2xl font-semibold text-white">
-            MVP proposal sequence
+            MVP builder flow
           </h3>
           <ol className="mt-5 space-y-4 text-sm leading-7 text-white/64">
             <li>1. Create or update a campaign with brand logo, theme colors and creative URLs.</li>
-            <li>2. Build a proposal by selecting the campaign, visible formats, sites and categories.</li>
-            <li>3. Open the internal preview to validate branding and copy the external share link.</li>
+            <li>2. Build a proposal by selecting the campaign, included formats, sites and categories.</li>
+            <li>3. Validate the internal preview, then export the standalone Client Preview HTML.</li>
           </ol>
         </div>
       </section>

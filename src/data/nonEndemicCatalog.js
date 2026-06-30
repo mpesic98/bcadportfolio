@@ -27,6 +27,12 @@ const nonEndemicImageRoutes = {
     showcaseAImage: asset("../assets/Interscroller.jpg"),
     showcaseBImage: asset("../assets/adImg.jpg"),
   },
+  mobileSlider: {
+    cardImage: asset("../assets/slider.png"),
+    hoverImage: asset("../assets/display_300x250.png"),
+    showcaseAImage: asset("../assets/slider.png"),
+    showcaseBImage: asset("../assets/display_300x250.png"),
+  },
   videoBanners: {
     cardImage: asset("../assets/videobannercard.gif"),
     hoverImage: asset("../assets/skincard.png"),
@@ -82,6 +88,7 @@ export const nonEndemicCatalog = [
     formatId: "display-banners",
     title: "Display Banners",
     previewKind: "display",
+    creativeOptions: ["Image", "GIF"],
     cardImage: nonEndemicImageRoutes.displayBanners.cardImage,
     hoverImage: nonEndemicImageRoutes.displayBanners.hoverImage,
     showcaseSlides: [
@@ -104,6 +111,7 @@ export const nonEndemicCatalog = [
     formatId: "skin",
     title: "Skin",
     previewKind: "skin",
+    creativeOptions: ["Full-width", "Background", "Rails"],
     cardImage: nonEndemicImageRoutes.skin.cardImage,
     hoverImage: nonEndemicImageRoutes.skin.hoverImage,
     leftImg: nonEndemicImageRoutes.skin.leftImage,
@@ -128,6 +136,7 @@ export const nonEndemicCatalog = [
     formatId: "interstitial",
     title: "Interstitial",
     previewKind: "interstitial",
+    creativeOptions: ["Image", "HTML5"],
     cardImage: nonEndemicImageRoutes.interstitial.cardImage,
     hoverImage: nonEndemicImageRoutes.interstitial.hoverImage,
     showcaseSlides: [
@@ -150,6 +159,7 @@ export const nonEndemicCatalog = [
     formatId: "interscroller",
     title: "Interscroller",
     previewKind: "interscroller",
+    creativeOptions: ["Image", "Video"],
     cardImage: nonEndemicImageRoutes.interscroller.cardImage,
     hoverImage: nonEndemicImageRoutes.interscroller.hoverImage,
     showcaseSlides: [
@@ -169,9 +179,33 @@ export const nonEndemicCatalog = [
     },
   },
   {
+    formatId: "mobile-slider",
+    title: "Mobile Slider",
+    previewKind: "mobile-slider",
+    creativeOptions: ["Image"],
+    cardImage: nonEndemicImageRoutes.mobileSlider.cardImage,
+    hoverImage: nonEndemicImageRoutes.mobileSlider.hoverImage,
+    showcaseSlides: [
+      { id: "a", title: "Mobile Slider closed", image: nonEndemicImageRoutes.mobileSlider.showcaseAImage },
+      { id: "b", title: "Mobile Slider expanded", image: nonEndemicImageRoutes.mobileSlider.showcaseBImage },
+    ],
+    specs: {
+      sizes: ["Mobile only", "Expanded panel: 300x250", "Handle: 40x300"],
+      kpis: ["Open Rate", "Interaction Rate", "CTR"],
+      description:
+        "Mobile-only side panel that users can open, close or drag without interrupting article scroll.",
+    },
+    descriptionByRegion: {
+      usa: "US mobile slider setup balances a persistent entry point with an on-demand 300x250 canvas.",
+      latam: "LATAM mobile slider setup prioritizes touch interaction and lightweight mobile delivery.",
+      europe: "EU mobile slider setup keeps the ad clearly identified and fully user-controlled.",
+    },
+  },
+  {
     formatId: "video-banners",
     title: "Video Banners",
     previewKind: "video-banners",
+    creativeOptions: ["Video", "Countdown"],
     cardImage: nonEndemicImageRoutes.videoBanners.cardImage,
     hoverImage: nonEndemicImageRoutes.videoBanners.hoverImage,
     showcaseSlides: [
@@ -194,6 +228,7 @@ export const nonEndemicCatalog = [
     formatId: "pre-roll-video",
     title: "Pre-Roll Video",
     previewKind: "pre-roll",
+    creativeOptions: ["Video"],
     cardImage: nonEndemicImageRoutes.preRollVideo.cardImage,
     hoverImage: nonEndemicImageRoutes.preRollVideo.hoverImage,
     showcaseSlides: [
@@ -217,6 +252,7 @@ export const nonEndemicCatalog = [
     formatId: "livescore",
     title: "Livescore",
     previewKind: "generic",
+    creativeOptions: ["Dynamic"],
     cardImage: nonEndemicImageRoutes.livescore.cardImage,
     hoverImage: nonEndemicImageRoutes.livescore.hoverImage,
     showcaseSlides: [
@@ -239,6 +275,7 @@ export const nonEndemicCatalog = [
     formatId: "countdown-widget",
     title: "Countdown Widget",
     previewKind: "generic",
+    creativeOptions: ["Image", "GIF"],
     cardImage: nonEndemicImageRoutes.countdownWidget.cardImage,
     hoverImage: nonEndemicImageRoutes.countdownWidget.hoverImage,
     showcaseSlides: [
@@ -261,6 +298,7 @@ export const nonEndemicCatalog = [
     formatId: "cube",
     title: "Cube",
     previewKind: "generic",
+    creativeOptions: ["Image", "GIF", "HTML5"],
     cardImage: nonEndemicImageRoutes.cube.cardImage,
     hoverImage: nonEndemicImageRoutes.cube.hoverImage,
     showcaseSlides: [
@@ -283,6 +321,7 @@ export const nonEndemicCatalog = [
     formatId: "native",
     title: "Native",
     previewKind: "generic",
+    creativeOptions: ["Image", "Copy"],
     cardImage: nonEndemicImageRoutes.native.cardImage,
     hoverImage: nonEndemicImageRoutes.native.hoverImage,
     showcaseSlides: [
@@ -305,6 +344,7 @@ export const nonEndemicCatalog = [
     formatId: "leadgen",
     title: "Leadgen",
     previewKind: "generic",
+    creativeOptions: ["Image", "Form"],
     cardImage: nonEndemicImageRoutes.leadgen.cardImage,
     hoverImage: nonEndemicImageRoutes.leadgen.hoverImage,
     showcaseSlides: [
@@ -327,6 +367,7 @@ export const nonEndemicCatalog = [
     formatId: "content-widget",
     title: "Content Widget",
     previewKind: "generic",
+    creativeOptions: ["Image", "Copy"],
     cardImage: nonEndemicImageRoutes.contentWidget.cardImage,
     hoverImage: nonEndemicImageRoutes.contentWidget.hoverImage,
     showcaseSlides: [

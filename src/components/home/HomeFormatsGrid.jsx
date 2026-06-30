@@ -1,3 +1,5 @@
+import HomeCreativeOptions from "./HomeCreativeOptions"
+
 function getDescription(item, region) {
   return (
     item?.specs?.description ||
@@ -46,6 +48,7 @@ export default function HomeFormatsGrid({
             </button>
 
             <div className="p-5">
+              <HomeCreativeOptions options={item.creativeOptions} className="mb-3" />
               <p className="min-h-[5rem] text-[0.95rem] leading-relaxed text-white/64">
                 {getDescription(item, region)}
               </p>

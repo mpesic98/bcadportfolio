@@ -46,6 +46,8 @@ function createFormatDefinition({
   primaryCreativeKey,
   sizes,
   creativeTypes,
+  previewType,
+  placements,
   description,
   creativeGuidelines,
 }) {
@@ -63,6 +65,8 @@ function createFormatDefinition({
     primaryCreativeKey,
     sizes,
     creativeTypes,
+    previewType,
+    placements,
     description: description || sourceFormat?.specs?.description || "Format details available.",
     creativeGuidelines: creativeGuidelines || [
       `Deliver artwork sized for ${sizes.join(" / ")}.`,
@@ -76,6 +80,27 @@ function createFormatDefinition({
 }
 
 export const proposalFormatCatalog = [
+  createFormatDefinition({
+    id: "display-banners",
+    name: "Display Banners",
+    catalogFormatId: "display-banners",
+    previewRoute: { region: "usa", segment: "non-endemic", formatId: "display-banners" },
+    category: "display",
+    supportedSites: ["bolavip", "redgol", "somosfanaticos", "sporting-news", "givemesport"],
+    creativeKeys: ["display_top", "display_rail_left", "display_rail_right", "display_sidebar"],
+    primaryCreativeKey: "display_top",
+    sizes: ["970x90", "160x600 rails", "300x250"],
+    creativeTypes: ["JPG", "PNG", "GIF"],
+    previewType: "display_banners",
+    placements: [
+      { id: "top_970x90", placement: "top_970x90", width: 970, height: 90, assetKey: "display_top" },
+      { id: "rail_left_160x600", placement: "rail_left_160x600", width: 160, height: 600, assetKey: "display_rail_left" },
+      { id: "rail_right_160x600", placement: "rail_right_160x600", width: 160, height: 600, assetKey: "display_rail_right" },
+      { id: "sidebar_300x250", placement: "sidebar_300x250", width: 300, height: 250, assetKey: "display_sidebar" },
+    ],
+    description:
+      "A coordinated display package showing live leaderboard, rail and sidebar creative placements.",
+  }),
   createFormatDefinition({
     id: "leaderboard",
     name: "Leaderboard",
@@ -153,12 +178,27 @@ export const proposalFormatCatalog = [
     previewRoute: { region: "usa", segment: "non-endemic", formatId: "interscroller" },
     category: "high-impact",
     supportedSites: ["bolavip", "redgol", "somosfanaticos"],
-    creativeKeys: ["interscroller"],
+    creativeKeys: ["interscroller", "interscroller_video"],
     primaryCreativeKey: "interscroller",
     sizes: ["300x600", "300x250 reveal"],
-    creativeTypes: ["JPG", "PNG"],
+    creativeTypes: ["JPG", "PNG", "MP4", "WEBM"],
     description:
       "Scroll-reactive reveal unit built to turn in-view time into a branded storytelling sequence.",
+  }),
+  createFormatDefinition({
+    id: "mobile-slider",
+    name: "Mobile Slider",
+    catalogFormatId: "mobile-slider",
+    previewRoute: { region: "usa", segment: "non-endemic", formatId: "mobile-slider" },
+    mockupId: "mobile-sticky",
+    category: "high-impact",
+    supportedSites: ["bolavip", "redgol", "somosfanaticos", "world-soccer-talk"],
+    creativeKeys: ["mobile_slider"],
+    primaryCreativeKey: "mobile_slider",
+    sizes: ["300x250 panel", "40x300 handle"],
+    creativeTypes: ["JPG", "PNG", "GIF"],
+    description:
+      "Mobile-only side slider with a draggable handle and an on-demand 300x250 creative panel.",
   }),
   createFormatDefinition({
     id: "interstitial",
@@ -181,10 +221,10 @@ export const proposalFormatCatalog = [
     previewRoute: { region: "usa", segment: "non-endemic", formatId: "video-banners" },
     category: "video",
     supportedSites: ["bolavip", "sporting-news", "givemesport"],
-    creativeKeys: ["video_banner"],
+    creativeKeys: ["video_banner", "video_banner_countdown"],
     primaryCreativeKey: "video_banner",
     sizes: ["300x250", "300x600"],
-    creativeTypes: ["MP4", "WEBM", "JPG/PNG poster"],
+    creativeTypes: ["MP4", "WEBM", "JPG/PNG poster", "Countdown overlay"],
     description:
       "Autoplay-capable video banner placements that preserve a compact footprint while adding motion.",
   }),
@@ -295,6 +335,37 @@ export const proposalFormatById = proposalFormatCatalog.reduce((acc, format) => 
 
 export function getProposalFormatById(formatId) {
   return proposalFormatById[formatId] || null
+}
+
+export function createProposalFormatSelection(formatId) {
+  const format = getProposalFormatById(formatId)
+  if (!format) return null
+
+  return {
+    id: format.id,
+    type: format.previewType || format.id,
+    previewType: format.previewType || "",
+    title: format.name,
+    category: format.categoryLabel,
+    description: format.description,
+    sizes: [...(format.sizes || [])],
+    creativeKeys: [...(format.creativeKeys || [])],
+    placements: (format.placements || []).map((placement) => ({ ...placement })),
+    demoUrl: "",
+  }
+}
+
+export function createProposalFormatSelectionsFromIds(formatIds = []) {
+  const legacyDisplayIds = new Set(["leaderboard", "mrec", "halfpage"])
+  const hasDisplayPackage = formatIds.some((formatId) => legacyDisplayIds.has(formatId))
+  const normalizedIds = [
+    ...(hasDisplayPackage ? ["display-banners"] : []),
+    ...formatIds.filter((formatId) => !legacyDisplayIds.has(formatId)),
+  ]
+
+  return [...new Set(normalizedIds)]
+    .map(createProposalFormatSelection)
+    .filter(Boolean)
 }
 
 export function resolveVisibleProposalFormats(proposal) {

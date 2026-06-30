@@ -15,6 +15,7 @@ import InterstitialPreview from "./InterstitialPreview"
 import InterscrollerPreview from "./InterscrollerPreview"
 import LeadgenPreview from "./LeadgenPreview"
 import LivescorePreview from "./LivescorePreview"
+import MobileSliderPreview from "./MobileSliderPreview"
 import NativePreview from "./NativePreview"
 import PreRollPreview from "./PreRollPreview"
 import SkinPreview from "./SkinPreview"
@@ -23,6 +24,7 @@ import VideoBannerPreview from "./VideoBannerPreview"
 const aliasMap = {
   display: "display-banners",
   videobanner: "video-banners",
+  mobileslider: "mobile-slider",
   preroll: "pre-roll-video",
   countdown: "countdown-widget",
   content: "content-widget",
@@ -30,6 +32,7 @@ const aliasMap = {
 
 const formatViewportMap = {
   interscroller: "mobile",
+  "mobile-slider": "mobile",
   skin: "desktop",
 }
 
@@ -68,6 +71,10 @@ export default function PreviewPageResolver() {
 
   if (canonicalId === "interscroller") {
     return <InterscrollerPreview />
+  }
+
+  if (canonicalId === "mobile-slider") {
+    return <MobileSliderPreview />
   }
 
   const catalog = normalizedSegment === "endemic" ? endemicCatalog : nonEndemicCatalog

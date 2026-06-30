@@ -50,11 +50,30 @@ function MobileIcon() {
   )
 }
 
+function HomeIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
+      <path
+        d="M3.5 10.5 12 3l8.5 7.5M5.5 9.2V21h13V9.2M9.5 21v-6h5v6"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  )
+}
+
 function resolveMobileTargetSlot(formatId) {
   if (!formatId) return null
   if (formatId === "leadgen") return "mobile_inline_300x600"
   if (formatId === "pre-roll-video") return "mobile_preroll"
-  if (formatId === "interstitial" || formatId === "interscroller") return null
+  if (
+    formatId === "interstitial" ||
+    formatId === "interscroller" ||
+    formatId === "mobile-slider"
+  ) return null
   return "mobile_inline_300x250_1"
 }
 
@@ -70,10 +89,12 @@ const routeDefaultProposalFormatMap = {
   livescore: "livescore",
   "countdown-widget": "countdown-widget",
   "content-widget": "content-widget",
+  "mobile-slider": "mobile-slider",
 }
 
 const formatViewportMap = {
   interscroller: "mobile",
+  "mobile-slider": "mobile",
   skin: "desktop",
 }
 
@@ -323,10 +344,17 @@ export default function PreviewFrame({
         scrollElement={vp === "mobile" ? mobileViewportRef.current : null}
         isContainerViewport={vp === "mobile"}
       >
-        <div ref={rootViewportRef} className="min-h-screen bg-neutral-100 overflow-x-hidden">
+        <div
+          ref={rootViewportRef}
+          className="min-h-screen overflow-x-hidden bg-[var(--bc-green)]"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 50% 0%, rgba(143,220,199,0.14), transparent 36%), linear-gradient(180deg, var(--bc-green) 0%, var(--bc-green-strong) 42%, var(--bc-black) 100%)",
+          }}
+        >
         <div
           ref={headerRef}
-          className="fixed left-0 right-0 top-0 z-50 border-b border-neutral-200 bg-white/92 shadow-[0_8px_28px_rgba(15,23,42,0.08)] backdrop-blur-xl"
+          className="fixed left-0 right-0 top-0 z-50 border-b border-white/10 bg-[rgba(8,33,28,0.82)] shadow-[0_8px_28px_rgba(0,0,0,0.18)] backdrop-blur-xl"
           style={{
             minHeight: "calc(76px + env(safe-area-inset-top))",
             paddingTop: "env(safe-area-inset-top)",
@@ -339,14 +367,15 @@ export default function PreviewFrame({
             <button
               type="button"
               onClick={goHome}
-              className="inline-flex h-10 w-fit items-center rounded-lg border border-neutral-900 bg-neutral-900 px-3 text-sm font-semibold text-white transition-colors hover:bg-neutral-700"
+              className="inline-flex h-10 w-fit items-center gap-2 rounded-lg border border-white/15 bg-white/10 px-3 text-sm font-semibold text-white transition-colors hover:border-white/25 hover:bg-white/16"
             >
-              {"<"} Home
+              <HomeIcon />
+              Home
             </button>
 
             <div
               ref={tabsRef}
-              className="preview-tabs-scroll col-span-2 row-start-2 flex min-w-0 items-center gap-1.5 overflow-x-auto rounded-xl border border-neutral-200 bg-neutral-50 p-1 whitespace-nowrap md:col-span-1 md:col-start-2 md:row-start-1"
+              className="preview-tabs-scroll col-span-2 row-start-2 flex min-w-0 items-center gap-1.5 overflow-x-auto rounded-xl border border-white/10 bg-black/15 p-1 whitespace-nowrap md:col-span-1 md:col-start-2 md:row-start-1"
             >
               {tabs.map((tab) => {
                 const tabRequiredViewport = formatViewportMap[tab.key]
@@ -365,8 +394,8 @@ export default function PreviewFrame({
                     className={[
                       "h-9 shrink-0 rounded-lg border px-3 text-sm font-semibold transition-colors",
                       active === tab.key
-                        ? "border-neutral-900 bg-neutral-900 text-white shadow-sm"
-                        : "border-transparent bg-transparent text-neutral-700 hover:bg-white hover:text-neutral-950",
+                        ? "border-white bg-white text-[var(--bc-green)] shadow-sm"
+                        : "border-transparent bg-transparent text-white/65 hover:bg-white/10 hover:text-white",
                     ].join(" ")}
                     title={tabTitle}
                   >
@@ -376,7 +405,7 @@ export default function PreviewFrame({
               })}
             </div>
 
-            <div className="row-start-1 inline-flex items-center gap-1 justify-self-end rounded-xl border border-neutral-200 bg-neutral-50 p-1 md:col-start-3">
+            <div className="row-start-1 inline-flex items-center gap-1 justify-self-end rounded-xl border border-white/10 bg-black/15 p-1 md:col-start-3">
               <button
                 type="button"
                 disabled={isMobileOnlyFormat}
@@ -384,10 +413,10 @@ export default function PreviewFrame({
                 className={[
                   "inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-colors",
                   isMobileOnlyFormat
-                    ? "bg-neutral-100 text-neutral-400 border-neutral-200 cursor-not-allowed"
+                    ? "cursor-not-allowed border-white/5 bg-white/5 text-white/25"
                     : vp === "desktop"
-                      ? "bg-neutral-900 text-white border-neutral-900 shadow-sm"
-                      : "bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-100",
+                      ? "border-white bg-white text-[var(--bc-green)] shadow-sm"
+                      : "border-transparent bg-transparent text-white/65 hover:border-white/10 hover:bg-white/10 hover:text-white",
                 ].join(" ")}
                 aria-disabled={isMobileOnlyFormat}
                 aria-label="Desktop preview"
@@ -403,10 +432,10 @@ export default function PreviewFrame({
                 className={[
                   "inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-colors",
                   isDesktopOnlyFormat
-                    ? "bg-neutral-100 text-neutral-400 border-neutral-200 cursor-not-allowed"
+                    ? "cursor-not-allowed border-white/5 bg-white/5 text-white/25"
                     : vp === "mobile"
-                      ? "bg-neutral-900 text-white border-neutral-900 shadow-sm"
-                      : "bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-100",
+                      ? "border-white bg-white text-[var(--bc-green)] shadow-sm"
+                      : "border-transparent bg-transparent text-white/65 hover:border-white/10 hover:bg-white/10 hover:text-white",
                 ].join(" ")}
                 aria-disabled={isDesktopOnlyFormat}
                 aria-label="Mobile preview"

@@ -1,12 +1,13 @@
 import { NavLink, Outlet } from "react-router-dom"
 import { useProposalStore } from "../../features/proposals/ProposalStore"
+import logo from "../../assets/Logo-3.png"
 
 function getNavClass({ isActive }) {
   return [
-    "block rounded-2xl px-4 py-3 text-sm font-medium transition-colors",
+    "block rounded-lg border px-4 py-3 text-sm font-semibold transition-colors",
     isActive
-      ? "bg-[#D7FF64] text-[#0B1020]"
-      : "text-white/70 hover:bg-white/6 hover:text-white",
+      ? "border-white bg-white text-[var(--bc-green)] shadow-sm"
+      : "border-transparent text-white/68 hover:border-white/10 hover:bg-white/8 hover:text-white",
   ].join(" ")
 }
 
@@ -14,31 +15,32 @@ export default function AdminShell() {
   const { campaigns, proposals, dataProvider } = useProposalStore()
 
   return (
-    <div className="min-h-screen bg-[#090E16] text-white">
+    <div className="admin-shell min-h-screen bg-[var(--bc-green)] text-white">
       <div
         aria-hidden="true"
         className="pointer-events-none fixed inset-0"
         style={{
           background:
-            "radial-gradient(900px circle at 10% 0%, rgba(215,255,100,0.12), transparent 60%), radial-gradient(720px circle at 100% 10%, rgba(255,132,70,0.12), transparent 52%)",
+            "radial-gradient(900px circle at 8% 0%, rgba(143,220,199,0.18), transparent 58%), linear-gradient(180deg, rgba(1,91,73,0.98) 0%, rgba(1,72,58,0.98) 38%, rgba(8,33,28,1) 100%)",
         }}
       />
 
       <div className="relative mx-auto max-w-[1360px] px-4 py-5 md:px-6 md:py-7">
         <div className="grid gap-5 lg:grid-cols-[280px_minmax(0,1fr)]">
-          <aside className="rounded-[28px] border border-white/10 bg-white/6 p-5 backdrop-blur-xl">
-            <div className="rounded-[24px] border border-white/10 bg-[#0D1320] p-4">
-              <p className="text-[11px] uppercase tracking-[0.3em] text-[#D7FF64]">
+          <aside className="rounded-xl border border-white/12 bg-black/12 p-5 shadow-[0_22px_55px_rgba(0,0,0,0.18)] backdrop-blur-xl">
+            <div className="border-b border-white/10 pb-5">
+              <img src={logo} alt="Better Collective" className="h-9 w-auto object-contain" />
+              <p className="mt-5 text-[11px] uppercase tracking-[0.3em] text-[var(--bc-green-soft)]">
                 BC Admin
               </p>
               <h1 className="mt-2 text-2xl font-semibold text-white">
-                Proposal Studio
+                Campaign Builder
               </h1>
               <p className="mt-3 text-sm leading-6 text-white/62">
-                Build campaigns, assign creatives, curate proposal views and
-                generate clean client-facing links.
+                Campaigns store brand assets and creative URLs. Proposals turn
+                them into read-only Client Previews.
               </p>
-              <div className="mt-4 inline-flex rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] uppercase tracking-[0.24em] text-white/62">
+              <div className="bc-pill bc-pill--glass mt-4">
                 Data source: {dataProvider}
               </div>
             </div>
@@ -56,7 +58,7 @@ export default function AdminShell() {
             </nav>
 
             <div className="mt-6 grid gap-3">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <div className="rounded-lg border border-white/10 bg-white/5 p-4">
                 <p className="text-xs uppercase tracking-[0.24em] text-white/45">
                   Campaigns
                 </p>
@@ -64,7 +66,7 @@ export default function AdminShell() {
                   {campaigns.length}
                 </p>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <div className="rounded-lg border border-white/10 bg-white/5 p-4">
                 <p className="text-xs uppercase tracking-[0.24em] text-white/45">
                   Proposals
                 </p>
@@ -76,13 +78,13 @@ export default function AdminShell() {
 
             <a
               href="/"
-              className="mt-6 inline-flex rounded-full border border-white/12 px-4 py-2 text-sm text-white/80 transition-colors hover:border-white/20 hover:bg-white/8 hover:text-white"
+              className="bc-button bc-button--dark bc-button--sm mt-6"
             >
               Open public portfolio
             </a>
           </aside>
 
-          <main className="min-w-0 rounded-[28px] border border-white/10 bg-[#0B111B]/88 p-4 shadow-2xl shadow-black/30 backdrop-blur md:p-6">
+          <main className="min-w-0 rounded-xl border border-white/10 bg-[rgba(8,33,28,0.76)] p-4 shadow-2xl shadow-black/25 backdrop-blur md:p-6">
             <Outlet />
           </main>
         </div>

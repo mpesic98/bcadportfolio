@@ -2,12 +2,25 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import {
   proposalCategoryCatalog,
+  createProposalFormatSelection,
+  createProposalFormatSelectionsFromIds,
   proposalFormatCatalog,
   proposalSiteCatalog,
   proposalStatusCatalog,
 } from "../../data/proposalFormats"
 import { useProposalStore } from "../../features/proposals/ProposalStore"
 import { ensureId } from "../../lib/slugify"
+import {
+  buildPortableProposal,
+  DEFAULT_PUBLIC_HERO_VIDEO_URL,
+  downloadTextFile,
+  validatePortableProposal,
+} from "../../features/proposals/portableProposal"
+import { buildStandaloneClientHtml } from "../../features/proposals/buildStandaloneClientHtml"
+
+const selectableProposalFormats = proposalFormatCatalog.filter(
+  (format) => !["leaderboard", "mrec", "halfpage"].includes(format.id)
+)
 
 function createEmptyProposal(defaultCampaignId = "") {
   return {
@@ -16,7 +29,12 @@ function createEmptyProposal(defaultCampaignId = "") {
     name: "",
     title: "",
     description: "",
+    market: "",
+    brandLogoUrl: "",
+    heroBackgroundVideoUrl: DEFAULT_PUBLIC_HERO_VIDEO_URL,
+    fallbackHeroImageUrl: "",
     visibleFormats: [],
+    formats: [],
     visibleSites: [],
     visibleCategories: [],
     status: "draft",
@@ -25,10 +43,22 @@ function createEmptyProposal(defaultCampaignId = "") {
 }
 
 function cloneProposal(proposal) {
+  const formats = proposal?.formats?.length
+    ? proposal.formats.map((format) => ({
+        ...format,
+        sizes: [...(format.sizes || [])],
+        creativeKeys: [...(format.creativeKeys || [])],
+        placements: (format.placements || []).map((placement) => ({ ...placement })),
+        assets: { ...(format.assets || {}) },
+        creatives: (format.creatives || []).map((creative) => ({ ...creative })),
+      }))
+    : createProposalFormatSelectionsFromIds(proposal?.visibleFormats || [])
+
   return {
     ...createEmptyProposal(proposal?.campaignId || ""),
     ...proposal,
     visibleFormats: [...(proposal?.visibleFormats || [])],
+    formats,
     visibleSites: [...(proposal?.visibleSites || [])],
     visibleCategories: [...(proposal?.visibleCategories || [])],
   }
@@ -44,9 +74,9 @@ function ChipSelector({ label, selected, onToggle }) {
       type="button"
       onClick={onToggle}
       className={[
-        "rounded-full border px-3 py-1.5 text-sm transition-colors",
+        "bc-pill border transition-colors",
         selected
-          ? "border-[#D7FF64]/60 bg-[#D7FF64]/12 text-[#F1FFBF]"
+          ? "border-transparent bg-[var(--bc-green-softest)] text-[var(--bc-green-strong)]"
           : "border-white/10 bg-white/5 text-white/68 hover:bg-white/8 hover:text-white",
       ].join(" ")}
     >
@@ -65,22 +95,23 @@ export default function ProposalsAdminPage({ forceNew = false }) {
     deleteProposal,
   } = useProposalStore()
 
+  const defaultCampaignId = campaigns[0]?.id || ""
   const [selectedProposalId, setSelectedProposalId] = useState("")
-  const [form, setForm] = useState(createEmptyProposal(campaigns[0]?.id || ""))
+  const [form, setForm] = useState(createEmptyProposal(defaultCampaignId))
   const [message, setMessage] = useState("")
   const [idTouched, setIdTouched] = useState(false)
 
   useEffect(() => {
     if (!forceNew) return
     setSelectedProposalId("")
-    setForm(createEmptyProposal(campaigns[0]?.id || ""))
+    setForm(createEmptyProposal(defaultCampaignId))
     setIdTouched(false)
-  }, [campaigns, forceNew])
+  }, [defaultCampaignId, forceNew])
 
   useEffect(() => {
     if (!message) return undefined
 
-    const timer = window.setTimeout(() => setMessage(""), 2800)
+    const timer = window.setTimeout(() => setMessage(""), 6000)
     return () => window.clearTimeout(timer)
   }, [message])
 
@@ -92,7 +123,7 @@ export default function ProposalsAdminPage({ forceNew = false }) {
 
   const resetForm = () => {
     setSelectedProposalId("")
-    setForm(createEmptyProposal(campaigns[0]?.id || ""))
+    setForm(createEmptyProposal(defaultCampaignId))
     setIdTouched(false)
   }
 
@@ -109,7 +140,7 @@ export default function ProposalsAdminPage({ forceNew = false }) {
   }
 
   const handleSave = () => {
-    if (!form.name || !form.campaignId || !form.visibleFormats.length) {
+    if (!form.name || !form.campaignId || !form.formats.length) {
       setMessage("Name, campaign and at least one format are required.")
       return
     }
@@ -118,9 +149,23 @@ export default function ProposalsAdminPage({ forceNew = false }) {
       ...form,
       id: ensureId(form.id || form.name),
       title: form.title || form.name,
+      visibleFormats: form.formats.map((format) => format.id),
     }
 
-    upsertProposal(nextProposal)
+    if (
+      !selectedProposalId &&
+      proposals.some((proposal) => proposal.id === nextProposal.id)
+    ) {
+      setMessage("That proposal slug already exists. Select it to edit or choose another name.")
+      return
+    }
+
+    try {
+      upsertProposal(nextProposal)
+    } catch (error) {
+      setMessage(error.message || "The proposal could not be saved locally.")
+      return
+    }
     setSelectedProposalId(nextProposal.id)
     setForm(cloneProposal(nextProposal))
     setIdTouched(true)
@@ -140,29 +185,76 @@ export default function ProposalsAdminPage({ forceNew = false }) {
     setMessage("Proposal deleted.")
   }
 
+  const createExportPayload = () => {
+    const campaign = campaignById[form.campaignId]
+    return buildPortableProposal({ proposal: form, campaign, formats: form.formats })
+  }
+
+  const validateForExport = (payload) => {
+    const errors = validatePortableProposal(payload)
+    if (errors.length) {
+      const seededRelativeAssetWarning = isSeededProposal(selectedProposalId)
+        ? "Seeded demo assets can work in Internal Preview, but Client Preview export requires public HTTPS asset URLs."
+        : ""
+      const baseMessage =
+        "Client Preview requires public HTTPS asset URLs. Replace local, relative, localhost, blob, data or file URLs before exporting."
+      setMessage([baseMessage, seededRelativeAssetWarning, ...errors].filter(Boolean).join(" "))
+      return false
+    }
+    return true
+  }
+
+  const exportClientPreview = () => {
+    const payload = createExportPayload()
+    if (!validateForExport(payload)) return
+    downloadTextFile(
+      `${ensureId(payload.proposal.slug || payload.proposal.title)}-client.html`,
+      buildStandaloneClientHtml(payload),
+      "text/html"
+    )
+    setMessage("Client Preview downloaded.")
+  }
+
   const statusBadgeClass = (status) => {
-    if (status === "active") return "bg-[#D7FF64]/14 text-[#F1FFBF]"
-    if (status === "expired") return "bg-[#FF8446]/16 text-[#FFD1B7]"
+    if (status === "active") return "bg-[var(--bc-green-softest)] text-[var(--bc-green-strong)]"
+    if (status === "expired") return "bg-[var(--bc-cream)] text-[var(--bc-black)]"
     return "bg-white/8 text-white/74"
+  }
+
+  const toggleFormat = (formatId) => {
+    setForm((current) => {
+      const exists = current.formats.some((format) => format.id === formatId)
+      const formats = exists
+        ? current.formats.filter((format) => format.id !== formatId)
+        : [...current.formats, createProposalFormatSelection(formatId)].filter(Boolean)
+
+      return {
+        ...current,
+        formats,
+        visibleFormats: formats.map((format) => format.id),
+      }
+    })
   }
 
   return (
     <div className="grid gap-5 xl:grid-cols-[360px_minmax(0,1fr)]">
-      <section className="rounded-[28px] border border-white/10 bg-white/4 p-5">
+      <section className="rounded-xl border border-white/10 bg-white/5 p-5">
         <div className="flex items-end justify-between gap-3">
           <div>
             <p className="text-[11px] uppercase tracking-[0.28em] text-white/45">
               Proposal library
             </p>
-            <h2 className="mt-2 text-2xl font-semibold text-white">Client views</h2>
+            <h2 className="mt-2 text-2xl font-semibold text-white">Client Previews</h2>
           </div>
-          <button
-            type="button"
-            onClick={resetForm}
-            className="rounded-full border border-white/12 px-4 py-2 text-sm text-white/75 transition-colors hover:bg-white/8 hover:text-white"
-          >
-            New proposal
-          </button>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={resetForm}
+              className="bc-button bc-button--dark bc-button--sm"
+            >
+              New Client Preview
+            </button>
+          </div>
         </div>
 
         <div className="mt-5 space-y-3">
@@ -172,9 +264,9 @@ export default function ProposalsAdminPage({ forceNew = false }) {
               type="button"
               onClick={() => selectProposal(proposal)}
               className={[
-                "w-full rounded-[24px] border p-4 text-left transition-colors",
+                "w-full rounded-lg border p-4 text-left transition-colors",
                 selectedProposalId === proposal.id
-                  ? "border-[#D7FF64]/60 bg-[#D7FF64]/8"
+                  ? "border-[var(--bc-green-soft)]/60 bg-[var(--bc-green-soft)]/10"
                   : "border-white/10 bg-white/4 hover:bg-white/7",
               ].join(" ")}
             >
@@ -186,7 +278,7 @@ export default function ProposalsAdminPage({ forceNew = false }) {
                   </p>
                 </div>
                 <span
-                  className={`rounded-full px-3 py-1 text-[11px] uppercase tracking-[0.24em] ${statusBadgeClass(
+                  className={`bc-pill ${statusBadgeClass(
                     proposal.status
                   )}`}
                 >
@@ -200,14 +292,7 @@ export default function ProposalsAdminPage({ forceNew = false }) {
                   className="rounded-full border border-white/10 px-3 py-1.5 text-xs text-white/74 transition-colors hover:bg-white/8 hover:text-white"
                   onClick={(event) => event.stopPropagation()}
                 >
-                  Preview
-                </Link>
-                <Link
-                  to={`/p/${proposal.id}`}
-                  className="rounded-full border border-white/10 px-3 py-1.5 text-xs text-white/74 transition-colors hover:bg-white/8 hover:text-white"
-                  onClick={(event) => event.stopPropagation()}
-                >
-                  Share URL
+                  Internal Preview
                 </Link>
               </div>
             </button>
@@ -215,18 +300,22 @@ export default function ProposalsAdminPage({ forceNew = false }) {
         </div>
       </section>
 
-      <section className="rounded-[28px] border border-white/10 bg-white/4 p-5 md:p-6">
+      <section className="rounded-xl border border-white/10 bg-white/5 p-5 md:p-6">
         <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-[11px] uppercase tracking-[0.28em] text-white/45">
-              Proposal editor
+              Client Preview editor
             </p>
             <h2 className="mt-2 text-2xl font-semibold text-white">
-              {selectedProposalId ? "Update proposal" : "Create proposal"}
+              {selectedProposalId ? "Update Client Preview" : "Create Client Preview"}
             </h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-white/58">
+              Campaigns hold reusable brand assets. This screen defines the proposal copy,
+              selected formats and sites for one exported Client Preview.
+            </p>
           </div>
           {message ? (
-            <div className="rounded-full border border-white/10 bg-white/8 px-4 py-2 text-sm text-white/78">
+            <div className="max-w-xl rounded-lg border border-white/10 bg-white/8 px-4 py-2 text-sm leading-6 text-white/78">
               {message}
             </div>
           ) : null}
@@ -238,7 +327,7 @@ export default function ProposalsAdminPage({ forceNew = false }) {
             value={form.name}
             onChange={(event) => updateForm("name", event.target.value)}
             className="rounded-[22px] border border-white/10 bg-[#0A1018] px-4 py-3 text-sm text-white outline-none placeholder:text-white/28 focus:border-[#D7FF64]/50"
-            placeholder="Proposal name"
+            placeholder="Internal proposal name"
           />
           <select
             value={form.campaignId}
@@ -272,7 +361,35 @@ export default function ProposalsAdminPage({ forceNew = false }) {
             value={form.title}
             onChange={(event) => updateForm("title", event.target.value)}
             className="rounded-[22px] border border-white/10 bg-[#0A1018] px-4 py-3 text-sm text-white outline-none placeholder:text-white/28 focus:border-[#D7FF64]/50 md:col-span-2"
-            placeholder="Public proposal title"
+            placeholder="Client-facing title"
+          />
+          <input
+            type="text"
+            value={form.market}
+            onChange={(event) => updateForm("market", event.target.value)}
+            className="rounded-[22px] border border-white/10 bg-[#0A1018] px-4 py-3 text-sm text-white outline-none placeholder:text-white/28 focus:border-[#D7FF64]/50 md:col-span-2"
+            placeholder="Market (for example LATAM)"
+          />
+          <input
+            type="url"
+            value={form.brandLogoUrl}
+            onChange={(event) => updateForm("brandLogoUrl", event.target.value)}
+            className="rounded-[22px] border border-white/10 bg-[#0A1018] px-4 py-3 text-sm text-white outline-none placeholder:text-white/28 focus:border-[#D7FF64]/50 md:col-span-2"
+            placeholder="HTTPS logo URL for Client Preview (optional)"
+          />
+          <input
+            type="url"
+            value={form.heroBackgroundVideoUrl}
+            onChange={(event) => updateForm("heroBackgroundVideoUrl", event.target.value)}
+            className="rounded-[22px] border border-white/10 bg-[#0A1018] px-4 py-3 text-sm text-white outline-none placeholder:text-white/28 focus:border-[#D7FF64]/50 md:col-span-2"
+            placeholder="HTTPS hero background video URL"
+          />
+          <input
+            type="url"
+            value={form.fallbackHeroImageUrl}
+            onChange={(event) => updateForm("fallbackHeroImageUrl", event.target.value)}
+            className="rounded-[22px] border border-white/10 bg-[#0A1018] px-4 py-3 text-sm text-white outline-none placeholder:text-white/28 focus:border-[#D7FF64]/50 md:col-span-2"
+            placeholder="HTTPS fallback hero image URL (optional)"
           />
         </div>
 
@@ -280,7 +397,7 @@ export default function ProposalsAdminPage({ forceNew = false }) {
           value={form.description}
           onChange={(event) => updateForm("description", event.target.value)}
           className="mt-4 min-h-[110px] w-full rounded-[24px] border border-white/10 bg-[#0A1018] px-4 py-3 text-sm text-white outline-none placeholder:text-white/28 focus:border-[#D7FF64]/50"
-          placeholder="Proposal description"
+          placeholder="Client-facing description"
         />
 
         <div className="mt-5">
@@ -299,25 +416,52 @@ export default function ProposalsAdminPage({ forceNew = false }) {
 
         <div className="mt-6">
           <p className="text-[11px] uppercase tracking-[0.28em] text-white/45">
-            Visible formats
+            Included formats
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
-            {proposalFormatCatalog.map((format) => (
+            {selectableProposalFormats.map((format) => (
               <ChipSelector
                 key={format.id}
                 label={format.name}
-                selected={form.visibleFormats.includes(format.id)}
-                onToggle={() =>
-                  updateForm("visibleFormats", toggleValue(form.visibleFormats, format.id))
-                }
+                selected={form.formats.some((selected) => selected.id === format.id)}
+                onToggle={() => toggleFormat(format.id)}
               />
             ))}
           </div>
+          {form.formats.length ? (
+            <div className="mt-4 grid gap-3 md:grid-cols-2">
+              {form.formats.map((format) => {
+                return (
+                  <label key={format.id} className="rounded-lg border border-white/10 bg-black/10 p-3">
+                    <span className="text-xs font-medium text-white/68">
+                      {format.name} demo URL (optional)
+                    </span>
+                    <input
+                      type="url"
+                      value={format.demoUrl || ""}
+                      onChange={(event) =>
+                        setForm((current) => ({
+                          ...current,
+                          formats: current.formats.map((item) =>
+                            item.id === format.id
+                              ? { ...item, demoUrl: event.target.value }
+                              : item
+                          ),
+                        }))
+                      }
+                      className="mt-2 w-full border border-white/10 px-3 py-2 text-sm text-white outline-none"
+                      placeholder="https://example.com/live-demo"
+                    />
+                  </label>
+                )
+              })}
+            </div>
+          ) : null}
         </div>
 
         <div className="mt-6">
           <p className="text-[11px] uppercase tracking-[0.28em] text-white/45">
-            Visible sites
+            Included sites
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             {proposalSiteCatalog.map((site) => (
@@ -333,7 +477,7 @@ export default function ProposalsAdminPage({ forceNew = false }) {
 
         <div className="mt-6">
           <p className="text-[11px] uppercase tracking-[0.28em] text-white/45">
-            Visible categories
+            Included categories
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             {proposalCategoryCatalog.map((category) => (
@@ -356,30 +500,37 @@ export default function ProposalsAdminPage({ forceNew = false }) {
           <button
             type="button"
             onClick={handleSave}
-            className="rounded-full bg-[#D7FF64] px-5 py-3 text-sm font-medium text-[#09111A]"
+            className="bc-button bc-button--hero"
           >
             Save proposal
           </button>
           <button
             type="button"
             onClick={handleDelete}
-            className="rounded-full border border-white/12 px-5 py-3 text-sm text-white/78 transition-colors hover:bg-white/8 hover:text-white"
+            className="bc-button bc-button--dark"
           >
             Delete proposal
           </button>
           {selectedProposalId ? (
             <Link
               to={`/admin/preview/${selectedProposalId}`}
-              className="rounded-full border border-white/12 px-5 py-3 text-sm text-white/78 transition-colors hover:bg-white/8 hover:text-white"
+              className="bc-button bc-button--dark"
             >
-              Open preview
+              Open Internal Preview
             </Link>
           ) : null}
+          <button
+            type="button"
+            onClick={exportClientPreview}
+            className="bc-button bc-button--hero"
+          >
+            Download Client Preview
+          </button>
         </div>
 
         {selectedProposalId && isSeededProposal(selectedProposalId) ? (
           <p className="mt-4 text-sm text-white/46">
-            Seeded proposals can be edited and overridden locally, but not deleted.
+            Seeded proposals can be edited and overridden locally, but not deleted. Internal Preview can use seeded demo assets, while Client Preview export requires public HTTPS asset URLs.
           </p>
         ) : null}
       </section>

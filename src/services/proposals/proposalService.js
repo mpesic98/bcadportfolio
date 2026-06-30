@@ -1,6 +1,7 @@
 import { seededCampaigns, seededProposals } from "../../data/proposalSeeds"
 import { createProposalStorageAdapter } from "./createProposalStorageAdapter"
 import { buildResolvedProposalById, resolveProposalForPresentation } from "./proposalPresentationResolver"
+import { createProposalFormatSelectionsFromIds } from "../../data/proposalFormats"
 
 function mergeById(seedItems, runtimeItems) {
   const map = new Map()
@@ -29,6 +30,14 @@ function replaceById(items, nextItem) {
   return nextItems
 }
 
+function migrateLegacyProposal(proposal) {
+  if (Array.isArray(proposal?.formats) && proposal.formats.length) return proposal
+
+  const formats = createProposalFormatSelectionsFromIds(proposal?.visibleFormats || [])
+
+  return formats.length ? { ...proposal, formats } : proposal
+}
+
 export function createProposalService({
   adapter = createProposalStorageAdapter(),
   seedState = {
@@ -42,6 +51,7 @@ export function createProposalService({
   function buildSnapshot(runtimeState = adapter.getRuntimeState()) {
     const campaigns = mergeById(seedState.campaigns, runtimeState.campaigns || [])
     const proposals = mergeById(seedState.proposals, runtimeState.proposals || [])
+      .map(migrateLegacyProposal)
     const campaignById = indexById(campaigns)
     const proposalById = indexById(proposals)
 

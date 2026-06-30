@@ -9,9 +9,7 @@ import {
   normalizeSegment,
   resolveRegionFromPath,
 } from "../../data/regionConfig"
-import HomeFeatured from "./HomeFeatured"
-import HomeFormatsGrid from "./HomeFormatsGrid"
-import HomeHero from "./HomeHero"
+import PortfolioPage from "../portfolio/PortfolioPage"
 
 export default function HomeLanding() {
   const location = useLocation()
@@ -53,7 +51,7 @@ export default function HomeLanding() {
   const openPreview = (item) => {
     const previewPath = `/${region}/${segmentUrlValue}/preview/${item.formatId}`
     const previewSearch =
-      item.formatId === "interscroller"
+      item.formatId === "interscroller" || item.formatId === "mobile-slider"
         ? "?vp=mobile"
         : item.formatId === "skin"
           ? "?vp=desktop"
@@ -71,33 +69,13 @@ export default function HomeLanding() {
 
   return (
     <>
-      <div className="relative overflow-x-hidden bg-[var(--bc-green)]">
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(180deg, rgba(1,91,73,0.98) 0%, rgba(1,72,58,0.96) 42%, rgba(8,33,28,0.98) 100%)",
-          }}
-        />
-
-        <div className="relative mx-auto max-w-[1240px] px-4 pb-16 pt-3 md:px-6 md:pb-20">
-          <HomeHero />
-
-          <div id="featured-solutions" className="mt-14 md:mt-16">
-            <HomeFeatured items={featuredItems} region={region} onPreview={openPreview} />
-          </div>
-
-          <div id="browse-all-formats" className="mt-14 md:mt-20">
-            <HomeFormatsGrid
-              items={browseItems}
-              region={region}
-              onPreview={openPreview}
-              onOpenDetails={setOpenItem}
-            />
-          </div>
-        </div>
-      </div>
+      <PortfolioPage
+        featuredItems={featuredItems}
+        browseItems={browseItems}
+        region={region}
+        onPreview={openPreview}
+        onOpenDetails={setOpenItem}
+      />
 
       <FormatDetailsModal
         open={Boolean(openItem)}

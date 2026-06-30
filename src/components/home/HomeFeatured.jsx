@@ -1,3 +1,5 @@
+import HomeCreativeOptions from "./HomeCreativeOptions"
+
 const fallbackTags = ["High impact", "Contextual", "Performance"]
 
 function getTag(item, index) {
@@ -43,16 +45,12 @@ export default function HomeFeatured({ items, region, onPreview }) {
 
             <div className="flex flex-1 flex-col p-6">
               <span
-                className="inline-flex w-fit rounded-full px-3 py-1 text-xs"
-                style={{
-                  border: "1px solid var(--bc-green-border)",
-                  background: "var(--bc-green-wash)",
-                  color: "var(--bc-green-softest)",
-                }}
+                className="bc-pill bc-pill--green w-fit"
               >
                 {getTag(item, index)}
               </span>
               <h3 className="mt-4 text-2xl font-semibold text-white">{item.title}</h3>
+              <HomeCreativeOptions options={item.creativeOptions} className="mt-3" />
               <p className="mt-2 min-h-[4.5rem] text-sm leading-relaxed text-white/60">
                 {getDescription(item, region)}
               </p>

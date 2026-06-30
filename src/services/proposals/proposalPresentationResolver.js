@@ -4,15 +4,6 @@ import {
 } from "../../data/proposalFormats"
 import { resolveFormatPreviewAsset } from "../../features/proposals/creativeResolver"
 
-export function isProposalExpired(proposal, now = new Date()) {
-  if (!proposal?.expiresAt) return false
-
-  const expiresAt = new Date(`${proposal.expiresAt}T23:59:59`)
-  if (Number.isNaN(expiresAt.getTime())) return false
-
-  return expiresAt.getTime() < now.getTime()
-}
-
 export function resolveProposalForPresentation(snapshot, proposalId) {
   const proposal = snapshot?.proposalById?.[proposalId] || null
 
@@ -23,9 +14,6 @@ export function resolveProposalForPresentation(snapshot, proposalId) {
       proposal: null,
       campaign: null,
       visibleFormats: [],
-      isExpired: false,
-      isPubliclyAccessible: false,
-      sharePath: null,
     }
   }
 
@@ -38,9 +26,6 @@ export function resolveProposalForPresentation(snapshot, proposalId) {
       proposal,
       campaign: null,
       visibleFormats: [],
-      isExpired: false,
-      isPubliclyAccessible: false,
-      sharePath: `/p/${proposal.id}`,
     }
   }
 
@@ -59,17 +44,12 @@ export function resolveProposalForPresentation(snapshot, proposalId) {
       return format.proposalSites.length > 0
     })
 
-  const expired = isProposalExpired(proposal)
-
   return {
     id: proposal.id,
     status: "ready",
     proposal,
     campaign,
     visibleFormats,
-    isExpired: expired,
-    isPubliclyAccessible: proposal.status === "active" && !expired,
-    sharePath: `/p/${proposal.id}`,
   }
 }
 
