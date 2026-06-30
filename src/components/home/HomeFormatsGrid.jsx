@@ -21,18 +21,18 @@ export default function HomeFormatsGrid({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
         {items.map((item) => (
           <article
             key={item.formatId}
-            className="overflow-hidden rounded-2xl border border-white/10 bg-white/5 transition-all hover:scale-[1.01] hover:border-white/20"
+            className="overflow-hidden rounded-xl border border-white/12 bg-white/[0.07] shadow-[0_18px_42px_rgba(0,0,0,0.18)] transition-all hover:scale-[1.01] hover:border-white/24"
           >
             <button
               type="button"
               onClick={() => onPreview(item)}
               className="block w-full text-left"
             >
-              <div className="relative aspect-[16/10] overflow-hidden">
+              <div className="relative aspect-[16/11] overflow-hidden">
                 <img
                   src={item.cardImage || item.hoverImage}
                   alt={`${item.title} format`}
@@ -45,8 +45,8 @@ export default function HomeFormatsGrid({
               </div>
             </button>
 
-            <div className="p-4">
-              <p className="min-h-[4.5rem] text-sm leading-relaxed text-white/60">
+            <div className="p-5">
+              <p className="min-h-[5rem] text-[0.95rem] leading-relaxed text-white/64">
                 {getDescription(item, region)}
               </p>
               <div className="mt-4 flex items-center justify-between gap-2">

@@ -13,10 +13,6 @@ export default function InterscrollerPreview() {
       return <InterscrollerLayer slotId={slotId} size="300x600" autoScrollIntoView />
     }
 
-    if (!isMobile && slotId === "inline_300x600") {
-      return <InterscrollerLayer slotId={slotId} size="300x600" autoScrollIntoView />
-    }
-
     return null
   }
 

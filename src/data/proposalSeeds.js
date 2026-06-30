@@ -6,8 +6,8 @@ export const seededCampaigns = [
     description:
       "A tournament-season campaign built to pair bold Pepsi branding with premium sports inventory across Better Collective's LATAM network.",
     logoUrl: "/campaigns/pepsi-summer-2026/logo.svg",
-    landingPageUrl: "https://www.pepsi.com",
-    ctaLabel: "Explore Pepsi",
+    landingPageUrl: "",
+    ctaLabel: "Contact sales",
     theme: {
       primary: "#004B93",
       secondary: "#E32934",

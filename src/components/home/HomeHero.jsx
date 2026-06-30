@@ -1,68 +1,76 @@
-export default function HomeHero({ heroImage, onExplore }) {
+import logo from "../../assets/Logo-3.png"
+import desktopHeroVideo from "../../assets/video/V2_Web-Front-Page-Video_LOW-Quality.mp4"
+import mobileHeroVideo from "../../assets/video/50-8bit-420-mobile.webm"
+import HomeValueProps from "./HomeValueProps"
+
+export default function HomeHero() {
   return (
-    <section className="grid gap-10 pt-8 md:grid-cols-[1.1fr_0.9fr] md:items-center md:pt-14">
-      <div>
-        <span className="inline-flex rounded-full border border-white/10 bg-white/10 px-3 py-1 text-xs tracking-[0.18em] text-white/70">
-          BETTER COLLECTIVE ADS
-        </span>
-
-        <h1 className="mt-5 max-w-[620px] text-4xl font-semibold leading-tight text-white md:text-[3.4rem]">
-          Unlock the power of{" "}
-          <span style={{ color: "var(--bc-green-soft)" }}>premium sports media</span>
-          {" "}to connect with millions of{" "}
-          <span style={{ color: "var(--bc-green-soft)" }}>passionate fans</span>
-        </h1>
-
-        <p className="mt-5 max-w-[520px] text-base leading-relaxed text-white/70 md:text-lg">
-          Explore our portfolio of high-impact ad placements available across Better
-          Collective&apos;s global network of trusted sports and betting media brands
-        </p>
-
-        <p className="mt-5 text-sm text-white/50">
-          Used by leading brands and agencies.
-        </p>
-
-        <div className="mt-8 flex flex-wrap items-center gap-3">
-          <button
-            type="button"
-            onClick={onExplore}
-            className="bc-button bc-button--green"
-          >
-            Explore solutions
-          </button>
-
-          <a
-            href="mailto:ads@bettercollective.com"
-            className="bc-button bc-button--dark"
-            style={{ display: "none" }}
-          >
-            Get in touch
-          </a>
-        </div>
-
+    <section className="relative left-1/2 min-h-screen w-screen -translate-x-1/2 overflow-hidden px-4 pb-10 pt-8 md:px-6 md:pb-14 md:pt-12">
+      <div className="pointer-events-none absolute inset-0 opacity-30 md:opacity-27">
+        <video
+          className="hidden h-full w-full object-cover mix-blend-screen md:block"
+          src={desktopHeroVideo}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+        <video
+          className="h-full w-full object-cover mix-blend-screen md:hidden"
+          src={mobileHeroVideo}
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
       </div>
 
-      <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.03] px-4 py-8 shadow-[0_35px_90px_rgba(0,0,0,0.5)] md:px-6">
-        <div
-          aria-hidden="true"
-          className="absolute left-1/2 top-1/2 h-[320px] w-[320px] -translate-x-1/2 -translate-y-1/2 rounded-full blur-xl md:h-[420px] md:w-[420px]"
-          style={{
-            background:
-              "radial-gradient(circle, rgba(0,167,103,0.3) 0%, rgba(0,137,85,0.16) 42%, rgba(11,13,16,0) 74%)",
-          }}
-        />
-        <div
-          aria-hidden="true"
-          className="absolute left-1/2 top-[58%] h-20 w-[72%] -translate-x-1/2 rounded-full bg-black/55 blur-3xl"
-        />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(90deg, rgba(1,91,73,0.94) 0%, rgba(1,91,73,0.82) 36%, rgba(1,91,73,0.58) 70%, rgba(1,91,73,0.76) 100%)",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "linear-gradient(180deg, rgba(1,91,73,0.5) 0%, rgba(1,91,73,0.04) 42%, rgba(1,72,58,0.68) 100%)",
+        }}
+      />
 
-        <div className="relative mx-auto max-w-[520px]">
-          <div className="absolute inset-x-[14%] top-[10%] h-[58%] rounded-full border border-white/8 bg-white/[0.04] blur-2xl" />
-          <img
-            src={heroImage}
-            alt="BC Ad Portfolio home hero"
-            className="relative z-10 mx-auto w-full max-w-[460px] object-contain drop-shadow-[0_30px_55px_rgba(0,0,0,0.48)]"
-          />
+      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-4.5rem)] max-w-[1240px] flex-col">
+        <img
+          src={logo}
+          alt="Better Collective"
+          className="h-10 w-auto shrink-0 self-start object-contain md:h-12"
+        />
+        <div className="h-[7vh] min-h-8 md:h-[10vh]" />
+        <div className="max-w-[860px]">
+          <h1 className="max-w-[820px] text-4xl font-semibold leading-[1.03] text-white md:text-[3.75rem] lg:text-[4.1rem]">
+            Premium sports media for brands that want to move with culture.
+          </h1>
+
+          <p className="mt-5 max-w-[760px] text-base leading-relaxed text-white/72 md:text-lg">
+            Connect with engaged sports audiences through high-impact advertising
+            experiences across Better Collective&apos;s global media network.
+          </p>
+
+          <div className="mt-7 flex flex-wrap items-center gap-4">
+            <a href="mailto:sales@bettercollective.com" className="bc-button bc-button--hero">
+              Contact sales
+            </a>
+            <span className="text-sm font-medium text-white/54">
+              Built for agencies, brands, and premium campaigns.
+            </span>
+          </div>
+        </div>
+
+        <div className="mt-auto flex justify-center pt-8 md:pt-10">
+          <HomeValueProps />
         </div>
       </div>
     </section>

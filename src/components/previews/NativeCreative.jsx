@@ -1,17 +1,15 @@
 const BASE_WIDTH = 336
 const BASE_HEIGHT = 280
 
-const DEFAULT_CLICK_URL = "https://example.com"
 const DEFAULT_HEADLINE = "Adidas presenta la nueva coleccion 2026"
 const DEFAULT_SUBTITLE = "Descubre productos, ofertas y lanzamientos exclusivos para fans."
-const DEFAULT_CTA = "Ver mas"
+const DEFAULT_CTA = "Contact sales"
 const DEFAULT_IMAGE_URL = "https://tpc.googlesyndication.com/pimgad/3601605128611183976?"
 const DEFAULT_IMAGE_ALT = "Imagen promocional"
 
 export default function NativeCreative({
   width = 300,
   height = 250,
-  clickUrl = DEFAULT_CLICK_URL,
   headline = DEFAULT_HEADLINE,
   subtitle = DEFAULT_SUBTITLE,
   cta = DEFAULT_CTA,
@@ -66,12 +64,16 @@ export default function NativeCreative({
             WebkitTapHighlightColor: "transparent",
           }}
         >
-          <a
-            href={clickUrl}
-            target="_blank"
-            rel="sponsored nofollow noopener"
+          <div
+            role="button"
+            tabIndex={0}
             aria-label={headline}
-            style={{ display: "block", textDecoration: "none", borderRadius: 8 }}
+            style={{
+              display: "block",
+              textDecoration: "none",
+              borderRadius: 8,
+              cursor: "pointer",
+            }}
           >
             <div
               style={{
@@ -97,7 +99,7 @@ export default function NativeCreative({
                 }}
               />
             </div>
-          </a>
+          </div>
 
           <div
             style={{
@@ -107,14 +109,14 @@ export default function NativeCreative({
               minHeight: 0,
             }}
           >
-            <a
-              href={clickUrl}
-              target="_blank"
-              rel="sponsored nofollow noopener"
+            <div
+              role="button"
+              tabIndex={0}
               dir="auto"
               style={{
                 color: "#111",
                 textDecoration: "none",
+                cursor: "pointer",
                 fontWeight: 700,
                 fontSize: 14,
                 lineHeight: 1.25,
@@ -127,7 +129,7 @@ export default function NativeCreative({
               }}
             >
               {headline}
-            </a>
+            </div>
 
             {subtitle ? (
               <p
@@ -149,17 +151,16 @@ export default function NativeCreative({
               </p>
             ) : null}
 
-            <a
-              href={clickUrl}
-              target="_blank"
-              rel="sponsored nofollow noopener"
+            <div
               role="button"
+              tabIndex={0}
               aria-label={cta}
               dir="auto"
               style={{
                 display: "block",
                 textAlign: "center",
                 textDecoration: "none",
+                cursor: "pointer",
                 fontSize: 12,
                 fontWeight: 700,
                 padding: "6px 10px",
@@ -171,7 +172,7 @@ export default function NativeCreative({
               }}
             >
               {cta}
-            </a>
+            </div>
           </div>
 
           {impressionPixelUrl ? (

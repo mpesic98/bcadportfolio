@@ -16,7 +16,6 @@ export default function SkinRails({
 
   const leftImg = state.leftImg || skinL
   const rightImg = state.rightImg || skinR
-  const clickUrl = state.clickUrl
 
   const leftOffset = contentMaxWidth / 2 + railGap + railWidth
   const rightOffset = contentMaxWidth / 2 + railGap
@@ -51,15 +50,10 @@ export default function SkinRails({
 
   if (vp === "mobile") return null
 
-  const Tag = clickUrl ? "a" : "div"
-  const linkProps = clickUrl
-    ? { href: clickUrl, target: "_blank", rel: "noreferrer" }
-    : {}
-
   return (
     <>
-      <Tag {...linkProps} className="fixed z-40 block cursor-pointer" style={leftStyle} />
-      <Tag {...linkProps} className="fixed z-40 block cursor-pointer" style={rightStyle} />
+      <div role="button" tabIndex={0} className="fixed z-40 block cursor-pointer" style={leftStyle} />
+      <div role="button" tabIndex={0} className="fixed z-40 block cursor-pointer" style={rightStyle} />
     </>
   )
 }

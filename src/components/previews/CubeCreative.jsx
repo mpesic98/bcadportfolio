@@ -1,9 +1,6 @@
 import { useMemo, useState } from "react"
 import cuboImage from "../../assets/cubo.png"
 
-const DEFAULT_CLICK_URL =
-  "https://adclick.g.doubleclick.net/pcs/click?xai=AKAOjstvqUwPljrUuwQ-mWUTjyL5KNUrZoUzxXkgPMP8-Lx5BlzZUbmJEA8XgJwH0z9yjBvfUEU-s5xTZO7ijMYvY9ib7D854KcUAN3Vt3YTWumrrKcKZpGYDLntQMAvUFZuEnhrhNTHhDoOOjqE4pxUj49ziZ5Ny6WpLfHsturkt5nxUOemgqoZRmbwug0R9OfX4N4L0Z_LVrrMPhIJd3gDnrwtR5aZSAwFuvtNdg&sai=AMfl-YQmFB6l7IJqzzRX8xZuRA9Bn5WQLNyTzHzBqVXIawBoa4O3qQLwq4ERm01x1J4MM5kbmZckPzRqsaHiumw5yuo8TbgZQYL_-PdYiM6iMBSJ2G_SIn9G460aRklIXyqX72Rk5lQGwLQfB5Y34Ic1j8WTV9fhZmDzkCyDzQGLZw9sYXbuZGbl445oZj8LXVWdcpYR5mgjabtCCw6kQE78ZEtrPrGdxv1mL6SSkW_buZw&sig=Cg0ArKJSzPTdhr44lzN9EAE&fbs_aeid=%5Bgw_fbsaeid%5D&urlfix=1&adurl=https://www.google.com/"
-
 const DEFAULT_IMAGES = [cuboImage, cuboImage, cuboImage, cuboImage]
 
 function Face({ imageUrl, transform }) {
@@ -38,7 +35,6 @@ function Face({ imageUrl, transform }) {
 export default function CubeCreative({
   width = 300,
   height = 250,
-  clickUrl = DEFAULT_CLICK_URL,
   images = DEFAULT_IMAGES,
   spinSeconds = 12,
   hoverSpinSeconds = 12,
@@ -77,10 +73,9 @@ export default function CubeCreative({
         }`}
       </style>
 
-      <a
-        href={clickUrl}
-        target="_blank"
-        rel="noopener noreferrer"
+      <div
+        role="button"
+        tabIndex={0}
         aria-label="Cube click layer"
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}

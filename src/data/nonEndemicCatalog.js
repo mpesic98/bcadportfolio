@@ -211,7 +211,7 @@ export const nonEndemicCatalog = [
       latam: "LATAM pre-roll setup prioritizes startup time and low rebuffer rate.",
       europe: "EU pre-roll setup aligns with stricter media and consent expectations.",
     },
-    cta: { label: "Visit Partner", url: "https://example.com" },
+    cta: { label: "Contact sales", url: "" },
   },
   {
     formatId: "livescore",

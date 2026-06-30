@@ -19,7 +19,6 @@ export default function InterstitialPreview() {
   const [instructionState, setInstructionState] = useState("visible")
   const rootRef = useRef(null)
   const creativeAsset = resolveCreativeAsset(campaign, "interstitial", adImg)
-  const clickUrl = campaign?.landingPageUrl || "https://example.com"
 
   useEffect(() => {
     const el = rootRef.current
@@ -90,7 +89,6 @@ export default function InterstitialPreview() {
       <InterstitialLayer
         isOpen={open}
         onClose={() => setOpen(false)}
-        clickUrl={clickUrl}
         creative={
           <div className="w-[320px] h-[480px] md:w-[300px] md:h-[600px] overflow-hidden">
             {assetLooksLikeVideo(creativeAsset) ? (

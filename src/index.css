@@ -1,14 +1,15 @@
 @import "tailwindcss";
 
 :root {
-  --bc-green: #00a767;
-  --bc-green-strong: #008955;
-  --bc-green-soft: #58d3a9;
-  --bc-green-softest: #9ce8cf;
-  --bc-green-wash: rgba(0, 167, 103, 0.12);
-  --bc-green-border: rgba(0, 167, 103, 0.3);
-  --bc-black: #0b0d10;
-  --bc-black-soft: #1a212a;
+  --bc-green: #015b49;
+  --bc-green-strong: #01483a;
+  --bc-green-soft: #8fdcc7;
+  --bc-green-softest: #d8f4ec;
+  --bc-green-wash: rgba(1, 91, 73, 0.18);
+  --bc-green-border: rgba(143, 220, 199, 0.34);
+  --bc-black: #08211c;
+  --bc-black-soft: #12352e;
+  --bc-cream: #f4efe3;
 }
 
 .bc-button {
@@ -87,6 +88,20 @@
   box-shadow: 0 18px 40px rgba(15, 23, 42, 0.22);
 }
 
+.bc-button--hero {
+  --bc-button-bg: #ffffff;
+  --bc-button-color: var(--bc-green);
+  --bc-button-hover: var(--bc-green-strong);
+  box-shadow:
+    0 18px 42px rgba(0, 0, 0, 0.22),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.7);
+}
+
+.bc-button--hero:hover,
+.bc-button--hero:focus-visible {
+  color: #ffffff;
+}
+
 .bc-button--dark {
   --bc-button-bg: rgba(255, 255, 255, 0.06);
   --bc-button-hover: var(--bc-black-soft);
@@ -123,6 +138,6 @@
 }
 
 .home-dark {
-  background-color: #0b0d10;
-  background-image: linear-gradient(180deg, #0f141b 0%, #0b0d10 22%, #0b0d10 100%);
+  background-color: #015b49;
+  background-image: linear-gradient(180deg, #015b49 0%, #01483a 38%, #08211c 100%);
 }

@@ -72,6 +72,11 @@ const routeDefaultProposalFormatMap = {
   "content-widget": "content-widget",
 }
 
+const formatViewportMap = {
+  interscroller: "mobile",
+  skin: "desktop",
+}
+
 export default function PreviewFrame({
   children,
   maxWidth = 1100,
@@ -106,6 +111,9 @@ export default function PreviewFrame({
   )
   const queryVp = search.get("vp")
   const forcedVp = queryVp === "mobile" || queryVp === "desktop" ? queryVp : null
+  const requiredViewport = formatViewportMap[formatId] || null
+  const isMobileOnlyFormat = requiredViewport === "mobile"
+  const isDesktopOnlyFormat = requiredViewport === "desktop"
   const proposalId = search.get("proposal")
   const requestedProposalFormatKey = search.get("proposalFormat")
 
@@ -125,7 +133,7 @@ export default function PreviewFrame({
   const fallbackWindowHeight = typeof window !== "undefined" ? window.innerHeight || 0 : 0
   const rootViewportWidth = rootViewport.width || fallbackWindowWidth
   const rootViewportHeight = rootViewport.height || fallbackWindowHeight
-  const vp = forcedVp ?? (rootViewportWidth < 900 ? "mobile" : "desktop")
+  const vp = requiredViewport ?? forcedVp ?? (rootViewportWidth < 900 ? "mobile" : "desktop")
 
   const viewportWidth =
     vp === "mobile"
@@ -188,31 +196,6 @@ export default function PreviewFrame({
     }),
     [campaign, proposal, proposalFormat, resolvedProposalFormatKey]
   )
-
-  useEffect(() => {
-    if (vp !== "mobile") return undefined
-    if (formatId !== "skin") return undefined
-
-    const fallbackTab = tabs.find((tab) => tab.key !== "skin")
-    if (!fallbackTab) return undefined
-
-    const nextSearch = new URLSearchParams(location.search)
-    if (forcedVp) {
-      nextSearch.set("vp", forcedVp)
-    } else {
-      nextSearch.delete("vp")
-    }
-
-    const queryString = nextSearch.toString()
-    navigate(
-      `/${region}/${segmentUrlValue}/preview/${fallbackTab.key}${queryString ? `?${queryString}` : ""}`,
-      {
-        replace: true,
-      }
-    )
-
-    return undefined
-  }, [forcedVp, formatId, location.search, navigate, region, segmentUrlValue, tabs, vp])
 
   useEffect(() => {
     if (vp !== "mobile") return undefined
@@ -302,6 +285,8 @@ export default function PreviewFrame({
   }, [tabs.length])
 
   const setViewport = (next) => {
+    if (requiredViewport && next !== requiredViewport) return
+
     const nextSearch = new URLSearchParams(location.search)
     nextSearch.set("vp", next)
     const queryString = nextSearch.toString()
@@ -309,12 +294,14 @@ export default function PreviewFrame({
   }
 
   const goToTab = (key) => {
-    if (vp === "mobile" && key === "skin") return
-
     if (tabsRef.current) saveTabsScroll(tabsRef.current.scrollLeft)
 
     const nextSearch = new URLSearchParams(location.search)
-    if (forcedVp) {
+    const nextRequiredViewport = formatViewportMap[key]
+
+    if (nextRequiredViewport) {
+      nextSearch.set("vp", nextRequiredViewport)
+    } else if (forcedVp) {
       nextSearch.set("vp", forcedVp)
     } else {
       nextSearch.delete("vp")
@@ -339,49 +326,49 @@ export default function PreviewFrame({
         <div ref={rootViewportRef} className="min-h-screen bg-neutral-100 overflow-x-hidden">
         <div
           ref={headerRef}
-          className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur border-b border-neutral-200"
+          className="fixed left-0 right-0 top-0 z-50 border-b border-neutral-200 bg-white/92 shadow-[0_8px_28px_rgba(15,23,42,0.08)] backdrop-blur-xl"
           style={{
-            minHeight: "calc(80px + env(safe-area-inset-top))",
+            minHeight: "calc(76px + env(safe-area-inset-top))",
             paddingTop: "env(safe-area-inset-top)",
           }}
         >
           <div
-            className="mx-auto grid w-full grid-cols-[minmax(0,1fr)_auto] md:grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 md:gap-y-0 px-4 py-2.5 md:px-6 md:py-3"
+            className="mx-auto grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2 px-3 py-2.5 md:grid-cols-[auto_minmax(0,1fr)_auto] md:px-5"
             style={{ maxWidth: controlsMaxWidth }}
           >
             <button
               type="button"
               onClick={goHome}
-              className="px-4 py-1.5 bg-neutral-900 text-white rounded text-sm font-medium hover:bg-neutral-700"
+              className="inline-flex h-10 w-fit items-center rounded-lg border border-neutral-900 bg-neutral-900 px-3 text-sm font-semibold text-white transition-colors hover:bg-neutral-700"
             >
               {"<"} Home
             </button>
 
             <div
               ref={tabsRef}
-              className="preview-tabs-scroll col-span-2 row-start-2 md:col-span-1 md:row-start-1 md:col-start-2 min-w-0 flex items-center gap-2 overflow-x-auto whitespace-nowrap"
+              className="preview-tabs-scroll col-span-2 row-start-2 flex min-w-0 items-center gap-1.5 overflow-x-auto rounded-xl border border-neutral-200 bg-neutral-50 p-1 whitespace-nowrap md:col-span-1 md:col-start-2 md:row-start-1"
             >
               {tabs.map((tab) => {
-                const isSkinDisabled = vp === "mobile" && tab.key === "skin"
+                const tabRequiredViewport = formatViewportMap[tab.key]
+                const tabTitle =
+                  tabRequiredViewport === "desktop"
+                    ? `${tab.label} is desktop only`
+                    : tabRequiredViewport === "mobile"
+                      ? `${tab.label} is mobile only`
+                      : tab.label
 
                 return (
                   <button
                     key={tab.key}
                     type="button"
-                    disabled={isSkinDisabled}
-                    onClick={() => {
-                      if (isSkinDisabled) return
-                      goToTab(tab.key)
-                    }}
+                    onClick={() => goToTab(tab.key)}
                     className={[
-                      "px-3 py-1.5 rounded text-sm font-medium border shrink-0 transition-colors",
-                      isSkinDisabled
-                        ? "bg-neutral-100 text-neutral-400 border-neutral-200 cursor-not-allowed"
-                        : active === tab.key
-                          ? "bg-neutral-900 text-white border-neutral-900"
-                          : "bg-white text-neutral-800 border-neutral-200 hover:bg-neutral-50",
+                      "h-9 shrink-0 rounded-lg border px-3 text-sm font-semibold transition-colors",
+                      active === tab.key
+                        ? "border-neutral-900 bg-neutral-900 text-white shadow-sm"
+                        : "border-transparent bg-transparent text-neutral-700 hover:bg-white hover:text-neutral-950",
                     ].join(" ")}
-                    aria-disabled={isSkinDisabled}
+                    title={tabTitle}
                   >
                     {tab.label}
                   </button>
@@ -389,33 +376,41 @@ export default function PreviewFrame({
               })}
             </div>
 
-            <div className="row-start-1 justify-self-end md:col-start-3 inline-flex items-center gap-1 rounded-lg border border-neutral-200 bg-white p-1">
+            <div className="row-start-1 inline-flex items-center gap-1 justify-self-end rounded-xl border border-neutral-200 bg-neutral-50 p-1 md:col-start-3">
               <button
                 type="button"
+                disabled={isMobileOnlyFormat}
                 onClick={() => setViewport("desktop")}
                 className={[
-                  "h-9 w-9 inline-flex items-center justify-center rounded border text-neutral-700",
-                  vp === "desktop"
-                    ? "bg-neutral-900 text-white border-neutral-900"
-                    : "bg-white border-neutral-200 hover:bg-neutral-50",
+                  "inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-colors",
+                  isMobileOnlyFormat
+                    ? "bg-neutral-100 text-neutral-400 border-neutral-200 cursor-not-allowed"
+                    : vp === "desktop"
+                      ? "bg-neutral-900 text-white border-neutral-900 shadow-sm"
+                      : "bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-100",
                 ].join(" ")}
+                aria-disabled={isMobileOnlyFormat}
                 aria-label="Desktop preview"
-                title="Desktop preview"
+                title={isMobileOnlyFormat ? "This format is mobile only" : "Desktop preview"}
               >
                 <DesktopIcon />
               </button>
 
               <button
                 type="button"
+                disabled={isDesktopOnlyFormat}
                 onClick={() => setViewport("mobile")}
                 className={[
-                  "h-9 w-9 inline-flex items-center justify-center rounded border text-neutral-700",
-                  vp === "mobile"
-                    ? "bg-neutral-900 text-white border-neutral-900"
-                    : "bg-white border-neutral-200 hover:bg-neutral-50",
+                  "inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-colors",
+                  isDesktopOnlyFormat
+                    ? "bg-neutral-100 text-neutral-400 border-neutral-200 cursor-not-allowed"
+                    : vp === "mobile"
+                      ? "bg-neutral-900 text-white border-neutral-900 shadow-sm"
+                      : "bg-white text-neutral-700 border-neutral-200 hover:bg-neutral-100",
                 ].join(" ")}
+                aria-disabled={isDesktopOnlyFormat}
                 aria-label="Mobile preview"
-                title="Mobile preview"
+                title={isDesktopOnlyFormat ? "This format is desktop only" : "Mobile preview"}
               >
                 <MobileIcon />
               </button>

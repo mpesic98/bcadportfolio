@@ -24,15 +24,15 @@ export default function HomeFeatured({ items, region, onPreview }) {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {items.map((item, index) => (
           <button
             key={item.formatId}
             type="button"
             onClick={() => onPreview(item)}
-            className="group flex h-full min-h-[420px] flex-col overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.07] to-white/[0.03] text-left transition-all hover:-translate-y-0.5 hover:border-white/20"
+            className="group flex h-full min-h-[460px] flex-col overflow-hidden rounded-xl border border-white/12 bg-gradient-to-b from-white/[0.1] to-white/[0.045] text-left shadow-[0_22px_55px_rgba(0,0,0,0.2)] transition-all hover:-translate-y-0.5 hover:border-white/24"
           >
-            <div className="h-60 overflow-hidden border-b border-white/10">
+            <div className="h-68 overflow-hidden border-b border-white/10">
               <img
                 src={item.cardImage || item.hoverImage}
                 alt={`${item.title} creative`}
@@ -41,7 +41,7 @@ export default function HomeFeatured({ items, region, onPreview }) {
               />
             </div>
 
-            <div className="flex flex-1 flex-col p-5">
+            <div className="flex flex-1 flex-col p-6">
               <span
                 className="inline-flex w-fit rounded-full px-3 py-1 text-xs"
                 style={{
@@ -52,7 +52,7 @@ export default function HomeFeatured({ items, region, onPreview }) {
               >
                 {getTag(item, index)}
               </span>
-              <h3 className="mt-3 text-xl font-semibold text-white">{item.title}</h3>
+              <h3 className="mt-4 text-2xl font-semibold text-white">{item.title}</h3>
               <p className="mt-2 min-h-[4.5rem] text-sm leading-relaxed text-white/60">
                 {getDescription(item, region)}
               </p>

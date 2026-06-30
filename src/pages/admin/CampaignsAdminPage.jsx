@@ -30,7 +30,7 @@ function createEmptyCampaign() {
     description: "",
     logoUrl: "",
     landingPageUrl: "",
-    ctaLabel: "Learn more",
+    ctaLabel: "Contact sales",
     theme: {
       primary: "#0EA5E9",
       secondary: "#F97316",

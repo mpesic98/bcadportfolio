@@ -1,6 +1,6 @@
 import { useId } from "react"
 
-function ShirtPattern({ patternType, primaryColor, secondaryColor, accentColor }) {
+function ShirtPattern({ patternType, primaryColor, secondaryColor }) {
   switch (patternType) {
     case "stripes":
       return (
@@ -80,7 +80,6 @@ export default function TeamKitSvg({
           patternType={patternType}
           primaryColor={primaryColor}
           secondaryColor={secondaryColor}
-          accentColor={accentColor}
         />
       </g>
 

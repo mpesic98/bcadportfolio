@@ -6,7 +6,6 @@ const AUTO_CLOSE_SECONDS = 15
 export default function InterstitialLayer({
   isOpen,
   onClose,
-  clickUrl,
   sideLabel,
   creative,
 }) {
@@ -160,13 +159,7 @@ export default function InterstitialLayer({
             </span>
           </button>
 
-          {clickUrl ? (
-            <a href={clickUrl} target="_blank" rel="noreferrer">
-              {creative}
-            </a>
-          ) : (
-            creative
-          )}
+          <div className="cursor-pointer">{creative}</div>
         </div>
 
         {sideLabel ? (

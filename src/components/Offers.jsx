@@ -55,12 +55,20 @@ function Offers() {
   }, [displayedItems, openItem])
 
   const openPreview = (item) => {
-    navigate(`/${region}/${segmentUrlValue}/preview/${item.formatId}`, {
+    const previewPath = `/${region}/${segmentUrlValue}/preview/${item.formatId}`
+    const previewSearch =
+      item.formatId === "interscroller"
+        ? "?vp=mobile"
+        : item.formatId === "skin"
+          ? "?vp=desktop"
+          : ""
+
+    navigate(`${previewPath}${previewSearch}`, {
       state: {
         title: item.title,
         leftImg: item.leftImg || null,
         rightImg: item.rightImg || null,
-        clickUrl: item?.cta?.url || null,
+        clickUrl: null,
       },
     })
   }

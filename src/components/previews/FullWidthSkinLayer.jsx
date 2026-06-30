@@ -8,7 +8,6 @@ const DEFAULT_BG_POSITION = "calc(50% - 8px) top"
 
 export default function FullWidthSkinLayer({
   imageUrl,
-  clickUrl,
   showBehindContent = false,
   safeWidth = DEFAULT_SAFE_WIDTH,
   gap = DEFAULT_GAP,
@@ -48,36 +47,28 @@ export default function FullWidthSkinLayer({
         />
       )}
 
-      {clickUrl ? (
-        <>
-          <a
-            href={clickUrl}
-            target="_blank"
-            rel="noreferrer"
-            tabIndex={-1}
-            aria-label="Skin click area left"
-            className="fixed top-0 left-0 z-[3] block"
-            style={{
-              width: clickAreaWidth,
-              height: "100vh",
-              pointerEvents: clickAreaWidth > 0 ? "auto" : "none",
-            }}
-          />
-          <a
-            href={clickUrl}
-            target="_blank"
-            rel="noreferrer"
-            tabIndex={-1}
-            aria-label="Skin click area right"
-            className="fixed top-0 right-0 z-[3] block"
-            style={{
-              width: clickAreaWidth,
-              height: "100vh",
-              pointerEvents: clickAreaWidth > 0 ? "auto" : "none",
-            }}
-          />
-        </>
-      ) : null}
+      <div
+        role="button"
+        tabIndex={-1}
+        aria-label="Skin click area left"
+        className="fixed top-0 left-0 z-[3] block cursor-pointer"
+        style={{
+          width: clickAreaWidth,
+          height: "100vh",
+          pointerEvents: clickAreaWidth > 0 ? "auto" : "none",
+        }}
+      />
+      <div
+        role="button"
+        tabIndex={-1}
+        aria-label="Skin click area right"
+        className="fixed top-0 right-0 z-[3] block cursor-pointer"
+        style={{
+          width: clickAreaWidth,
+          height: "100vh",
+          pointerEvents: clickAreaWidth > 0 ? "auto" : "none",
+        }}
+      />
     </>
   )
 }

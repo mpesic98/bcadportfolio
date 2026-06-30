@@ -12,8 +12,6 @@ import {
 import HomeFeatured from "./HomeFeatured"
 import HomeFormatsGrid from "./HomeFormatsGrid"
 import HomeHero from "./HomeHero"
-import HomeValueProps from "./HomeValueProps"
-import actionLaptop from "../../assets/action-laptop.png"
 
 export default function HomeLanding() {
   const location = useLocation()
@@ -43,7 +41,8 @@ export default function HomeLanding() {
 
   const displayedItems = segment === "endemic" ? endemicCatalog : nonEndemicCatalog
   const featuredItems = displayedItems.slice(0, 3)
-  const heroImage = actionLaptop
+  const featuredIds = new Set(featuredItems.map((item) => item.formatId))
+  const browseItems = displayedItems.filter((item) => !featuredIds.has(item.formatId))
 
   useEffect(() => {
     if (!openItem) return
@@ -52,47 +51,46 @@ export default function HomeLanding() {
   }, [displayedItems, openItem])
 
   const openPreview = (item) => {
-    navigate(`/${region}/${segmentUrlValue}/preview/${item.formatId}`, {
+    const previewPath = `/${region}/${segmentUrlValue}/preview/${item.formatId}`
+    const previewSearch =
+      item.formatId === "interscroller"
+        ? "?vp=mobile"
+        : item.formatId === "skin"
+          ? "?vp=desktop"
+          : ""
+
+    navigate(`${previewPath}${previewSearch}`, {
       state: {
         title: item.title,
         leftImg: item.leftImg || null,
         rightImg: item.rightImg || null,
-        clickUrl: item?.cta?.url || null,
+        clickUrl: null,
       },
     })
   }
 
   return (
     <>
-      <div className="relative overflow-x-hidden bg-gradient-to-b from-[#0F141B] to-[#0B0D10]">
+      <div className="relative overflow-x-hidden bg-[var(--bc-green)]">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0"
           style={{
             background:
-              "radial-gradient(680px circle at 70% 20%, rgba(0,167,103,0.14), transparent 62%)",
+              "linear-gradient(180deg, rgba(1,91,73,0.98) 0%, rgba(1,72,58,0.96) 42%, rgba(8,33,28,0.98) 100%)",
           }}
         />
 
-        <div className="relative mx-auto max-w-[1120px] px-4 pb-16 pt-3 md:px-6 md:pb-20">
-          <HomeHero
-            heroImage={heroImage}
-            onExplore={() =>
-              document.getElementById("featured-solutions")?.scrollIntoView({ behavior: "smooth" })
-            }
-          />
+        <div className="relative mx-auto max-w-[1240px] px-4 pb-16 pt-3 md:px-6 md:pb-20">
+          <HomeHero />
 
-          <div className="mt-14 md:mt-20">
-            <HomeValueProps />
-          </div>
-
-          <div id="featured-solutions" className="mt-14 md:mt-20">
+          <div id="featured-solutions" className="mt-14 md:mt-16">
             <HomeFeatured items={featuredItems} region={region} onPreview={openPreview} />
           </div>
 
           <div id="browse-all-formats" className="mt-14 md:mt-20">
             <HomeFormatsGrid
-              items={displayedItems}
+              items={browseItems}
               region={region}
               onPreview={openPreview}
               onOpenDetails={setOpenItem}

@@ -9,6 +9,7 @@ import BaseNewsMock from "./BaseNewsMock"
 const DESKTOP_PREROLL_SLOT = "inline_preroll_730x330"
 const MOBILE_PREROLL_SLOT = "mobile_preroll"
 const MOBILE_PREROLL_VISIBILITY_THRESHOLD = 0.25
+const DEFAULT_CTA_LABEL = "Contact sales"
 
 function PreRollContent({ formatData }) {
   const { campaign } = usePreviewCampaign()
@@ -16,8 +17,7 @@ function PreRollContent({ formatData }) {
   const isMobile = vp === "mobile"
   const [showMobileSticky, setShowMobileSticky] = useState(false)
 
-  const ctaLabel = campaign?.ctaLabel || formatData?.cta?.label || "Visit Partner"
-  const ctaUrl = campaign?.landingPageUrl || formatData?.cta?.url || "https://example.com"
+  const ctaLabel = campaign?.ctaLabel || formatData?.cta?.label || DEFAULT_CTA_LABEL
 
   const stickyRoot =
     typeof document !== "undefined"
@@ -75,7 +75,6 @@ function PreRollContent({ formatData }) {
         <PrerollCreative
           mode="primis"
           ctaLabel={ctaLabel}
-          ctaUrl={ctaUrl}
           containerWidth={730}
           containerHeight={330}
           videoWidth={586}
@@ -93,7 +92,6 @@ function PreRollContent({ formatData }) {
         <PrerollCreative
           mode="mobile-inline"
           ctaLabel={ctaLabel}
-          ctaUrl={ctaUrl}
           countdownSeconds={11}
         />
       )
@@ -117,7 +115,6 @@ function PreRollContent({ formatData }) {
                 <PrerollCreative
                   mode="mobile-inline"
                   ctaLabel={ctaLabel}
-                  ctaUrl={ctaUrl}
                   countdownSeconds={11}
                 />
               </div>

@@ -1,43 +1,36 @@
 const valueProps = [
   {
     value: "+450M",
-    label: "Monthly Site Visits",
+    label: "Monthly visits across the network",
   },
   {
     value: "+200M",
-    label: "Social Media Followers",
-  },
-  {
-    value: "+20Y",
-    label: "Campaign Execution",
+    label: "Social followers across media brands",
   },
 ]
 
 export default function HomeValueProps() {
   return (
-    <section>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-3 md:gap-6">
-        {valueProps.map((entry) => (
+    <section className="w-full max-w-[760px]">
+      <div className="mx-auto">
+        <div className="grid grid-cols-2">
+          {valueProps.map((entry, index) => (
           <article
             key={entry.label}
-            className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-6"
+            className={[
+              "relative px-4 py-3 text-center md:px-8 md:py-4",
+              index > 0 ? "border-l border-white/18" : "",
+            ].join(" ")}
           >
-            <div
-              aria-hidden="true"
-              className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent to-transparent"
-              style={{
-                backgroundImage:
-                  "linear-gradient(to right, transparent, rgba(0,167,103,0.7), transparent)",
-              }}
-            />
-            <p className="text-[2.8rem] font-semibold leading-none tracking-tight text-white md:text-[3.4rem]">
+            <p className="text-[2.15rem] font-semibold leading-none tracking-tight text-white md:text-[2.7rem]">
               <span style={{ color: "var(--bc-green-soft)" }}>{entry.value}</span>
             </p>
-            <h2 className="mt-4 max-w-[16ch] text-base font-medium leading-snug text-white/78 md:text-lg">
+            <h2 className="mx-auto mt-2 max-w-[20ch] text-xs font-medium leading-snug text-white/68 md:text-sm">
               {entry.label}
             </h2>
           </article>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   )

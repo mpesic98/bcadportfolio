@@ -28,6 +28,11 @@ const aliasMap = {
   content: "content-widget",
 }
 
+const formatViewportMap = {
+  interscroller: "mobile",
+  skin: "desktop",
+}
+
 export default function PreviewPageResolver() {
   const { region, segment, formatId } = useParams()
   const location = useLocation()
@@ -39,11 +44,23 @@ export default function PreviewPageResolver() {
   const requestedId = formatId || ""
   const canonicalId = aliasMap[requestedId] || requestedId
   const searchSuffix = location.search || ""
+  const searchParams = new URLSearchParams(searchSuffix)
 
   if (region !== normalizedRegion || segment !== segmentUrlValue || requestedId !== canonicalId) {
     return (
       <Navigate
         to={`/${normalizedRegion}/${segmentUrlValue}/preview/${canonicalId}${searchSuffix}`}
+        replace
+      />
+    )
+  }
+
+  const requiredViewport = formatViewportMap[canonicalId]
+  if (requiredViewport && searchParams.get("vp") !== requiredViewport) {
+    searchParams.set("vp", requiredViewport)
+    return (
+      <Navigate
+        to={`/${normalizedRegion}/${segmentUrlValue}/preview/${canonicalId}?${searchParams.toString()}`}
         replace
       />
     )

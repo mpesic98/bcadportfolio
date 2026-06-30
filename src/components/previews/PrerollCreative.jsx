@@ -35,7 +35,6 @@ function VideoPane({
   onVideoError,
   countdownLabel,
   ctaLabel,
-  ctaUrl,
   showClose,
   onClose,
   className = "",
@@ -89,14 +88,14 @@ function VideoPane({
       ) : null}
 
       <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between gap-2">
-        <a
-          href={ctaUrl}
-          target="_blank"
-          rel="noreferrer"
+        <div
+          role="button"
+          tabIndex={0}
           className="rounded bg-white px-2 py-1 text-[11px] font-medium text-black"
+          style={{ cursor: "pointer" }}
         >
           {ctaLabel}
-        </a>
+        </div>
       </div>
     </div>
   )
@@ -108,8 +107,7 @@ export default function PrerollCreative({
   videoUrl = "https://bettercollective.com/wp-content/uploads/2024/05/50-8bit-420.webm",
   fallbackVideoUrl = "https://bettercollective.com/wp-content/uploads/2024/05/50-8bit-420.webm",
   countdownSeconds = 11,
-  ctaLabel = "Visit Partner",
-  ctaUrl = "https://example.com",
+  ctaLabel = "Contact sales",
   containerWidth = 730,
   containerHeight = 330,
   videoWidth = 546,
@@ -212,7 +210,6 @@ export default function PrerollCreative({
           onVideoError={handleVideoError}
           countdownLabel={countdownLabel}
           ctaLabel={ctaLabel}
-          ctaUrl={ctaUrl}
           className="rounded"
           style={{ width: "100%", aspectRatio: "16 / 9" }}
         />
@@ -231,7 +228,6 @@ export default function PrerollCreative({
           onVideoError={handleVideoError}
           countdownLabel={countdownLabel}
           ctaLabel={ctaLabel}
-          ctaUrl={ctaUrl}
           className="rounded"
           style={{ width: standardW || 300, height: standardH || 250 }}
         />
@@ -265,7 +261,6 @@ export default function PrerollCreative({
             onVideoError={handleVideoError}
             countdownLabel={countdownLabel}
             ctaLabel={ctaLabel}
-            ctaUrl={ctaUrl}
           />
 
           <div className="flex h-full items-center justify-center border-l border-white/10 bg-[#d8dbe0] px-1 py-[7px]">
@@ -288,7 +283,6 @@ export default function PrerollCreative({
             onVideoError={handleVideoError}
             countdownLabel={countdownLabel}
             ctaLabel={ctaLabel}
-            ctaUrl={ctaUrl}
             showClose
             onClose={() => setStickyClosed(true)}
             className="h-full w-full"

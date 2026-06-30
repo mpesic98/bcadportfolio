@@ -1,8 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
 
-const DEFAULT_CLICK_URL =
-  "https://adclick.g.doubleclick.net/pcs/click?xai=AKAOjsvm4ecLFeSx8y3atFhLVl2cFV2K1nOD-0HIvIM1O2ke_Dx3ghbO6ypqCriWIehTLmVAhDdE91nunntttaHgXE9392JhtzrIBhEUONBnI6C4ak8nF2iaco3GYWir-_RVDE_-BS4zqZMO0qLSJSWkh_bGw_YP89xUU-5azBaEvDxDz5N9rEWY1_5oqY_t7sx-vgihSm4up82xUX1gjEjG7yXSSnQ2F22IfUQyOg&sai=AMfl-YQ5K0gnE3QZXOi9geTw1M5wbwjS-WKNpTHmgYjOfvQapeAA8lf1RK2iukSzFauBrOobtCjoXkSGz6nQbQ0KiV3HHKJgp1n6sYlvzWas9xF_7f20RFjpfr1dEYlGPlCr5Cj-en12-dbFxGwc1TqjEyZbImv_HhZDXBoph64AYKHbimxualV4GNtxb3p1PvA_z49DUzHOFmx8fm-Yvoop6DM0RJprghgocs-94OREU1o&sig=Cg0ArKJSzGOfYL2RCGVnEAE&fbs_aeid=%5Bgw_fbsaeid%5D&urlfix=1&adurl=https://www.adidas.com.ar/futbol-hombre"
-
 const COUNTDOWN_TICK_MS = 1000
 const RESET_THRESHOLD_SECONDS = 8
 const SHORT_RESET_THRESHOLD_SECONDS = 20 * 60
@@ -91,7 +88,6 @@ export default function CountdownCreative({
   width = 300,
   height = 250,
   imageUrl,
-  clickUrl = DEFAULT_CLICK_URL,
 }) {
   const isTall = height >= 600
   const [secondsLeft, setSecondsLeft] = useState(() => createMockCountdown())
@@ -136,15 +132,15 @@ export default function CountdownCreative({
         fontFamily: "Inter, system-ui, sans-serif",
       }}
     >
-      <a
-        href={clickUrl}
-        target="_blank"
-        rel="noopener noreferrer"
+      <div
+        role="button"
+        tabIndex={0}
         aria-label="Countdown widget click area"
         style={{
           position: "absolute",
           inset: 0,
           zIndex: 4,
+          cursor: "pointer",
         }}
       />
 
