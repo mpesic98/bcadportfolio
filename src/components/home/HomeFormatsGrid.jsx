@@ -23,7 +23,7 @@ export default function HomeFormatsGrid({
         </p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
         {items.map((item) => (
           <article
             key={item.formatId}
@@ -48,11 +48,11 @@ export default function HomeFormatsGrid({
             </button>
 
             <div className="p-5">
-              <HomeCreativeOptions options={item.creativeOptions} className="mb-3" />
-              <p className="min-h-[5rem] text-[0.95rem] leading-relaxed text-white/64">
+              <HomeCreativeOptions options={item.creativeOptions} className="mb-2" />
+              <p className="min-h-[4rem] text-[0.95rem] leading-relaxed text-white/64">
                 {getDescription(item, region)}
               </p>
-              <div className="mt-4 flex items-center justify-between gap-2">
+              <div className="mt-2 flex items-center justify-between gap-2">
                 <button
                   type="button"
                   onClick={() => onPreview(item)}

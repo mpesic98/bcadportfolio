@@ -12,6 +12,13 @@
   --bc-cream: #f4efe3;
 }
 
+button,
+a[href],
+[role="button"],
+summary {
+  cursor: pointer;
+}
+
 .bc-button {
   --bc-button-bg: var(--bc-green);
   --bc-button-color: #ffffff;
@@ -110,6 +117,14 @@
     0 18px 40px rgba(0, 0, 0, 0.2);
 }
 
+.bc-button--featured {
+  --bc-button-bg: #082d26;
+  --bc-button-hover: #051b17;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 12px 28px rgba(0, 0, 0, 0.24);
+}
+
 .bc-button--sm {
   font-size: 0.82rem;
   min-height: 40px;
@@ -184,4 +199,28 @@
 .home-dark {
   background-color: #015b49;
   background-image: linear-gradient(180deg, #015b49 0%, #01483a 38%, #08211c 100%);
+}
+
+.home-hero__backdrop {
+  height: 100svh;
+  width: 100vw;
+}
+
+@media (min-width: 768px) {
+  .home-hero {
+    height: clamp(460px, 60svh, 620px);
+    min-height: clamp(460px, 60svh, 620px);
+  }
+
+  .home-hero__inner {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .home-hero__copy {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+  }
 }

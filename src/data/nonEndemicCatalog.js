@@ -28,7 +28,7 @@ const nonEndemicImageRoutes = {
     showcaseBImage: asset("../assets/adImg.jpg"),
   },
   mobileSlider: {
-    cardImage: asset("../assets/slider.png"),
+    cardImage: asset("../assets/slidermobile.gif"),
     hoverImage: asset("../assets/display_300x250.png"),
     showcaseAImage: asset("../assets/slider.png"),
     showcaseBImage: asset("../assets/display_300x250.png"),
