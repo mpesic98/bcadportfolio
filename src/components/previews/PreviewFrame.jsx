@@ -11,8 +11,36 @@ import {
   normalizeSegment,
 } from "../../data/regionConfig"
 import { PreviewViewportProvider, usePreviewViewport } from "./previewViewport.jsx"
+import PreviewSpecsPanel from "./PreviewSpecsPanel"
 
 const TABS_SCROLL_STORAGE_KEY = "preview-format-tabs-scroll-left"
+const HIDDEN_PREVIEW_INDEX_IDS = new Set([
+  "leadgen",
+  "pre-roll-video",
+  "video-instream-nonskippable-onsite",
+  "video-instream-nonskippable-youtube",
+  "high-impact-latam-takeover",
+  "high-impact-nam-takeover",
+  "high-impact-emea-takeover",
+])
+const NON_ENDEMIC_HOME_ORDER = [
+  "skin",
+  "interscroller",
+  "interstitial",
+  "display-banners",
+  "video-banners",
+  "native",
+  "mobile-slider",
+  "livescore",
+  "countdown-widget",
+  "cube",
+  "content-widget",
+  "video-instream-skippable-onsite",
+  "video-instream-skippable-youtube",
+]
+const NON_ENDEMIC_HOME_ORDER_INDEX = new Map(
+  NON_ENDEMIC_HOME_ORDER.map((formatId, index) => [formatId, index])
+)
 let tabsScrollMemory = 0
 
 function readSavedTabsScroll() {
@@ -68,7 +96,7 @@ function HomeIcon() {
 function resolveMobileTargetSlot(formatId) {
   if (!formatId) return null
   if (formatId === "leadgen") return "mobile_inline_300x600"
-  if (formatId === "pre-roll-video") return "mobile_preroll"
+  if (formatId === "pre-roll-video" || formatId.startsWith("video-instream-")) return "mobile_preroll"
   if (
     formatId === "interstitial" ||
     formatId === "interscroller" ||
@@ -90,6 +118,10 @@ const routeDefaultProposalFormatMap = {
   "countdown-widget": "countdown-widget",
   "content-widget": "content-widget",
   "mobile-slider": "mobile-slider",
+  "video-instream-skippable-onsite": "video-instream-skippable-onsite",
+  "video-instream-nonskippable-onsite": "video-instream-nonskippable-onsite",
+  "video-instream-skippable-youtube": "video-instream-skippable-youtube",
+  "video-instream-nonskippable-youtube": "video-instream-nonskippable-youtube",
 }
 
 const formatViewportMap = {
@@ -102,6 +134,8 @@ export default function PreviewFrame({
   children,
   maxWidth = 1100,
   controlsMaxWidth = 1100,
+  lockPageScroll = false,
+  disablePreviewScroll = false,
 }) {
   const navigate = useNavigate()
   const location = useLocation()
@@ -116,6 +150,7 @@ export default function PreviewFrame({
   const tabs = useMemo(() => {
     const uniqueByKey = new Map()
     catalog.forEach((item) => {
+      if (segment === "non-endemic" && HIDDEN_PREVIEW_INDEX_IDS.has(item.formatId)) return
       if (!uniqueByKey.has(item.formatId)) {
         uniqueByKey.set(item.formatId, {
           key: item.formatId,
@@ -123,8 +158,15 @@ export default function PreviewFrame({
         })
       }
     })
-    return Array.from(uniqueByKey.values())
-  }, [catalog])
+    const items = Array.from(uniqueByKey.values())
+    if (segment !== "non-endemic") return items
+
+    return items.sort((left, right) => {
+      const leftIndex = NON_ENDEMIC_HOME_ORDER_INDEX.get(left.key) ?? Number.MAX_SAFE_INTEGER
+      const rightIndex = NON_ENDEMIC_HOME_ORDER_INDEX.get(right.key) ?? Number.MAX_SAFE_INTEGER
+      return leftIndex - rightIndex
+    })
+  }, [catalog, segment])
 
   const search = useMemo(
     () => new URLSearchParams(location.search),
@@ -346,8 +388,12 @@ export default function PreviewFrame({
       >
         <div
           ref={rootViewportRef}
-          className="min-h-screen overflow-x-hidden bg-[var(--bc-green)]"
+          className={[
+            "overflow-x-hidden bg-[var(--bc-green)]",
+            lockPageScroll ? "h-screen min-h-0 overflow-y-hidden" : "min-h-screen",
+          ].join(" ")}
           style={{
+            "--preview-header-height": `${measuredHeaderHeight}px`,
             backgroundImage:
               "radial-gradient(circle at 50% 0%, rgba(143,220,199,0.14), transparent 36%), linear-gradient(180deg, var(--bc-green) 0%, var(--bc-green-strong) 42%, var(--bc-black) 100%)",
           }}
@@ -406,6 +452,7 @@ export default function PreviewFrame({
             </div>
 
             <div className="row-start-1 inline-flex items-center gap-1 justify-self-end rounded-xl border border-white/10 bg-black/15 p-1 md:col-start-3">
+              {segment === "non-endemic" ? <PreviewSpecsPanel formatId={formatId} /> : null}
               <button
                 type="button"
                 disabled={isMobileOnlyFormat}
@@ -445,6 +492,7 @@ export default function PreviewFrame({
               </button>
             </div>
           </div>
+          <div id="preview-specs-root" className="relative mx-auto w-full" style={{ maxWidth: controlsMaxWidth }} />
         </div>
 
         <main
@@ -475,7 +523,7 @@ export default function PreviewFrame({
             <div className="mx-auto px-4 py-6 flex justify-center overflow-x-hidden">
               <div
                 className="relative box-border bg-neutral-900 rounded-[34px] shadow-lg overflow-x-hidden"
-                style={{ width: deviceW, maxWidth: deviceW }}
+                style={{ width: deviceW, maxWidth: "100%" }}
               >
                 <div className="absolute top-[8px] left-1/2 -translate-x-1/2 h-[18px] w-[120px] rounded-full bg-neutral-800 z-10" />
 
@@ -497,7 +545,10 @@ export default function PreviewFrame({
                   <div
                     tabIndex={0}
                     ref={mobileViewportRef}
-                    className="preview-scroll h-full min-h-0 overflow-y-auto overflow-x-hidden relative overscroll-contain touch-pan-y focus:outline-none"
+                    className={[
+                      "preview-scroll h-full min-h-0 overflow-x-hidden relative overscroll-contain focus:outline-none",
+                      disablePreviewScroll ? "overflow-y-hidden touch-none" : "overflow-y-auto touch-pan-y",
+                    ].join(" ")}
                     style={{ WebkitOverflowScrolling: "touch" }}
                   >
                     {children}

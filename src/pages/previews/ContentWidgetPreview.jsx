@@ -1,5 +1,7 @@
 import ContentWidgetCreative from "../../components/previews/ContentWidgetCreative"
 import PreviewFrame from "../../components/previews/PreviewFrame"
+import { resolveCreativeAsset } from "../../features/proposals/creativeResolver"
+import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
 import BaseNewsMock from "./BaseNewsMock"
 
 const SLOTS_300X600 = new Set(["inline_300x600", "mobile_inline_300x600"])
@@ -11,24 +13,29 @@ const SLOTS_300X250 = new Set([
   "mobile_inline_300x250_2",
 ])
 
-export default function ContentWidgetPreview() {
-  const contentMaxWidth = 1100
+function ContentWidgetPreviewContent() {
+  const { campaign } = usePreviewCampaign()
+  const campaignAsset = resolveCreativeAsset(campaign, "content_widget")
 
   const renderAd = (slotId) => {
     if (SLOTS_300X600.has(slotId)) {
-      return <ContentWidgetCreative width={300} height={600} />
+      return <ContentWidgetCreative width={300} height={600} imageUrl={campaignAsset} />
     }
 
     if (SLOTS_300X250.has(slotId)) {
-      return <ContentWidgetCreative width={300} height={250} />
+      return <ContentWidgetCreative width={300} height={250} imageUrl={campaignAsset} />
     }
 
     return null
   }
 
+  return <BaseNewsMock renderAd={renderAd} />
+}
+
+export default function ContentWidgetPreview() {
   return (
-    <PreviewFrame maxWidth={contentMaxWidth}>
-      <BaseNewsMock renderAd={renderAd} />
+    <PreviewFrame maxWidth={1100}>
+      <ContentWidgetPreviewContent />
     </PreviewFrame>
   )
 }

@@ -19,7 +19,7 @@ const creativeFieldCatalog = [
   { key: "mobile_slider", label: "Mobile Slider", hint: "300x250 image / GIF" },
   { key: "interstitial", label: "Interstitial", hint: "320x480 / 300x600" },
   { key: "video_banner", label: "Video Banner", hint: "MP4 or poster" },
-  { key: "video_banner_countdown", label: "Video Banner Countdown", hint: "MP4 or poster" },
+  { key: "video_banner_countdown", label: "Countdown Widget Video", hint: "MP4 or poster" },
   { key: "pre_roll", label: "Pre-Roll", hint: "MP4 or poster" },
   { key: "native", label: "Native", hint: "Feed card" },
   { key: "cube", label: "Cube", hint: "Interactive square" },

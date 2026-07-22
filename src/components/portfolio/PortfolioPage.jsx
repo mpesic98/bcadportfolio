@@ -1,12 +1,15 @@
 import HomeFeatured from "../home/HomeFeatured"
 import HomeFormatsGrid from "../home/HomeFormatsGrid"
 import HomeHero from "../home/HomeHero"
+import HomePackages from "../home/HomePackages"
+import HomeNetworkOverview from "../home/HomeNetworkOverview"
 import ProposalFormatsSection from "./ProposalFormatsSection"
 
 export default function PortfolioPage({
   proposal = null,
   featuredItems = [],
-  browseItems = [],
+  formatGroups = [],
+  packageItems = [],
   region = "usa",
   onPreview,
   onOpenDetails,
@@ -22,7 +25,7 @@ export default function PortfolioPage({
         }}
       />
 
-      <div className="relative mx-auto max-w-[1240px] px-4 pb-16 pt-3 md:px-6 md:pb-20">
+      <div className="relative mx-auto max-w-[1288px] px-4 pb-16 pt-3 md:px-6 md:pb-20">
         <HomeHero />
 
         {proposal ? (
@@ -35,17 +38,36 @@ export default function PortfolioPage({
               id="featured-solutions"
               className="relative z-20 mt-14 md:mt-0"
             >
-              <HomeFeatured items={featuredItems} region={region} onPreview={onPreview} />
-            </div>
-
-            <div id="browse-all-formats" className="mt-14 md:mt-20">
-              <HomeFormatsGrid
-                items={browseItems}
+              <HomeFeatured
+                items={featuredItems}
                 region={region}
                 onPreview={onPreview}
                 onOpenDetails={onOpenDetails}
               />
             </div>
+
+            <div id="browse-all-formats" className="mt-14 md:mt-20">
+              <HomeFormatsGrid
+                groups={formatGroups}
+                region={region}
+                onPreview={onPreview}
+                onOpenDetails={onOpenDetails}
+              />
+            </div>
+
+            <div className="mt-20 md:mt-28">
+              <HomeNetworkOverview />
+            </div>
+
+            {packageItems.length ? (
+              <div id="takeover-packages" className="mt-20 md:mt-28">
+                <HomePackages
+                  items={packageItems}
+                  onPreview={onPreview}
+                  onOpenDetails={onOpenDetails}
+                />
+              </div>
+            ) : null}
           </>
         )}
       </div>

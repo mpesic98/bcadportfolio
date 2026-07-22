@@ -8,12 +8,14 @@ import {
   resolveCreativeAsset,
 } from "../../features/proposals/creativeResolver"
 import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
+import { usePreviewViewport } from "../../components/previews/previewViewport.jsx"
 
 const INSTRUCTION_VISIBLE_MS = 2000
 const INSTRUCTION_FADE_MS = 800
 
-export default function InterstitialPreview() {
+function InterstitialPreviewContent() {
   const { campaign } = usePreviewCampaign()
+  const { vp } = usePreviewViewport()
   const [armed, setArmed] = useState(true)
   const [open, setOpen] = useState(false)
   const [instructionState, setInstructionState] = useState("visible")
@@ -66,7 +68,7 @@ export default function InterstitialPreview() {
   const renderAd = () => null
 
   return (
-    <PreviewFrame maxWidth={1100}>
+    <>
       <div ref={rootRef}>
         <BaseNewsMock renderAd={renderAd} />
       </div>
@@ -90,7 +92,10 @@ export default function InterstitialPreview() {
         isOpen={open}
         onClose={() => setOpen(false)}
         creative={
-          <div className="w-[320px] h-[480px] md:w-[300px] md:h-[600px] overflow-hidden">
+          <div
+            className="overflow-hidden"
+            style={{ width: vp === "mobile" ? 320 : 640, height: 480, maxWidth: "100%" }}
+          >
             {assetLooksLikeVideo(creativeAsset) ? (
               <video
                 src={creativeAsset}
@@ -106,6 +111,14 @@ export default function InterstitialPreview() {
           </div>
         }
       />
+    </>
+  )
+}
+
+export default function InterstitialPreview() {
+  return (
+    <PreviewFrame maxWidth={1100}>
+      <InterstitialPreviewContent />
     </PreviewFrame>
   )
 }

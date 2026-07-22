@@ -4,18 +4,25 @@ import {
   resolveCreativeAsset,
 } from "../../features/proposals/creativeResolver"
 import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
+import fallbackVideo from "../../assets/video/V2_Web-Front-Page-Video_LOW-Quality.mp4"
+
+const fallbackBySize = {
+  "300x250": fallbackVideo,
+  "300x600": fallbackVideo,
+}
 
 export default function VideoBannerCreative({
   slotId,
   size = "300x250",
-  videoUrl = "https://bettercollective.com/wp-content/uploads/2024/05/50-8bit-420.webm",
+  videoUrl,
 }) {
   const { campaign } = usePreviewCampaign()
   const [w, h] = size.split("x").map(Number)
   const videoRef = useRef(null)
   const [paused, setPaused] = useState(false)
   const [muted, setMuted] = useState(true)
-  const assetUrl = resolveCreativeAsset(campaign, "video_banner", videoUrl)
+  const fallbackAsset = videoUrl || fallbackBySize[size] || fallbackVideo
+  const assetUrl = resolveCreativeAsset(campaign, "video_banner", fallbackAsset)
   const isVideoAsset = assetLooksLikeVideo(assetUrl)
 
   const togglePlay = () => {
@@ -24,7 +31,7 @@ export default function VideoBannerCreative({
     if (!video) return
 
     if (video.paused) {
-      video.play()
+      video.play().catch(() => {})
       setPaused(false)
     } else {
       video.pause()

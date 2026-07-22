@@ -6,8 +6,7 @@ import BaseNewsMock from "./BaseNewsMock"
 
 const LEADGEN_SLOTS = new Set(["inline_300x600", "mobile_inline_300x600"])
 
-export default function LeadgenPreview() {
-  const contentMaxWidth = 1100
+function LeadgenPreviewContent() {
   const { vp } = usePreviewViewport()
   const isMobile = vp === "mobile"
   const anchorRef = useRef(null)
@@ -73,9 +72,13 @@ export default function LeadgenPreview() {
     )
   }
 
+  return <BaseNewsMock renderAd={renderAd} />
+}
+
+export default function LeadgenPreview() {
   return (
-    <PreviewFrame maxWidth={contentMaxWidth}>
-      <BaseNewsMock renderAd={renderAd} />
+    <PreviewFrame maxWidth={1100}>
+      <LeadgenPreviewContent />
     </PreviewFrame>
   )
 }

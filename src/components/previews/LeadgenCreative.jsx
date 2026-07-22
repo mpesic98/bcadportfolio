@@ -1,8 +1,8 @@
 import { useState } from "react"
 import bcLogo from "../../assets/BClogo.png"
-
-const BACKGROUND_IMAGE_URL =
-  "https://static.nike.com/a/images/f_auto,cs_srgb/w_1536,c_limit/8f1c0681-46a5-4cd6-b4c6-b8fbc0b7b3aa/p%C3%A1gina-principal-de-running.png"
+import fallbackBackground from "../../assets/leadgencard.png"
+import { resolveCreativeAsset } from "../../features/proposals/creativeResolver"
+import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
 const TRACKING_COUNTER_NAME = "LeadForm_Submit"
 
 function isValidEmail(email) {
@@ -23,10 +23,12 @@ function fireLeadgenCounter() {
 }
 
 export default function LeadgenCreative({ width = 300, height = 600 }) {
+  const { campaign } = usePreviewCampaign()
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [successMessage, setSuccessMessage] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
+  const backgroundImageUrl = resolveCreativeAsset(campaign, "leadgen", fallbackBackground)
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -74,7 +76,7 @@ export default function LeadgenCreative({ width = 300, height = 600 }) {
       }}
     >
       <img
-        src={BACKGROUND_IMAGE_URL}
+        src={backgroundImageUrl}
         alt="Leadgen background"
         style={{
           position: "absolute",
@@ -126,7 +128,7 @@ export default function LeadgenCreative({ width = 300, height = 600 }) {
             textTransform: "uppercase",
           }}
         >
-          Recibe noticias e informacion de ...
+          Recibe noticias y novedades deportivas
         </h1>
 
         <p
@@ -139,8 +141,7 @@ export default function LeadgenCreative({ width = 300, height = 600 }) {
             padding: "10px 30px",
           }}
         >
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Corporis blanditiis quidem provident sit
-          unde.
+          Suscríbete para recibir historias, lanzamientos y oportunidades seleccionadas para fans.
         </p>
 
         <form
@@ -279,7 +280,7 @@ export default function LeadgenCreative({ width = 300, height = 600 }) {
             padding: "0 16px",
           }}
         >
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tempore, ducimus.
+          Al registrarte aceptas recibir comunicaciones de la campaña y puedes darte de baja en cualquier momento.
         </p>
       </div>
     </div>

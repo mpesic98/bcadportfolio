@@ -1,4 +1,5 @@
 import { nonEndemicById } from "./nonEndemicCatalog"
+import { getOfficialSpecsForAppFormat } from "./globalAdSpecs2026"
 
 export const proposalSiteCatalog = [
   { id: "bolavip", name: "Bolavip" },
@@ -21,6 +22,7 @@ export const proposalCategoryCatalog = [
   { id: "interactive", label: "Interactive" },
   { id: "performance", label: "Performance" },
   { id: "branded-content", label: "Branded Content" },
+  { id: "packages", label: "Packages" },
 ]
 
 export const proposalCategoryById = proposalCategoryCatalog.reduce((acc, category) => {
@@ -52,6 +54,13 @@ function createFormatDefinition({
   creativeGuidelines,
 }) {
   const sourceFormat = nonEndemicById[catalogFormatId]
+  const officialSpecs =
+    sourceFormat?.officialSpecs?.length
+      ? sourceFormat.officialSpecs
+      : getOfficialSpecsForAppFormat(catalogFormatId || id)
+  const canonicalSizes = [...new Set(
+    officialSpecs.flatMap((spec) => spec.dimensions || spec.includedUnits || [])
+  )]
 
   return {
     id,
@@ -63,7 +72,7 @@ function createFormatDefinition({
     supportedSites,
     creativeKeys,
     primaryCreativeKey,
-    sizes,
+    sizes: officialSpecs.length ? canonicalSizes : sizes,
     creativeTypes,
     previewType,
     placements,
@@ -73,6 +82,10 @@ function createFormatDefinition({
       `Accepted assets: ${creativeTypes.join(", ")}.`,
       `Keep brand marks and critical copy inside safe areas with strong contrast against the placement.`,
     ],
+    specStatus: officialSpecs.length ? "official" : sourceFormat?.specStatus || "custom",
+    specVersion: sourceFormat?.specVersion || null,
+    officialSpecIds: officialSpecs.map((spec) => spec.id),
+    officialSpecs,
     sourceFormat,
     fallbackImage: sourceFormat?.cardImage || sourceFormat?.hoverImage || "",
     mockupUrl: `/mockups/formats/${mockupId || id}.svg`,
@@ -134,7 +147,7 @@ export const proposalFormatCatalog = [
     name: "Half Page",
     catalogFormatId: "display-banners",
     previewRoute: { region: "usa", segment: "non-endemic", formatId: "display-banners" },
-    category: "high-impact",
+    category: "display",
     supportedSites: ["bolavip", "redgol", "givemesport"],
     creativeKeys: ["halfpage"],
     primaryCreativeKey: "halfpage",
@@ -221,10 +234,10 @@ export const proposalFormatCatalog = [
     previewRoute: { region: "usa", segment: "non-endemic", formatId: "video-banners" },
     category: "video",
     supportedSites: ["bolavip", "sporting-news", "givemesport"],
-    creativeKeys: ["video_banner", "video_banner_countdown"],
+    creativeKeys: ["video_banner"],
     primaryCreativeKey: "video_banner",
     sizes: ["300x250", "300x600"],
-    creativeTypes: ["MP4", "WEBM", "JPG/PNG poster", "Countdown overlay"],
+    creativeTypes: ["MP4", "WEBM", "JPG/PNG poster"],
     description:
       "Autoplay-capable video banner placements that preserve a compact footprint while adding motion.",
   }),
@@ -277,10 +290,10 @@ export const proposalFormatCatalog = [
     previewRoute: { region: "usa", segment: "non-endemic", formatId: "countdown-widget" },
     category: "interactive",
     supportedSites: ["bolavip", "redgol", "sporting-news"],
-    creativeKeys: ["countdown_widget"],
+    creativeKeys: ["countdown_widget", "video_banner_countdown"],
     primaryCreativeKey: "countdown_widget",
     sizes: ["Responsive widget"],
-    creativeTypes: ["JPG", "PNG", "Dynamic copy"],
+    creativeTypes: ["JPG", "PNG", "MP4", "WEBM", "Dynamic countdown"],
     description:
       "Urgency-led module for launches, tournament windows and countdown-driven calls to action.",
   }),
@@ -325,6 +338,97 @@ export const proposalFormatCatalog = [
     creativeTypes: ["JPG", "PNG", "Headline + CTA"],
     description:
       "Flexible editorial module for recommendations, sponsor-owned storytelling and recirculation slots.",
+  }),
+  createFormatDefinition({
+    id: "video-instream-skippable-onsite",
+    name: "In-Stream Skippable (On-site)",
+    catalogFormatId: "video-instream-skippable-onsite",
+    previewRoute: { region: "usa", segment: "non-endemic", formatId: "video-instream-skippable-onsite" },
+    mockupId: "pre-roll-video",
+    category: "video",
+    supportedSites: ["bolavip", "sporting-news", "givemesport"],
+    creativeKeys: ["pre_roll"],
+    primaryCreativeKey: "pre_roll",
+    sizes: ["16:9 primary", "1:1 optional"],
+    creativeTypes: ["MP4 (H.264)", "VAST 2.0 / 3.0"],
+  }),
+  createFormatDefinition({
+    id: "video-instream-nonskippable-onsite",
+    name: "In-Stream Non-Skippable (On-site)",
+    catalogFormatId: "video-instream-nonskippable-onsite",
+    previewRoute: { region: "usa", segment: "non-endemic", formatId: "video-instream-nonskippable-onsite" },
+    mockupId: "pre-roll-video",
+    category: "video",
+    supportedSites: ["bolavip", "sporting-news", "givemesport"],
+    creativeKeys: ["pre_roll"],
+    primaryCreativeKey: "pre_roll",
+    sizes: ["16:9 primary", "1:1 optional"],
+    creativeTypes: ["MP4 (H.264)", "VAST 2.0 / 3.0"],
+  }),
+  createFormatDefinition({
+    id: "video-instream-skippable-youtube",
+    name: "In-Stream Skippable (YouTube)",
+    catalogFormatId: "video-instream-skippable-youtube",
+    previewRoute: { region: "usa", segment: "non-endemic", formatId: "video-instream-skippable-youtube" },
+    mockupId: "pre-roll-video",
+    category: "video",
+    supportedSites: ["bolavip", "sporting-news", "givemesport"],
+    creativeKeys: ["pre_roll"],
+    primaryCreativeKey: "pre_roll",
+    sizes: ["16:9 primary", "1:1 optional"],
+    creativeTypes: ["MP4 (H.264)", "VAST 2.0 / 3.0"],
+  }),
+  createFormatDefinition({
+    id: "video-instream-nonskippable-youtube",
+    name: "In-Stream Non-Skippable (YouTube)",
+    catalogFormatId: "video-instream-nonskippable-youtube",
+    previewRoute: { region: "usa", segment: "non-endemic", formatId: "video-instream-nonskippable-youtube" },
+    mockupId: "pre-roll-video",
+    category: "video",
+    supportedSites: ["bolavip", "sporting-news", "givemesport"],
+    creativeKeys: ["pre_roll"],
+    primaryCreativeKey: "pre_roll",
+    sizes: ["16:9 primary", "1:1 optional"],
+    creativeTypes: ["MP4 (H.264)", "VAST 2.0 / 3.0"],
+  }),
+  createFormatDefinition({
+    id: "high-impact-latam-takeover",
+    name: "LATAM Takeover",
+    catalogFormatId: "high-impact-latam-takeover",
+    previewRoute: { region: "latam", segment: "non-endemic", formatId: "high-impact-latam-takeover" },
+    mockupId: "skin",
+    category: "packages",
+    supportedSites: ["bolavip", "redgol", "somosfanaticos"],
+    creativeKeys: ["skin_background", "display_top", "display_sidebar", "mobile_sticky"],
+    primaryCreativeKey: "skin_background",
+    sizes: ["Skin", "MPU", "Leaderboard", "Mobile Leaderboard"],
+    creativeTypes: ["Publisher-hosted bundle"],
+  }),
+  createFormatDefinition({
+    id: "high-impact-nam-takeover",
+    name: "NAM Takeover",
+    catalogFormatId: "high-impact-nam-takeover",
+    previewRoute: { region: "usa", segment: "non-endemic", formatId: "high-impact-nam-takeover" },
+    mockupId: "skin",
+    category: "packages",
+    supportedSites: ["sporting-news", "givemesport", "world-soccer-talk"],
+    creativeKeys: ["skin_background", "display_top", "display_sidebar", "mobile_sticky"],
+    primaryCreativeKey: "skin_background",
+    sizes: ["Skin", "MPU", "Leaderboard", "Mobile Leaderboard"],
+    creativeTypes: ["Publisher-hosted bundle"],
+  }),
+  createFormatDefinition({
+    id: "high-impact-emea-takeover",
+    name: "EMEA Takeover",
+    catalogFormatId: "high-impact-emea-takeover",
+    previewRoute: { region: "europe", segment: "non-endemic", formatId: "high-impact-emea-takeover" },
+    mockupId: "leaderboard",
+    category: "packages",
+    supportedSites: ["givemesport", "sporting-news"],
+    creativeKeys: ["display_top", "display_sidebar", "mobile_sticky", "halfpage"],
+    primaryCreativeKey: "display_top",
+    sizes: ["MPU", "Leaderboard", "Mobile Leaderboard", "Billboard"],
+    creativeTypes: ["Publisher-hosted bundle"],
   }),
 ]
 

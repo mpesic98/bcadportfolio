@@ -15,7 +15,7 @@ const VERSION_LABELS = {
   v2: "Site rails",
 }
 
-export default function SkinPreview() {
+function SkinPreviewContent() {
   const location = useLocation()
   const { campaign } = usePreviewCampaign()
   const [version, setVersion] = useState("v1")
@@ -46,7 +46,7 @@ export default function SkinPreview() {
   const renderNoCreatives = useMemo(() => () => null, [])
 
   return (
-    <PreviewFrame maxWidth={1100} controlsMaxWidth={1100}>
+    <>
       <div className="fixed bottom-4 right-4 z-[3201] pointer-events-none">
         <div className="pointer-events-auto flex flex-wrap items-center gap-2 rounded-xl border border-neutral-200 bg-white/90 backdrop-blur p-1 shadow-sm">
           {Object.keys(VERSION_LABELS).map((key) => (
@@ -106,6 +106,14 @@ export default function SkinPreview() {
           </div>
         </>
       ) : null}
+    </>
+  )
+}
+
+export default function SkinPreview() {
+  return (
+    <PreviewFrame maxWidth={1100} controlsMaxWidth={1100}>
+      <SkinPreviewContent />
     </PreviewFrame>
   )
 }

@@ -1,8 +1,12 @@
 import { proposalSiteById } from "../../data/proposalFormats"
+import {
+  GLOBAL_AD_SPECS_VERSION,
+  getOfficialSpecsForAppFormat,
+} from "../../data/globalAdSpecs2026"
 import { assetLooksLikeVideo } from "./creativeResolver"
 
 export const PORTABLE_PROPOSAL_SCHEMA = "bc-ad-portfolio-proposal"
-export const PORTABLE_PROPOSAL_VERSION = 2
+export const PORTABLE_PROPOSAL_VERSION = 3
 export const DEFAULT_PUBLIC_HERO_VIDEO_URL =
   "https://bettercollective.com/wp-content/uploads/2024/05/50-8bit-420.webm"
 
@@ -63,7 +67,16 @@ function inferPreviewType(format, assets) {
   if (id === "skin") return "desktop_skin"
   if (id === "mobile-slider" || id === "mobile-sticky") return "sticky_mobile"
   if (id === "video-banners" || id === "video-banner") {
-    return assets.video_banner_countdown ? "countdown" : "video_banner"
+    return "video_banner"
+  }
+  if (id.startsWith("video-instream-") && id.endsWith("-onsite")) {
+    return "instream_onsite"
+  }
+  if (id.startsWith("video-instream-") && id.endsWith("-youtube")) {
+    return "instream_youtube"
+  }
+  if (id.startsWith("high-impact-") && id.endsWith("-takeover")) {
+    return "takeover"
   }
   if (id === "countdown-widget") return "countdown"
   return assetLooksLikeVideo(firstValue(...Object.values(assets))) ? "video_banner" : "image"
@@ -120,19 +133,35 @@ function normalizeFormat(format = {}, campaign = null, index = 0) {
   const directCreatives = (format.creatives || []).map((creative) => ({ ...creative }))
   const creatives = placementCreatives.length ? placementCreatives : directCreatives
   const type = inferPreviewType(format, assets)
+  const sourceFormatId = format.catalogFormatId || format.id || format.formatId || ""
+  const officialSpecs = format.officialSpecs?.length
+    ? format.officialSpecs
+    : getOfficialSpecsForAppFormat(sourceFormatId)
+  const canonicalSizes = [...new Set(
+    officialSpecs.flatMap((spec) => spec.dimensions || spec.includedUnits || [])
+  )]
 
   return {
     id: format.id || format.formatId || `format-${index + 1}`,
+    sourceFormatId,
     type,
     previewType: type,
     title: format.title || format.name || "Advertising format",
     category: format.categoryLabel || format.category || "Premium format",
     description: format.description || format.specs?.description || "Live creative preview.",
-    sizes: Array.isArray(format.sizes) ? format.sizes : format.specs?.sizes || [],
+    sizes: officialSpecs.length
+      ? canonicalSizes
+      : Array.isArray(format.sizes)
+        ? format.sizes
+        : format.specs?.sizes || [],
     assetUrl: resolvePrimaryAsset(format, assets, creatives, type),
     demoUrl: format.demoUrl || "",
     assets,
     creatives,
+    specStatus: officialSpecs.length ? "official" : format.specStatus || "custom",
+    specVersion: officialSpecs.length ? GLOBAL_AD_SPECS_VERSION : null,
+    officialSpecIds: officialSpecs.map((spec) => spec.id),
+    officialSpecs,
   }
 }
 

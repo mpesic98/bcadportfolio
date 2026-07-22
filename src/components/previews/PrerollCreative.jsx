@@ -8,6 +8,7 @@ import thumb55 from "../../assets/55_thumb.png"
 import thumb60 from "../../assets/60_thumb.jpg"
 import thumb66 from "../../assets/66_thumb.jpg"
 import thumb67 from "../../assets/67_thumb.jpg"
+import fallbackPrerollVideo from "../../assets/video/50-8bit-420-mobile.webm"
 
 const sidebarThumbs = [thumb55, thumb60, thumb66, thumb67]
 
@@ -104,8 +105,8 @@ function VideoPane({
 export default function PrerollCreative({
   mode = "standard",
   size = "300x250",
-  videoUrl = "https://bettercollective.com/wp-content/uploads/2024/05/50-8bit-420.webm",
-  fallbackVideoUrl = "https://bettercollective.com/wp-content/uploads/2024/05/50-8bit-420.webm",
+  videoUrl = fallbackPrerollVideo,
+  fallbackVideoUrl = fallbackPrerollVideo,
   countdownSeconds = 11,
   ctaLabel = "Contact sales",
   containerWidth = 730,

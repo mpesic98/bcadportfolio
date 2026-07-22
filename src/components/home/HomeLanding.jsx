@@ -11,6 +11,58 @@ import {
 } from "../../data/regionConfig"
 import PortfolioPage from "../portfolio/PortfolioPage"
 
+const FEATURED_FORMAT_IDS = ["skin", "interscroller", "interstitial"]
+const PACKAGE_FORMAT_IDS = new Set([
+  "high-impact-latam-takeover",
+  "high-impact-nam-takeover",
+  "high-impact-emea-takeover",
+])
+const HIDDEN_DISCOVERY_FORMAT_IDS = new Set([
+  "leadgen",
+  "pre-roll-video",
+  "video-instream-nonskippable-onsite",
+  "video-instream-nonskippable-youtube",
+])
+
+const FORMAT_GROUPS = [
+  {
+    id: "core-formats",
+    title: "Core Formats",
+    ids: [
+      "display-banners",
+      "video-banners",
+      "native",
+    ],
+  },
+  {
+    id: "interactive-formats",
+    title: "Interactive Formats",
+    ids: [
+      "mobile-slider",
+      "livescore",
+      "countdown-widget",
+      "cube",
+      "content-widget",
+    ],
+  },
+  {
+    id: "instream-video",
+    title: "In-stream Video",
+    ids: [
+      "video-instream-skippable-onsite",
+      "video-instream-skippable-youtube",
+    ],
+  },
+]
+
+function buildFormatGroups(items) {
+  const itemById = Object.fromEntries(items.map((item) => [item.formatId, item]))
+  return FORMAT_GROUPS.map((group) => ({
+    ...group,
+    items: group.ids.map((id) => itemById[id]).filter(Boolean),
+  })).filter((group) => group.items.length)
+}
+
 export default function HomeLanding() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -38,9 +90,22 @@ export default function HomeLanding() {
   }, [incomingSegment, location.search, navigate, region, segmentUrlValue])
 
   const displayedItems = segment === "endemic" ? endemicCatalog : nonEndemicCatalog
-  const featuredItems = displayedItems.slice(0, 3)
+  const visibleItems = displayedItems.filter(
+    (item) => !HIDDEN_DISCOVERY_FORMAT_IDS.has(item.formatId)
+  )
+  const featuredItems = segment === "endemic"
+    ? visibleItems.slice(0, 3)
+    : FEATURED_FORMAT_IDS.map((id) => visibleItems.find((item) => item.formatId === id)).filter(Boolean)
   const featuredIds = new Set(featuredItems.map((item) => item.formatId))
-  const browseItems = displayedItems.filter((item) => !featuredIds.has(item.formatId))
+  const packageItems = segment === "endemic"
+    ? []
+    : visibleItems.filter((item) => PACKAGE_FORMAT_IDS.has(item.formatId))
+  const browseItems = visibleItems.filter(
+    (item) => !featuredIds.has(item.formatId) && !PACKAGE_FORMAT_IDS.has(item.formatId)
+  )
+  const formatGroups = segment === "endemic"
+    ? [{ id: "catalog", title: "Formats", items: browseItems }]
+    : buildFormatGroups(browseItems)
 
   useEffect(() => {
     if (!openItem) return
@@ -71,7 +136,8 @@ export default function HomeLanding() {
     <>
       <PortfolioPage
         featuredItems={featuredItems}
-        browseItems={browseItems}
+        formatGroups={formatGroups}
+        packageItems={packageItems}
         region={region}
         onPreview={openPreview}
         onOpenDetails={setOpenItem}

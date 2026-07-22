@@ -110,7 +110,7 @@ function PreRollContent({ formatData }) {
 
       {isMobile && showMobileSticky && stickyRoot
         ? createPortal(
-            <div className="pointer-events-auto absolute inset-x-0 bottom-[64px] flex justify-center px-3">
+            <div className="pointer-events-auto absolute inset-x-0 bottom-3 flex justify-center px-3">
               <div className="w-[220px] overflow-hidden rounded border border-neutral-300 bg-black shadow-2xl">
                 <PrerollCreative
                   mode="mobile-inline"

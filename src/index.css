@@ -12,6 +12,46 @@
   --bc-cream: #f4efe3;
 }
 
+html {
+  scrollbar-color: rgba(143, 220, 199, 0.58) rgba(8, 33, 28, 0.18);
+  scrollbar-width: thin;
+}
+
+body,
+.bc-scrollbar {
+  scrollbar-color: rgba(143, 220, 199, 0.54) rgba(255, 255, 255, 0.04);
+  scrollbar-width: thin;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.bc-scrollbar::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+html::-webkit-scrollbar-track,
+body::-webkit-scrollbar-track,
+.bc-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.035);
+}
+
+html::-webkit-scrollbar-thumb,
+body::-webkit-scrollbar-thumb,
+.bc-scrollbar::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: rgba(143, 220, 199, 0.54);
+  background-clip: padding-box;
+}
+
+html::-webkit-scrollbar-thumb:hover,
+body::-webkit-scrollbar-thumb:hover,
+.bc-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(143, 220, 199, 0.72);
+  background-clip: padding-box;
+}
+
 button,
 a[href],
 [role="button"],
@@ -180,11 +220,14 @@ summary {
 }
 
 .preview-scroll {
+  scrollbar-gutter: auto;
   scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 .preview-scroll::-webkit-scrollbar {
   width: 0;
   height: 0;
+  display: none;
 }
 .preview-tabs-scroll {
   scrollbar-width: none;
@@ -194,6 +237,14 @@ summary {
   width: 0;
   height: 0;
   display: none;
+}
+
+.instream-variant-switcher {
+  transition: bottom 180ms ease;
+}
+
+body:has(.instream-sticky-player) .instream-variant-switcher {
+  bottom: 16.25rem;
 }
 
 .home-dark {

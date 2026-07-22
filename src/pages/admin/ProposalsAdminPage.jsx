@@ -19,7 +19,7 @@ import {
 import { buildStandaloneClientHtml } from "../../features/proposals/buildStandaloneClientHtml"
 
 const selectableProposalFormats = proposalFormatCatalog.filter(
-  (format) => !["leaderboard", "mrec", "halfpage"].includes(format.id)
+  (format) => !["leaderboard", "mrec", "halfpage", "leadgen"].includes(format.id)
 )
 
 function createEmptyProposal(defaultCampaignId = "") {

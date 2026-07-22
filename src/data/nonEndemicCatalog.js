@@ -1,3 +1,5 @@
+import { getOfficialAdSpec2026, withGlobalAdSpecs2026 } from "./globalAdSpecs2026"
+
 const asset = (relativePath) => new URL(relativePath, import.meta.url).href
 
 const nonEndemicImageRoutes = {
@@ -83,7 +85,7 @@ const nonEndemicImageRoutes = {
   },
 }
 
-export const nonEndemicCatalog = [
+const rawNonEndemicCatalog = [
   {
     formatId: "display-banners",
     title: "Display Banners",
@@ -205,7 +207,7 @@ export const nonEndemicCatalog = [
     formatId: "video-banners",
     title: "Video Banners",
     previewKind: "video-banners",
-    creativeOptions: ["Video", "Countdown"],
+    creativeOptions: ["Video"],
     cardImage: nonEndemicImageRoutes.videoBanners.cardImage,
     hoverImage: nonEndemicImageRoutes.videoBanners.hoverImage,
     showcaseSlides: [
@@ -275,7 +277,7 @@ export const nonEndemicCatalog = [
     formatId: "countdown-widget",
     title: "Countdown Widget",
     previewKind: "generic",
-    creativeOptions: ["Image", "GIF"],
+    creativeOptions: ["Image", "GIF", "Video"],
     cardImage: nonEndemicImageRoutes.countdownWidget.cardImage,
     hoverImage: nonEndemicImageRoutes.countdownWidget.hoverImage,
     showcaseSlides: [
@@ -387,6 +389,152 @@ export const nonEndemicCatalog = [
     },
   },
 ]
+
+const officialExpansionCatalog = [
+  {
+    formatId: "high-impact-latam-takeover",
+    title: "LATAM Takeover",
+    previewKind: "generic",
+    creativeOptions: ["Bundle", "Publisher setup"],
+    cardImage: nonEndemicImageRoutes.skin.cardImage,
+    hoverImage: nonEndemicImageRoutes.skin.hoverImage,
+    showcaseSlides: rawNonEndemicCatalog.find((item) => item.formatId === "skin")?.showcaseSlides,
+  },
+  {
+    formatId: "high-impact-nam-takeover",
+    title: "NAM Takeover",
+    previewKind: "generic",
+    creativeOptions: ["Bundle", "Publisher setup"],
+    cardImage: nonEndemicImageRoutes.skin.cardImage,
+    hoverImage: nonEndemicImageRoutes.skin.hoverImage,
+    showcaseSlides: rawNonEndemicCatalog.find((item) => item.formatId === "skin")?.showcaseSlides,
+  },
+  {
+    formatId: "high-impact-emea-takeover",
+    title: "EMEA Takeover",
+    previewKind: "generic",
+    creativeOptions: ["Bundle"],
+    cardImage: nonEndemicImageRoutes.displayBanners.cardImage,
+    hoverImage: nonEndemicImageRoutes.displayBanners.hoverImage,
+    showcaseSlides: rawNonEndemicCatalog.find((item) => item.formatId === "display-banners")?.showcaseSlides,
+  },
+  {
+    formatId: "video-instream-skippable-onsite",
+    title: "In-Stream Video (On-site)",
+    previewKind: "official-instream",
+    creativeOptions: ["MP4", "VAST", "Skippable / Non-skippable"],
+    officialIds: ["video-instream-skippable-onsite", "video-instream-nonskippable-onsite"],
+    cardImage: nonEndemicImageRoutes.preRollVideo.cardImage,
+    hoverImage: nonEndemicImageRoutes.preRollVideo.hoverImage,
+    showcaseSlides: rawNonEndemicCatalog.find((item) => item.formatId === "pre-roll-video")?.showcaseSlides,
+  },
+  {
+    formatId: "video-instream-nonskippable-onsite",
+    title: "In-Stream Non-Skippable (On-site)",
+    previewKind: "official-instream",
+    creativeOptions: ["MP4", "VAST", "Non-skippable"],
+    officialIds: ["video-instream-skippable-onsite", "video-instream-nonskippable-onsite"],
+    cardImage: nonEndemicImageRoutes.preRollVideo.cardImage,
+    hoverImage: nonEndemicImageRoutes.preRollVideo.hoverImage,
+    showcaseSlides: rawNonEndemicCatalog.find((item) => item.formatId === "pre-roll-video")?.showcaseSlides,
+  },
+  {
+    formatId: "video-instream-skippable-youtube",
+    title: "In-Stream Video (YouTube)",
+    previewKind: "official-instream",
+    creativeOptions: ["MP4", "VAST", "Skippable / Non-skippable"],
+    officialIds: ["video-instream-skippable-youtube", "video-instream-nonskippable-youtube"],
+    cardImage: nonEndemicImageRoutes.preRollVideo.cardImage,
+    hoverImage: nonEndemicImageRoutes.preRollVideo.hoverImage,
+    showcaseSlides: rawNonEndemicCatalog.find((item) => item.formatId === "pre-roll-video")?.showcaseSlides,
+  },
+  {
+    formatId: "video-instream-nonskippable-youtube",
+    title: "In-Stream Non-Skippable (YouTube)",
+    previewKind: "official-instream",
+    creativeOptions: ["MP4", "VAST", "YouTube-style"],
+    officialIds: ["video-instream-skippable-youtube", "video-instream-nonskippable-youtube"],
+    cardImage: nonEndemicImageRoutes.preRollVideo.cardImage,
+    hoverImage: nonEndemicImageRoutes.preRollVideo.hoverImage,
+    showcaseSlides: rawNonEndemicCatalog.find((item) => item.formatId === "pre-roll-video")?.showcaseSlides,
+  },
+].map((format) => {
+  const officialSpec = getOfficialAdSpec2026(format.formatId)
+  return withGlobalAdSpecs2026(
+    {
+      ...format,
+      specs: {
+        sizes: officialSpec?.dimensions || officialSpec?.includedUnits || [],
+        kpis: [],
+        description:
+          officialSpec?.section === "video"
+            ? "In-stream video placement with illustrative preview media; accepted delivery follows the 2026 specification."
+            : "Regional high-impact package defined in the Global Ad Specs 2026 catalog.",
+      },
+      descriptionByRegion: {
+        usa: officialSpec?.setupNotes || officialSpec?.operationalNotes?.[0] || "2026 specification available.",
+        latam: officialSpec?.setupNotes || officialSpec?.operationalNotes?.[0] || "2026 specification available.",
+        europe: officialSpec?.setupNotes || officialSpec?.operationalNotes?.[0] || "2026 specification available.",
+      },
+    },
+    { officialIds: format.officialIds || [format.formatId] }
+  )
+})
+
+const commercialDescriptionById = {
+  "display-banners":
+    "Scalable display inventory across high-visibility leaderboard, MPU, rail, billboard, and mobile placements.",
+  skin:
+    "A desktop takeover canvas that surrounds editorial content and gives brand launches sustained visual presence.",
+  interstitial:
+    "A high-attention overlay triggered by the first interaction, suited to launches, offers, and priority campaign moments.",
+  interscroller:
+    "A mobile-first reveal placement that turns natural page scrolling into a large, immersive brand moment.",
+  "mobile-slider":
+    "A retained mobile interaction format with an expandable side panel for campaigns that need an on-demand canvas.",
+  "video-banners":
+    "Muted autoplay video within standard banner positions, adding motion and product storytelling without using in-stream inventory.",
+  "pre-roll-video":
+    "A retained publisher-player preview for legacy campaign planning; use the dedicated in-stream products for current specifications.",
+  livescore:
+    "A custom live-match module that places sponsorship alongside scores and high-intent game updates.",
+  "countdown-widget":
+    "A custom urgency module for launches, fixtures, and limited campaign windows with dynamic countdown messaging.",
+  cube:
+    "An interactive custom canvas for multi-panel product stories, swipe states, and richer campaign engagement.",
+  native:
+    "A feed-integrated placement built from headline, image, logo, and CTA assets to match the surrounding editorial experience.",
+  leadgen:
+    "A retained compatibility format for saved proposals that use an embedded lead-capture experience.",
+  "content-widget":
+    "A custom editorial-style module for sponsored recommendations, branded stories, and contextual recirculation.",
+  "high-impact-latam-takeover":
+    "A LATAM package combining Skin, MPU, Leaderboard, and Mobile Leaderboard for coordinated cross-device impact.",
+  "high-impact-nam-takeover":
+    "A North America package combining Skin, MPU, Leaderboard, and Mobile Leaderboard in one coordinated activation.",
+  "high-impact-emea-takeover":
+    "An EMEA package combining MPU, Leaderboard, Mobile Leaderboard, and Billboard placements without a Skin unit.",
+  "video-instream-skippable-onsite":
+    "In-stream video delivered inside Better Collective publisher players, available as skippable or non-skippable within one official format.",
+  "video-instream-nonskippable-onsite":
+    "A focused 15- or 30-second video message delivered inside Better Collective publisher players without a skip control.",
+  "video-instream-skippable-youtube":
+    "A YouTube video ad experience available as skippable or non-skippable, with sponsored messaging and a direct response CTA.",
+  "video-instream-nonskippable-youtube":
+    "A concise non-skippable YouTube ad experience for the Cracks channel, built for guaranteed message delivery before content.",
+}
+
+export const nonEndemicCatalog = [
+  ...rawNonEndemicCatalog.map((format) =>
+    withGlobalAdSpecs2026(format, {
+      status: format.formatId === "video-banners" ? "custom" : "legacy",
+    })
+  ),
+  ...officialExpansionCatalog,
+].map((format) => ({
+  ...format,
+  cardDescription: commercialDescriptionById[format.formatId] || format.specs?.description,
+}))
 
 export const nonEndemicById = nonEndemicCatalog.reduce((acc, item) => {
   acc[item.formatId] = item

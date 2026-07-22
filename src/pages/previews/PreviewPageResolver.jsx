@@ -20,6 +20,7 @@ import NativePreview from "./NativePreview"
 import PreRollPreview from "./PreRollPreview"
 import SkinPreview from "./SkinPreview"
 import VideoBannerPreview from "./VideoBannerPreview"
+import OfficialInstreamPreview from "./OfficialInstreamPreview"
 
 const aliasMap = {
   display: "display-banners",
@@ -103,6 +104,7 @@ export default function PreviewPageResolver() {
   if (formatData.previewKind === "interscroller") return <InterscrollerPreview />
   if (formatData.previewKind === "video-banners") return <VideoBannerPreview />
   if (formatData.previewKind === "pre-roll") return <PreRollPreview formatData={formatData} />
+  if (formatData.previewKind === "official-instream") return <OfficialInstreamPreview formatData={formatData} />
 
   return <GenericFormatPreview formatData={formatData} />
 }

@@ -204,15 +204,20 @@ export default function BaseNewsMock({
   mobileStickyMode = "fixed",
   hideMobileVideoMock = false,
   showDesktopRails = false,
+  showMobileSticky = false,
   showMobilePrerollSlot = false,
+  desktopPrerollPosition = "default",
+  desktopTopSlotHeight = 90,
   containerClassName,
 }) {
   const { vp, width: viewportWidth } = usePreviewViewport()
   const isMobile = vp === "mobile"
   const mobilePadding = isMobile
-    ? mobileStickyMode === "fixed"
-      ? "pb-[124px]"
-      : "pb-[84px]"
+    ? showMobileSticky
+      ? mobileStickyMode === "fixed"
+        ? "pb-[124px]"
+        : "pb-[84px]"
+      : "pb-14"
     : "pb-14"
   const containerBg = containerClassName || (isMobile ? "bg-white" : "bg-neutral-50")
   const containerOverflow = !isMobile && showDesktopRails ? "" : "overflow-x-hidden"
@@ -242,10 +247,13 @@ export default function BaseNewsMock({
       {vp === "desktop" && (
         <div className="mx-auto max-w-[1070px] py-3">
           <div className="w-full flex items-center justify-center">
-            <div className="h-[90px] w-full max-w-[1000px] rounded-md border border-neutral-200 bg-white px-2 py-1 overflow-hidden">
+            <div
+              className="w-full max-w-[1000px] rounded-md border border-neutral-200 bg-white px-2 py-1 overflow-hidden"
+              style={{ height: desktopTopSlotHeight }}
+            >
               <div className="h-full w-full flex items-center justify-center overflow-hidden">
                 <AdSlot slotId="top_1070x27" renderAd={renderAd}>
-                  <Block h={90} w="100%" r={6} />
+                  <Block h={desktopTopSlotHeight} w="100%" r={6} />
                 </AdSlot>
               </div>
             </div>
@@ -475,6 +483,14 @@ export default function BaseNewsMock({
                   <Lines n={7} />
                 </div>
 
+                {desktopPrerollPosition === "early" ? (
+                  <div className="mt-6">
+                    <AdSlot slotId="inline_preroll_730x330" renderAd={renderAd}>
+                      <div className="h-[330px] w-[730px] bg-neutral-200" />
+                    </AdSlot>
+                  </div>
+                ) : null}
+
                 <div className="mt-6 rounded-lg bg-neutral-200 h-[320px]" />
 
                 <div className="mt-5 grid gap-3">
@@ -482,11 +498,13 @@ export default function BaseNewsMock({
                   <Lines n={6} />
                 </div>
 
-                <div className="mt-6">
-                  <AdSlot slotId="inline_preroll_730x330" renderAd={renderAd}>
-                    <div className="h-[330px] w-[730px] bg-neutral-200" />
-                  </AdSlot>
-                </div>
+                {desktopPrerollPosition === "default" ? (
+                  <div className="mt-6">
+                    <AdSlot slotId="inline_preroll_730x330" renderAd={renderAd}>
+                      <div className="h-[330px] w-[730px] bg-neutral-200" />
+                    </AdSlot>
+                  </div>
+                ) : null}
 
                 <div className="mt-6 grid gap-3">
                   <Lines n={3} />
@@ -615,7 +633,7 @@ export default function BaseNewsMock({
         </div>
       </main>
 
-      {isMobile && <MobileStickyBottom renderAd={renderAd} mode={mobileStickyMode} />}
+      {isMobile && showMobileSticky ? <MobileStickyBottom renderAd={renderAd} mode={mobileStickyMode} /> : null}
     </div>
   )
 }

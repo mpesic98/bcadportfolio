@@ -30,7 +30,12 @@ export default function DisplayPreview() {
 
   return (
     <PreviewFrame maxWidth={contentMaxWidth}>
-      <BaseNewsMock renderAd={renderAd} mobileStickyMode="fixed" showDesktopRails={!isMobile} />
+      <BaseNewsMock
+        renderAd={renderAd}
+        mobileStickyMode="fixed"
+        showDesktopRails={!isMobile}
+        showMobileSticky
+      />
     </PreviewFrame>
   )
 }

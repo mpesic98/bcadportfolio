@@ -1,4 +1,10 @@
 import { useEffect, useMemo, useState } from "react"
+import fallbackCountdownVideo from "../../assets/video/50-8bit-420-mobile.webm"
+import {
+  assetLooksLikeVideo,
+  resolveCreativeAsset,
+} from "../../features/proposals/creativeResolver"
+import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
 
 const COUNTDOWN_TICK_MS = 1000
 const RESET_THRESHOLD_SECONDS = 8
@@ -72,8 +78,7 @@ function CountdownUnit({ value, label, isTall }) {
         style={{
           fontSize: isTall ? 11 : 10,
           fontWeight: 700,
-          letterSpacing: "0.16em",
-          textTransform: "uppercase",
+          letterSpacing: "0.04em",
           color: "rgba(255, 255, 255, 0.96)",
           textShadow: "0 2px 10px rgba(0, 0, 0, 0.35)",
         }}
@@ -88,17 +93,22 @@ export default function CountdownCreative({
   width = 300,
   height = 250,
   imageUrl,
+  mediaType = "image",
 }) {
+  const { campaign } = usePreviewCampaign()
   const isTall = height >= 600
   const [secondsLeft, setSecondsLeft] = useState(() => createMockCountdown())
+  const imageSource = resolveCreativeAsset(campaign, "countdown_widget", imageUrl)
+  const uploadedVideo = resolveCreativeAsset(campaign, "video_banner_countdown")
+  const videoSource = assetLooksLikeVideo(uploadedVideo)
+    ? uploadedVideo
+    : fallbackCountdownVideo
 
   const countdown = useMemo(() => getCountdownParts(secondsLeft), [secondsLeft])
   const countdownLayout = useMemo(
     () => ({
       gap: isTall ? 12 : 10,
       bottom: isTall ? 42 : 26,
-      padding: isTall ? "14px 16px 12px" : "12px 12px 10px",
-      borderRadius: isTall ? 22 : 18,
     }),
     [isTall]
   )
@@ -144,26 +154,35 @@ export default function CountdownCreative({
         }}
       />
 
-      <img
-        src={imageUrl}
-        alt="Countdown background"
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-        }}
-      />
-
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          background:
-            "linear-gradient(180deg, rgba(7, 13, 24, 0.08) 0%, rgba(7, 13, 24, 0.22) 52%, rgba(7, 13, 24, 0.56) 100%)",
-        }}
-      />
+      {mediaType === "video" ? (
+        <video
+          src={videoSource}
+          muted
+          autoPlay
+          loop
+          playsInline
+          preload="auto"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
+      ) : (
+        <img
+          src={imageSource}
+          alt="Countdown background"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
+        />
+      )}
 
       <div
         style={{
@@ -174,11 +193,6 @@ export default function CountdownCreative({
           display: "flex",
           alignItems: "center",
           gap: countdownLayout.gap,
-          padding: countdownLayout.padding,
-          borderRadius: countdownLayout.borderRadius,
-          background: "rgba(8, 15, 31, 0.36)",
-          backdropFilter: "blur(6px)",
-          boxShadow: "0 18px 40px rgba(0, 0, 0, 0.24)",
           zIndex: 2,
         }}
       >

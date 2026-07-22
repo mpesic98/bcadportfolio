@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import interscrollerCreative from "../../assets/interscroller.png"
-import interscrollerVideo from "../../assets/video/50-8bit-420-mobile.webm"
+import interscrollerVideo from "../../assets/video/V2_Web-Front-Page-Video_LOW-Quality.mp4"
 import { resolveCreativeAsset } from "../../features/proposals/creativeResolver"
 import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
 import { usePreviewViewport } from "./previewViewport.jsx"
@@ -212,6 +212,7 @@ export default function InterscrollerLayer({
               poster={img}
               muted={muted}
               autoPlay
+              loop
               playsInline
               preload="auto"
               onPlay={() => {

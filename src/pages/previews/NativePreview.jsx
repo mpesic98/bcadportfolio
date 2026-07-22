@@ -5,8 +5,7 @@ import BaseNewsMock from "./BaseNewsMock"
 
 const NATIVE_SLOTS = new Set(["sidebar_300x250_1", "mobile_inline_300x250_1"])
 
-export default function NativePreview() {
-  const contentMaxWidth = 1100
+function NativePreviewContent() {
   const { vp } = usePreviewViewport()
   const isMobile = vp === "mobile"
 
@@ -20,19 +19,25 @@ export default function NativePreview() {
   }
 
   return (
-    <PreviewFrame maxWidth={contentMaxWidth}>
-      <div
-        style={{
-          height: isMobile ? "100%" : "calc(100vh - 72px)",
-          overflow: "hidden",
-          touchAction: "none",
-          overscrollBehavior: "contain",
-        }}
-        onWheel={handlePreventScroll}
-        onTouchMove={handlePreventScroll}
-      >
-        <BaseNewsMock renderAd={renderAd} />
-      </div>
+    <div
+      style={{
+        height: isMobile ? "100%" : "calc(100dvh - var(--preview-header-height, 72px))",
+        overflow: "hidden",
+        touchAction: "none",
+        overscrollBehavior: "contain",
+      }}
+      onWheel={handlePreventScroll}
+      onTouchMove={handlePreventScroll}
+    >
+      <BaseNewsMock renderAd={renderAd} />
+    </div>
+  )
+}
+
+export default function NativePreview() {
+  return (
+    <PreviewFrame maxWidth={1100} lockPageScroll>
+      <NativePreviewContent />
     </PreviewFrame>
   )
 }

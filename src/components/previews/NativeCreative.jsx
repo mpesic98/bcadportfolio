@@ -4,7 +4,6 @@ const BASE_HEIGHT = 280
 const DEFAULT_HEADLINE = "Adidas presenta la nueva coleccion 2026"
 const DEFAULT_SUBTITLE = "Descubre productos, ofertas y lanzamientos exclusivos para fans."
 const DEFAULT_CTA = "Contact sales"
-const DEFAULT_IMAGE_URL = "https://tpc.googlesyndication.com/pimgad/3601605128611183976?"
 const DEFAULT_IMAGE_ALT = "Imagen promocional"
 
 export default function NativeCreative({
@@ -13,15 +12,17 @@ export default function NativeCreative({
   headline = DEFAULT_HEADLINE,
   subtitle = DEFAULT_SUBTITLE,
   cta = DEFAULT_CTA,
-  imageUrl = DEFAULT_IMAGE_URL,
+  imageUrl,
   imageAlt = DEFAULT_IMAGE_ALT,
   thirdPartyImpressionPixelUrl = "",
 }) {
+  const { campaign } = usePreviewCampaign()
   const safeWidth = Number.isFinite(Number(width)) ? Number(width) : 300
   const safeHeight = Number.isFinite(Number(height)) ? Number(height) : 250
   const scale = Math.min(safeWidth / BASE_WIDTH, safeHeight / BASE_HEIGHT)
   const impressionPixelUrl =
     typeof thirdPartyImpressionPixelUrl === "string" ? thirdPartyImpressionPixelUrl.trim() : ""
+  const effectiveImageUrl = resolveCreativeAsset(campaign, "native", imageUrl || nativeFallback)
 
   return (
     <div
@@ -86,7 +87,7 @@ export default function NativeCreative({
               }}
             >
               <img
-                src={imageUrl}
+                src={effectiveImageUrl}
                 alt={imageAlt}
                 loading="lazy"
                 decoding="async"
@@ -189,3 +190,6 @@ export default function NativeCreative({
     </div>
   )
 }
+import nativeFallback from "../../assets/nativecard.png"
+import { resolveCreativeAsset } from "../../features/proposals/creativeResolver"
+import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"

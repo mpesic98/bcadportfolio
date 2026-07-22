@@ -1,6 +1,12 @@
-export default function PreviewVariantSwitcher({ value, options, onChange, label = "Creative variant" }) {
+export default function PreviewVariantSwitcher({
+  value,
+  options,
+  onChange,
+  label = "Creative variant",
+  positionClassName = "bottom-4 right-4",
+}) {
   return (
-    <div className="fixed bottom-4 right-4 z-[3201] pointer-events-none">
+    <div className={`fixed z-[3201] pointer-events-none ${positionClassName}`}>
       <div
         className="pointer-events-auto flex flex-wrap items-center gap-2 rounded-xl border border-neutral-200 bg-white/90 p-1 shadow-sm backdrop-blur"
         role="group"

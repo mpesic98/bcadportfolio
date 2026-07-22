@@ -1,5 +1,7 @@
 import { useMemo, useState } from "react"
 import cuboImage from "../../assets/cubo.png"
+import { resolveCreativeAsset } from "../../features/proposals/creativeResolver"
+import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
 
 const DEFAULT_IMAGES = [cuboImage, cuboImage, cuboImage, cuboImage]
 
@@ -39,7 +41,9 @@ export default function CubeCreative({
   spinSeconds = 12,
   hoverSpinSeconds = 12,
 }) {
+  const { campaign } = usePreviewCampaign()
   const [isHovering, setIsHovering] = useState(false)
+  const campaignImage = resolveCreativeAsset(campaign, "cube")
 
   const safeSpinSeconds = Number.isFinite(Number(spinSeconds)) && Number(spinSeconds) > 0 ? spinSeconds : 12
   const safeHoverSpinSeconds =
@@ -50,8 +54,8 @@ export default function CubeCreative({
   const animationDuration = isHovering ? safeHoverSpinSeconds : safeSpinSeconds
   const faces = useMemo(() => {
     const fallback = DEFAULT_IMAGES[0]
-    return Array.from({ length: 4 }, (_, index) => images[index] || fallback)
-  }, [images])
+    return Array.from({ length: 4 }, (_, index) => campaignImage || images[index] || fallback)
+  }, [campaignImage, images])
 
   return (
     <div

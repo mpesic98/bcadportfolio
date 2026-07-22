@@ -105,7 +105,7 @@ export const seededProposals = [
         category: "Video",
         description: "Autoplay-capable video banner placements that preserve a compact footprint while adding motion.",
         sizes: ["300x250", "300x600"],
-        creativeKeys: ["video_banner", "video_banner_countdown"],
+        creativeKeys: ["video_banner"],
         placements: [],
         demoUrl: "",
       },

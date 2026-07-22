@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom"
 import { useState } from "react"
 import { assetLooksLikeVideo } from "../../features/proposals/creativeResolver"
+import { FormatSpecsContent, GlobalPoliciesAndFaq } from "../specs/GlobalAdSpecs"
 
 function hexToRgba(hex, alpha) {
   const normalized = String(hex || "").replace("#", "")
@@ -309,11 +310,20 @@ export default function ProposalPresentation({
           {visibleFormats.map((format) => (
             <article
               key={format.id}
-              className="overflow-hidden rounded-xl border border-white/10 bg-white/6 shadow-xl shadow-black/15 transition-transform hover:-translate-y-0.5"
+              role="button"
+              tabIndex={0}
+              onClick={() => setOpenFormatId(format.id)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault()
+                  setOpenFormatId(format.id)
+                }
+              }}
+              className="cursor-pointer overflow-hidden rounded-xl border border-white/10 bg-white/6 shadow-xl shadow-black/15 transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white/60"
             >
               <button
                 type="button"
-                onClick={() => setOpenFormatId(format.id)}
+                onClick={(event) => { event.stopPropagation(); setOpenFormatId(format.id) }}
                 className="block w-full text-left"
               >
                 <div className="aspect-[16/10] p-3 md:p-4">
@@ -337,7 +347,7 @@ export default function ProposalPresentation({
                   </div>
                   <button
                     type="button"
-                    onClick={() => setOpenFormatId(format.id)}
+                    onClick={(event) => { event.stopPropagation(); setOpenFormatId(format.id) }}
                     className="bc-button bc-button--dark bc-button--sm"
                   >
                     View format
@@ -370,7 +380,7 @@ export default function ProposalPresentation({
 
                   <button
                     type="button"
-                    onClick={() => setOpenFormatId(format.id)}
+                    onClick={(event) => { event.stopPropagation(); setOpenFormatId(format.id) }}
                     className="text-sm font-medium"
                     style={{ color: theme.primary || "var(--bc-green-soft)" }}
                   >
@@ -445,13 +455,15 @@ export default function ProposalPresentation({
                   <p>{activeFormat.description}</p>
                 </DetailSection>
 
-                <DetailSection label="Specs">
-                  <ul className="space-y-2">
-                    {activeFormat.sizes.map((size) => (
-                      <li key={size}>{size}</li>
-                    ))}
-                  </ul>
-                </DetailSection>
+                {!activeFormat.officialSpecs?.length ? (
+                  <DetailSection label="Sizes">
+                    <div className="flex flex-wrap gap-2">
+                      {activeFormat.sizes.map((size) => (
+                        <span key={size} className="bc-pill bc-pill--glass">{size}</span>
+                      ))}
+                    </div>
+                  </DetailSection>
+                ) : null}
 
                 <DetailSection label="Available sites">
                   <ul className="space-y-2">
@@ -479,6 +491,12 @@ export default function ProposalPresentation({
                     ))}
                   </ul>
                 </DetailSection>
+
+                <DetailSection label="Global Ad Specs 2026">
+                  <FormatSpecsContent formatData={activeFormat} compact />
+                </DetailSection>
+
+                {activeFormat.officialSpecs?.length ? <GlobalPoliciesAndFaq /> : null}
               </div>
 
               {buildLivePreviewHref ? (
