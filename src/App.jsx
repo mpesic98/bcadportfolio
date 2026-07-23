@@ -7,19 +7,16 @@ import AdminDashboard from "./pages/admin/AdminDashboard"
 import CampaignsAdminPage from "./pages/admin/CampaignsAdminPage"
 import ProposalsAdminPage from "./pages/admin/ProposalsAdminPage"
 import ProposalPage from "./pages/proposals/ProposalPage"
-import RegionLandingResolver from "./router/RegionLandingResolver"
+import HomeLanding from "./components/home/HomeLanding"
 import PreviewRouter from "./router/PreviewRouter"
-import { getSegmentUrlValue } from "./data/regionConfig"
 
 function App() {
-  const defaultSegmentUrl = getSegmentUrlValue("non-endemic")
-
   return (
     <BrowserRouter>
       <Routes>
           <Route element={<MainLayout />}>
-            <Route path="/" element={<RegionLandingResolver />} />
-            <Route path="/:region" element={<RegionLandingResolver />} />
+            <Route path="/" element={<HomeLanding />} />
+            <Route path="/:region" element={<Navigate to="/" replace />} />
           </Route>
 
           <Route
@@ -45,6 +42,14 @@ function App() {
             }
           />
           <Route
+            path="/preview/:formatId"
+            element={
+              <ProposalStoreProvider>
+                <PreviewRouter />
+              </ProposalStoreProvider>
+            }
+          />
+          <Route
             path="/:region/:segment/preview/:formatId"
             element={
               <ProposalStoreProvider>
@@ -52,7 +57,7 @@ function App() {
               </ProposalStoreProvider>
             }
           />
-          <Route path="*" element={<Navigate to={`/?segment=${defaultSegmentUrl}`} replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   )

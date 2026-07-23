@@ -4,8 +4,11 @@ import adtype3 from "../assets/adtype3.png"
 import exampleImg from "../assets/exampleImg.png"
 import adImg from "../assets/adImg.jpg"
 import interscrollerImg from "../assets/Interscroller.jpg"
+import { withGlobalAdSpecs2026 } from "./globalAdSpecs2026"
 
-export const endemicCatalog = [
+// Kept only for backwards-compatible proposal/admin data. These formats are no
+// longer exposed by the public portfolio.
+export const legacyBetsenseCatalog = [
   {
     formatId: "endemic-bet-boost",
     title: "Bet Boost",
@@ -21,11 +24,6 @@ export const endemicCatalog = [
       kpis: ["Interaction Rate", "CTR >= 0.4%", "Conversion Assist"],
       description:
         "Promotional betting widget focused on dynamic boosted odds communication.",
-    },
-    descriptionByRegion: {
-      usa: "US endemic setup highlights boost windows and regional market availability.",
-      latam: "LATAM endemic setup emphasizes football matchday boosts and mobile discovery.",
-      europe: "EU endemic setup emphasizes market depth and compliance-safe promotion labels.",
     },
   },
   {
@@ -44,11 +42,6 @@ export const endemicCatalog = [
       description:
         "Accumulator recommendation module designed for high-intent audience moments.",
     },
-    descriptionByRegion: {
-      usa: "US pro-acca emphasizes fewer legs with stronger explanatory copy.",
-      latam: "LATAM pro-acca emphasizes match context and concise odds visual hierarchy.",
-      europe: "EU pro-acca emphasizes multi-league combinations and transparent labeling.",
-    },
   },
   {
     formatId: "endemic-countdown",
@@ -65,11 +58,6 @@ export const endemicCatalog = [
       kpis: ["Interaction Rate", "CTR >= 0.3%", "Session Depth"],
       description:
         "Urgency-driven countdown unit for match start, offer expiry and promo windows.",
-    },
-    descriptionByRegion: {
-      usa: "US countdown emphasizes event reminders and pre-game engagement windows.",
-      latam: "LATAM countdown emphasizes derby/event urgency and compact mobile layout.",
-      europe: "EU countdown emphasizes fixture cadence and multilingual timing labels.",
     },
   },
   {
@@ -88,11 +76,6 @@ export const endemicCatalog = [
       description:
         "Multi-market selection experience for combining events in a single interaction flow.",
     },
-    descriptionByRegion: {
-      usa: "US multi-event emphasizes key league bundles and low-friction selection.",
-      latam: "LATAM multi-event emphasizes football-heavy bundles with concise cards.",
-      europe: "EU multi-event emphasizes deep market lists with stable navigation.",
-    },
   },
   {
     formatId: "endemic-game-center",
@@ -109,11 +92,6 @@ export const endemicCatalog = [
       kpis: ["Time in Module", "Interaction Rate", "CTR >= 0.4%"],
       description:
         "Rich module aggregating match context, odds and engagement actions in one place.",
-    },
-    descriptionByRegion: {
-      usa: "US game-center focuses on major leagues and event-day engagement depth.",
-      latam: "LATAM game-center focuses on football-centric event cards and quick actions.",
-      europe: "EU game-center focuses on multi-competition depth and compact navigation.",
     },
   },
   {
@@ -132,13 +110,77 @@ export const endemicCatalog = [
       description:
         "Contextual line-up module to connect pre-match information with relevant promotions.",
     },
-    descriptionByRegion: {
-      usa: "US line-up modules focus on roster news and matchday context.",
-      latam: "LATAM line-up modules focus on starters updates and rapid mobile scanning.",
-      europe: "EU line-up modules focus on squad updates across multiple competitions.",
-    },
   },
 ]
+
+const sharedSetupTime = [
+  "2 days: existing template and odds available",
+  "Approximately 1 week: new design adaptation",
+  "Multiple weeks: fully custom widget development",
+]
+
+export const betsenseCatalog = [
+  {
+    formatId: "betsense-countdown",
+    title: "Countdown",
+    previewKind: "generic",
+    creativeOptions: ["Betting Widget", "Responsive"],
+    cardImage: adtype3,
+    hoverImage: exampleImg,
+    showcaseSlides: [
+      { id: "a", title: "Countdown widget", image: adtype3 },
+    ],
+    specStatus: "official",
+    specs: {
+      sizes: ["Responsive countdown widget"],
+      description:
+        "A responsive betting widget that counts down to a match, tournament, or campaign moment.",
+      type: "Betting Widget",
+      assets: [
+        "High-resolution transparent PNG or SVG logo",
+        "Teams and jerseys",
+        "Tournament name",
+        "Odds feed",
+        "Tracking URLs",
+      ],
+      technicalNotes: ["Template-based implementation"],
+      setupTime: sharedSetupTime,
+      support: { pmp: true, pg: true, thirdParty: false },
+    },
+  },
+  {
+    formatId: "betsense-three-way-odds",
+    title: "Three-way Odds",
+    previewKind: "generic",
+    creativeOptions: ["Odds Widget", "Template-based"],
+    cardImage: interscrollerImg,
+    hoverImage: slider,
+    showcaseSlides: [
+      { id: "a", title: "Three-way odds widget", image: interscrollerImg },
+    ],
+    specStatus: "official",
+    specs: {
+      sizes: ["Template-based format"],
+      description:
+        "A dynamic odds widget presenting three-way markets through a publisher-hosted template.",
+      type: "Odds Widget",
+      assets: [
+        "High-resolution transparent PNG or SVG logo",
+        "Teams and jerseys",
+        "Odds feed",
+        "Team colors",
+        "Tracking URLs",
+      ],
+      technicalNotes: ["Dynamic odds and sports data"],
+      setupTime: sharedSetupTime,
+      support: { pmp: true, pg: true, thirdParty: false },
+    },
+  },
+].map((format) => withGlobalAdSpecs2026(format))
+
+// Backwards-compatible aliases for code outside the public portfolio. The
+// public experience uses the consolidated Betsense naming above.
+export const endemicCatalog = betsenseCatalog
 
 export const endemicById = endemicCatalog.reduce((acc, item) => {
   acc[item.formatId] = item

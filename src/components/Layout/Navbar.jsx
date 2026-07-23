@@ -1,31 +1,11 @@
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import { NavLink, useLocation, useNavigate } from "react-router-dom"
 import logo from "../../assets/BClogo.png"
-import { endemicCatalog } from "../../data/endemicCatalog"
-import { nonEndemicCatalog } from "../../data/nonEndemicCatalog"
-import {
-  buildLandingPath,
-  getSegmentUrlValue,
-  normalizeSegment,
-  resolveRegionFromPath,
-} from "../../data/regionConfig"
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
-
-  const region = useMemo(
-    () => resolveRegionFromPath(location.pathname),
-    [location.pathname]
-  )
-
-  const segment = useMemo(() => {
-    const search = new URLSearchParams(location.search)
-    return normalizeSegment(search.get("segment"))
-  }, [location.search])
-
-  const segmentUrlValue = getSegmentUrlValue(segment)
 
   useEffect(() => {
     setIsOpen(false)
@@ -38,41 +18,30 @@ function Navbar() {
         : "text-white/70 hover:text-white"
     }`
 
-  const buildRegionLink = (nextRegion) => ({
-    pathname: buildLandingPath(nextRegion),
-    search: `?segment=${segmentUrlValue}`,
-  })
-
-  const previewTarget = segment === "endemic" ? endemicCatalog[0] : nonEndemicCatalog[0]
-
   const openPreview = () => {
-    if (!previewTarget) return
     setIsOpen(false)
-    navigate(`/${region}/${segmentUrlValue}/preview/${previewTarget.formatId}`)
+    navigate("/preview/display-banners")
   }
 
   return (
     <nav className="sticky top-0 z-50 h-[72px] border-b border-white/10 bg-black/30 backdrop-blur-xl">
       <div className="mx-auto grid h-full max-w-[1120px] grid-cols-[1fr_auto_1fr] items-center px-4 md:px-6">
-        <NavLink to={buildRegionLink(region)} className="inline-flex w-fit items-center">
+        <NavLink to="/" className="inline-flex w-fit items-center">
           <img src={logo} alt="Better Collective Ads" className="h-10 w-auto rounded-md" />
         </NavLink>
 
         <ul className="hidden items-center gap-10 md:flex">
           <li>
-            <NavLink to={buildRegionLink("usa")} className={getLinkClass} end>
-              USA
-            </NavLink>
+            <a href="/#format-group-high-impact" className={getLinkClass({ isActive: false })}>High Impact</a>
           </li>
           <li>
-            <NavLink to={buildRegionLink("latam")} className={getLinkClass}>
-              LATAM
-            </NavLink>
+            <a href="/#format-group-display" className={getLinkClass({ isActive: false })}>Display</a>
           </li>
           <li>
-            <NavLink to={buildRegionLink("europe")} className={getLinkClass}>
-              EUROPE
-            </NavLink>
+            <a href="/#format-group-video" className={getLinkClass({ isActive: false })}>Video</a>
+          </li>
+          <li>
+            <a href="/#format-group-betsense" className={getLinkClass({ isActive: false })}>Betsense</a>
           </li>
         </ul>
 
@@ -116,19 +85,16 @@ function Navbar() {
         <div className="border-t border-white/10 bg-[#0D1118]/95 px-4 py-4 md:hidden">
           <ul className="flex flex-col gap-2">
             <li>
-              <NavLink to={buildRegionLink("usa")} className={getLinkClass} end>
-                USA
-              </NavLink>
+              <a href="/#format-group-high-impact" className={getLinkClass({ isActive: false })}>High Impact</a>
             </li>
             <li>
-              <NavLink to={buildRegionLink("latam")} className={getLinkClass}>
-                LATAM
-              </NavLink>
+              <a href="/#format-group-display" className={getLinkClass({ isActive: false })}>Display</a>
             </li>
             <li>
-              <NavLink to={buildRegionLink("europe")} className={getLinkClass}>
-                EUROPE
-              </NavLink>
+              <a href="/#format-group-video" className={getLinkClass({ isActive: false })}>Video</a>
+            </li>
+            <li>
+              <a href="/#format-group-betsense" className={getLinkClass({ isActive: false })}>Betsense</a>
             </li>
           </ul>
 

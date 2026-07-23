@@ -10,16 +10,19 @@
   --bc-black: #08211c;
   --bc-black-soft: #12352e;
   --bc-cream: #f4efe3;
+  --bc-scrollbar-track: rgba(0, 0, 0, 0.16);
+  --bc-scrollbar-thumb: rgba(0, 0, 0, 0.52);
+  --bc-scrollbar-thumb-hover: rgba(0, 0, 0, 0.68);
 }
 
 html {
-  scrollbar-color: rgba(143, 220, 199, 0.58) rgba(8, 33, 28, 0.18);
+  scrollbar-color: var(--bc-scrollbar-thumb) var(--bc-scrollbar-track);
   scrollbar-width: thin;
 }
 
 body,
 .bc-scrollbar {
-  scrollbar-color: rgba(143, 220, 199, 0.54) rgba(255, 255, 255, 0.04);
+  scrollbar-color: var(--bc-scrollbar-thumb) var(--bc-scrollbar-track);
   scrollbar-width: thin;
 }
 
@@ -33,7 +36,7 @@ body::-webkit-scrollbar,
 html::-webkit-scrollbar-track,
 body::-webkit-scrollbar-track,
 .bc-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.035);
+  background: var(--bc-scrollbar-track);
 }
 
 html::-webkit-scrollbar-thumb,
@@ -41,14 +44,14 @@ body::-webkit-scrollbar-thumb,
 .bc-scrollbar::-webkit-scrollbar-thumb {
   border: 2px solid transparent;
   border-radius: 999px;
-  background: rgba(143, 220, 199, 0.54);
+  background: var(--bc-scrollbar-thumb);
   background-clip: padding-box;
 }
 
 html::-webkit-scrollbar-thumb:hover,
 body::-webkit-scrollbar-thumb:hover,
 .bc-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(143, 220, 199, 0.72);
+  background: var(--bc-scrollbar-thumb-hover);
   background-clip: padding-box;
 }
 

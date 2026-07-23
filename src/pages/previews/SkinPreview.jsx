@@ -10,9 +10,9 @@ import { resolveCreativeAsset } from "../../features/proposals/creativeResolver"
 import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
 
 const VERSION_LABELS = {
-  v1: "Full-width skin",
-  v3: "Full-width background",
-  v2: "Site rails",
+  v1: "Standard skin",
+  v3: "Background variation",
+  v2: "Select-site rails",
 }
 
 function SkinPreviewContent() {

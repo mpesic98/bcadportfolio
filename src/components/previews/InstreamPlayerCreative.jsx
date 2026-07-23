@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import previewVideo from "../../assets/video/V2_Web-Front-Page-Video_LOW-Quality.mp4"
+import previewPoster from "../../assets/adImg.jpg"
 import {
   assetLooksLikeVideo,
   resolveCreativeAsset,
@@ -132,7 +133,16 @@ export default function InstreamPlayerCreative({
       ) : (
         <>
           {isVideoSource ? (
-            <video ref={mediaRef} src={mediaSource} autoPlay muted={muted} playsInline loop className="absolute inset-0 h-full w-full object-cover" />
+            <video
+              ref={mediaRef}
+              src={mediaSource}
+              poster={previewPoster}
+              autoPlay
+              muted={muted}
+              playsInline
+              loop
+              className="absolute inset-0 h-full w-full object-cover"
+            />
           ) : (
             <img src={mediaSource} alt="In-stream advertising creative" className="absolute inset-0 h-full w-full object-cover" />
           )}
@@ -167,7 +177,7 @@ export default function InstreamPlayerCreative({
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 to-transparent px-3 pb-2 pt-8">
                 <div className="mb-2 h-[3px] overflow-hidden bg-white/35">
                   <div
-                    className="h-full bg-[#ff0033] transition-[width] duration-1000"
+                    className="h-full bg-[#facc15] transition-[width] duration-1000"
                     style={{ width: `${Math.max(0, Math.min(100, (secondsElapsed / duration) * 100))}%` }}
                   />
                 </div>

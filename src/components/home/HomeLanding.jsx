@@ -1,24 +1,15 @@
-import { useEffect, useMemo, useState } from "react"
-import { useLocation, useNavigate } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import FormatDetailsModal from "../FormatDetailsModal"
-import { endemicCatalog } from "../../data/endemicCatalog"
-import { nonEndemicCatalog } from "../../data/nonEndemicCatalog"
-import {
-  buildLandingPath,
-  getSegmentUrlValue,
-  normalizeSegment,
-  resolveRegionFromPath,
-} from "../../data/regionConfig"
+import { publicCatalog } from "../../data/publicCatalog"
 import PortfolioPage from "../portfolio/PortfolioPage"
 
-const FEATURED_FORMAT_IDS = ["skin", "interscroller", "interstitial"]
 const PACKAGE_FORMAT_IDS = new Set([
   "high-impact-latam-takeover",
   "high-impact-nam-takeover",
   "high-impact-emea-takeover",
 ])
 const HIDDEN_DISCOVERY_FORMAT_IDS = new Set([
-  "leadgen",
   "pre-roll-video",
   "video-instream-nonskippable-onsite",
   "video-instream-nonskippable-youtube",
@@ -26,32 +17,37 @@ const HIDDEN_DISCOVERY_FORMAT_IDS = new Set([
 
 const FORMAT_GROUPS = [
   {
-    id: "core-formats",
-    title: "Core Formats",
-    ids: [
-      "display-banners",
-      "video-banners",
-      "native",
-    ],
+    id: "high-impact",
+    title: "High Impact",
+    ids: ["skin", "interscroller", "interstitial"],
   },
   {
-    id: "interactive-formats",
-    title: "Interactive Formats",
+    id: "display",
+    title: "Display",
     ids: [
+      "display-banners",
+      "native",
       "mobile-slider",
       "livescore",
       "countdown-widget",
       "cube",
       "content-widget",
+      "leadgen",
     ],
   },
   {
-    id: "instream-video",
-    title: "In-stream Video",
+    id: "video",
+    title: "Video",
     ids: [
+      "video-banners",
       "video-instream-skippable-onsite",
       "video-instream-skippable-youtube",
     ],
+  },
+  {
+    id: "betsense",
+    title: "Betsense",
+    ids: ["betsense-countdown", "betsense-three-way-odds"],
   },
 ]
 
@@ -64,48 +60,17 @@ function buildFormatGroups(items) {
 }
 
 export default function HomeLanding() {
-  const location = useLocation()
   const navigate = useNavigate()
   const [openItem, setOpenItem] = useState(null)
-
-  const region = useMemo(
-    () => resolveRegionFromPath(location.pathname),
-    [location.pathname]
-  )
-
-  const searchParams = useMemo(
-    () => new URLSearchParams(location.search),
-    [location.search]
-  )
-  const incomingSegment = searchParams.get("segment")
-  const segment = normalizeSegment(incomingSegment)
-  const segmentUrlValue = getSegmentUrlValue(segment)
-
-  useEffect(() => {
-    if (incomingSegment === segmentUrlValue) return
-
-    const next = new URLSearchParams(location.search)
-    next.set("segment", segmentUrlValue)
-    navigate(`${buildLandingPath(region)}?${next.toString()}`, { replace: true })
-  }, [incomingSegment, location.search, navigate, region, segmentUrlValue])
-
-  const displayedItems = segment === "endemic" ? endemicCatalog : nonEndemicCatalog
+  const displayedItems = publicCatalog
   const visibleItems = displayedItems.filter(
     (item) => !HIDDEN_DISCOVERY_FORMAT_IDS.has(item.formatId)
   )
-  const featuredItems = segment === "endemic"
-    ? visibleItems.slice(0, 3)
-    : FEATURED_FORMAT_IDS.map((id) => visibleItems.find((item) => item.formatId === id)).filter(Boolean)
-  const featuredIds = new Set(featuredItems.map((item) => item.formatId))
-  const packageItems = segment === "endemic"
-    ? []
-    : visibleItems.filter((item) => PACKAGE_FORMAT_IDS.has(item.formatId))
+  const packageItems = visibleItems.filter((item) => PACKAGE_FORMAT_IDS.has(item.formatId))
   const browseItems = visibleItems.filter(
-    (item) => !featuredIds.has(item.formatId) && !PACKAGE_FORMAT_IDS.has(item.formatId)
+    (item) => !PACKAGE_FORMAT_IDS.has(item.formatId)
   )
-  const formatGroups = segment === "endemic"
-    ? [{ id: "catalog", title: "Formats", items: browseItems }]
-    : buildFormatGroups(browseItems)
+  const formatGroups = buildFormatGroups(browseItems)
 
   useEffect(() => {
     if (!openItem) return
@@ -114,7 +79,7 @@ export default function HomeLanding() {
   }, [displayedItems, openItem])
 
   const openPreview = (item) => {
-    const previewPath = `/${region}/${segmentUrlValue}/preview/${item.formatId}`
+    const previewPath = `/preview/${item.formatId}`
     const previewSearch =
       item.formatId === "interscroller" || item.formatId === "mobile-slider"
         ? "?vp=mobile"
@@ -135,10 +100,8 @@ export default function HomeLanding() {
   return (
     <>
       <PortfolioPage
-        featuredItems={featuredItems}
         formatGroups={formatGroups}
         packageItems={packageItems}
-        region={region}
         onPreview={openPreview}
         onOpenDetails={setOpenItem}
       />
@@ -146,7 +109,6 @@ export default function HomeLanding() {
       <FormatDetailsModal
         open={Boolean(openItem)}
         formatData={openItem}
-        region={region}
         onClose={() => setOpenItem(null)}
         onOpenFullPreview={() => {
           if (!openItem) return

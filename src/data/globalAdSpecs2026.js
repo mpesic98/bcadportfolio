@@ -23,7 +23,6 @@ const displayShared = {
     "Individual HTML elements are not accepted.",
     "Expandable creatives require prior approval.",
   ],
-  sourceUpdatedAt: "2026-05",
 }
 
 const onSiteVideoShared = {
@@ -41,7 +40,6 @@ const onSiteVideoShared = {
     "Creatives are subject to QA approval and must be submitted at least 5 business days before launch.",
     "Video inventory is integrated through a third-party player.",
   ],
-  sourceUpdatedAt: "2026-05",
 }
 
 const youtubeVideoShared = {
@@ -59,7 +57,6 @@ const youtubeVideoShared = {
     "Third-party tags are subject to technical validation and approval.",
     "Creatives are subject to QA approval and must be submitted at least 5 business days before launch.",
   ],
-  sourceUpdatedAt: "2026-05",
 }
 
 export const officialAdFormats2026 = [
@@ -145,7 +142,6 @@ export const officialAdFormats2026 = [
       "Native ads are built from assets, not standard display tags.",
       "Video is not supported in standard native formats.",
     ],
-    sourceUpdatedAt: "2026-05",
   },
   {
     id: "video-instream-skippable-onsite",
@@ -192,7 +188,6 @@ export const officialAdFormats2026 = [
     support: { pmp: NO, pg: YES, thirdParty: NO },
     setupNotes: "Publisher-side setup required.",
     operationalNotes: ["Includes the Skin format."],
-    sourceUpdatedAt: "2026-06",
   },
   {
     id: "high-impact-nam-takeover",
@@ -203,7 +198,6 @@ export const officialAdFormats2026 = [
     support: { pmp: NO, pg: YES, thirdParty: NO },
     setupNotes: "Publisher-side setup required.",
     operationalNotes: ["Includes the Skin format."],
-    sourceUpdatedAt: "2026-06",
   },
   {
     id: "high-impact-emea-takeover",
@@ -213,7 +207,6 @@ export const officialAdFormats2026 = [
     devices: ["Cross Device"],
     support: { pmp: NO, pg: NO, thirdParty: NO },
     operationalNotes: ["No Skin format is included."],
-    sourceUpdatedAt: "2026-06",
   },
   {
     id: "high-impact-skin",
@@ -227,8 +220,9 @@ export const officialAdFormats2026 = [
       "Keep logos, text and CTAs inside safe zones; treat outer areas as background only.",
       "Critical safe zone: approximately 170px horizontally from the gutter edge and the first 700px vertically.",
       "Recommended safe zone: approximately 200px horizontally and the first 800px vertically.",
+      "Skin is the standard execution on supported publishers; separate rail assets are limited to select sites.",
+      "The EMEA Takeover package does not include Skin.",
     ],
-    sourceUpdatedAt: "2026-06",
   },
   {
     id: "high-impact-interstitial",
@@ -239,6 +233,7 @@ export const officialAdFormats2026 = [
       "Desktop: 640x480 primary, 800x600",
     ],
     devices: ["Desktop", "Mobile"],
+    acceptedFormats: ["Static image"],
     support: { pmp: NO, pg: YES, thirdParty: NO },
     setupNotes: "Publisher-side setup required.",
     operationalNotes: [
@@ -246,7 +241,6 @@ export const officialAdFormats2026 = [
       "Triggered on the first user interaction.",
       "Frequency capped to 1 impression per user every 24 hours.",
     ],
-    sourceUpdatedAt: "2026-06",
   },
   {
     id: "high-impact-interscroller",
@@ -254,23 +248,81 @@ export const officialAdFormats2026 = [
     name: "Interscroller",
     dimensions: ["300x600"],
     devices: ["Mobile"],
+    acceptedFormats: [
+      "Static image",
+      "MP4 with H.264 video and AAC audio",
+      "HTTPS VAST 2.0+ redirect resolving to MP4",
+      "Direct HTTPS .mp4 asset URL for Ad Ops ingestion",
+    ],
+    fileLimits: {
+      videoRecommendation: "Keep the MP4 at or below 10 MB for lightweight delivery",
+      gamHostedLimit:
+        "Google Ad Manager account limits may be higher; confirm the active network limit before trafficking",
+    },
     support: { pmp: YES, pg: YES, thirdParty: YES },
-    operationalNotes: ["Mobile-only format.", "Limited to one per page."],
-    sourceUpdatedAt: "2026-06",
+    operationalNotes: [
+      "Mobile-only format.",
+      "Limited to one per page.",
+      "Video delivery is limited to MP4, VAST, or a direct HTTPS .mp4 asset URL.",
+      "The 10 MB recommendation is a portfolio delivery guideline, not the Google Ad Manager upload maximum.",
+      "Google Ad Manager supports H.264/AAC transcoding, up to 1920 px on the longest side and at least 180 px on the shortest side.",
+    ],
+  },
+  {
+    id: "betsense-countdown",
+    section: "betsense",
+    name: "Countdown",
+    dimensions: ["Responsive countdown widget"],
+    devices: ["Cross Device"],
+    acceptedFormats: [
+      "High-resolution transparent PNG or SVG logo",
+      "Teams and jerseys",
+      "Tournament name",
+      "Odds feed",
+      "Tracking URLs",
+    ],
+    support: { pmp: YES, pg: YES, thirdParty: NO },
+    setupNotes:
+      "2 days with an existing template and odds; approximately 1 week for a new design adaptation; multiple weeks for fully custom development.",
+    operationalNotes: [
+      "Template-based implementation.",
+      "Publisher-hosted creative.",
+      "Betsense formats do not support third-party tags.",
+    ],
+  },
+  {
+    id: "betsense-three-way-odds",
+    section: "betsense",
+    name: "Three-way Odds",
+    dimensions: ["Template-based format"],
+    devices: ["Cross Device"],
+    acceptedFormats: [
+      "High-resolution transparent PNG or SVG logo",
+      "Teams and jerseys",
+      "Odds feed",
+      "Team colors",
+      "Tracking URLs",
+    ],
+    support: { pmp: YES, pg: YES, thirdParty: NO },
+    setupNotes:
+      "2 days with an existing template and odds; approximately 1 week for a new design adaptation; multiple weeks for fully custom development.",
+    operationalNotes: [
+      "Dynamic odds and sports data.",
+      "Publisher-hosted creative.",
+      "Betsense formats do not support third-party tags.",
+    ],
   },
 ]
 
 export const globalAdSpecs2026 = {
   metadata: {
-    title: "Better Collective | Global Ad Specs | 2026",
+    title: "Better Collective | Global Ad Specs",
     version: GLOBAL_AD_SPECS_VERSION,
-    displayNativeVideoUpdatedAt: "2026-05",
-    highImpactUpdatedAt: "2026-06",
   },
   networkFacts: [
     "Premium Sports & Esports Network",
-    "70M+ unique users (updated quarterly)",
-    "10B+ monthly impressions (updated quarterly)",
+    "70M+ unique users",
+    "10B+ monthly impressions",
   ],
   buyingOptions: [
     "Direct Order",
@@ -322,6 +374,8 @@ export const officialFormatAliases2026 = {
   interstitial: ["high-impact-interstitial"],
   interscroller: ["high-impact-interscroller"],
   native: ["native-content-ad"],
+  "betsense-countdown": ["betsense-countdown"],
+  "betsense-three-way-odds": ["betsense-three-way-odds"],
 }
 
 export function getOfficialAdSpec2026(formatId) {

@@ -37,9 +37,7 @@ function OfficialInstreamContent({ formatData }) {
       options={variants}
       onChange={setSelectedSpecId}
       label="In-stream video behavior"
-      positionClassName={spec?.playerStyle === "on-site"
-        ? "instream-variant-switcher bottom-4 right-4"
-        : "bottom-4 right-4"}
+      positionClassName="instream-variant-switcher bottom-4 right-4"
     />
   ) : null
 
@@ -86,7 +84,8 @@ export default function OfficialInstreamPreview({ formatData }) {
 
   return (
     <PreviewFrame
-      maxWidth={1100}
+      maxWidth={isYouTube ? 1600 : 1100}
+      controlsMaxWidth={1100}
       lockPageScroll={isYouTube}
       disablePreviewScroll={isYouTube}
     >

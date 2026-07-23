@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef } from "react"
 import { AnimatePresence, motion as Motion } from "framer-motion"
 import FormatShowcaseCarousel from "./FormatShowcaseCarousel"
-import { REGION_LABELS } from "../data/regionConfig"
 import { FormatSpecsContent, GlobalPoliciesAndFaq } from "./specs/GlobalAdSpecs"
 
 function getFocusableElements(root) {
@@ -18,12 +17,9 @@ export default function FormatDetailsModal({
   onClose,
   onOpenFullPreview,
   formatData,
-  region,
 }) {
   const dialogRef = useRef(null)
   const previouslyFocusedRef = useRef(null)
-
-  const regionLabel = REGION_LABELS[region] || REGION_LABELS.usa
 
   const titleId = useMemo(() => `format-modal-title-${formatData?.formatId || "default"}`, [formatData])
   const showcaseSlides = useMemo(() => {
@@ -133,17 +129,11 @@ export default function FormatDetailsModal({
               </div>
 
               <div className="bc-scrollbar flex min-h-0 flex-col p-6 md:overflow-y-auto md:p-8">
-                <p
-                  className="text-xs font-semibold uppercase tracking-wide"
-                  style={{ color: "var(--bc-green-soft)" }}
-                >
-                  {regionLabel}
-                </p>
-                <h2 id={titleId} className="mt-2 text-2xl font-semibold text-white">
+                <h2 id={titleId} className="text-2xl font-semibold text-white">
                   {formatData.title}
                 </h2>
                 <p className="mt-3 text-sm leading-relaxed text-white/70">
-                  {formatData.descriptionByRegion?.[region] || formatData.specs?.description}
+                  {formatData.cardDescription || formatData.specs?.description}
                 </p>
 
                 {!formatData.officialSpecs?.length && formatData.specs?.sizes?.length ? (
@@ -167,9 +157,6 @@ export default function FormatDetailsModal({
                 ) : null}
 
                 <div className="mt-7 border-t border-white/10 pt-7">
-                  <h3 className="mb-4 text-sm font-semibold text-white">
-                    {formatData.officialSpecs?.length ? "Global Ad Specs 2026" : "Format details"}
-                  </h3>
                   <FormatSpecsContent formatData={formatData} compact />
                 </div>
 

@@ -1,13 +1,13 @@
 import { useEffect, useId, useState } from "react"
 import { createPortal } from "react-dom"
-import { nonEndemicById } from "../../data/nonEndemicCatalog"
+import { publicCatalogById } from "../../data/publicCatalog"
 import { getOfficialSpecsForAppFormat } from "../../data/globalAdSpecs2026"
 import { FormatSpecsContent } from "../specs/GlobalAdSpecs"
 
 export default function PreviewSpecsPanel({ formatId }) {
   const [open, setOpen] = useState(false)
   const panelId = useId()
-  const format = nonEndemicById[formatId]
+  const format = publicCatalogById[formatId]
   const specs = format?.officialSpecs?.length
     ? format.officialSpecs
     : getOfficialSpecsForAppFormat(formatId)
@@ -39,7 +39,7 @@ export default function PreviewSpecsPanel({ formatId }) {
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--bc-green-soft)]">
-            {specs.length ? "Global Ad Specs 2026" : `${format?.specStatus || "Custom"} format`}
+            {specs.length ? "Global Ad Specs" : `${format?.specStatus || "Custom"} format`}
           </p>
           <h2 className="mt-1 text-base font-semibold">{format?.title || specs[0]?.name}</h2>
         </div>
@@ -49,6 +49,7 @@ export default function PreviewSpecsPanel({ formatId }) {
         {specs.length ? (
           <FormatSpecsContent
             compact
+            disclosure={false}
             formatData={{
               ...format,
               formatId,

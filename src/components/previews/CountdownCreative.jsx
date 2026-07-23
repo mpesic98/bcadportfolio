@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react"
-import fallbackCountdownVideo from "../../assets/video/50-8bit-420-mobile.webm"
+import fallbackCountdownVideo from "../../assets/video/V2_Web-Front-Page-Video_LOW-Quality.mp4"
 import {
   assetLooksLikeVideo,
   resolveCreativeAsset,

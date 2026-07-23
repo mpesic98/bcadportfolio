@@ -99,15 +99,10 @@ export default function FormatPreviewModal({ format, onClose }) {
           <div className="h-[min(68vh,780px)] overflow-hidden rounded-[18px] border border-white/10 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.22)]">
             <FormatPreviewIframe format={format} interactive />
           </div>
-          <details className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4" open>
-            <summary className="cursor-pointer text-sm font-semibold text-white">
-              {format.officialSpecs?.length ? "Global Ad Specs 2026" : "Format details"}
-            </summary>
-            <div className="mt-4">
-              <FormatSpecsContent formatData={format} />
-            </div>
-            {format.officialSpecs?.length ? <div className="mt-4"><GlobalPoliciesAndFaq /></div> : null}
-          </details>
+          <div className="mt-4">
+            <FormatSpecsContent formatData={format} />
+          </div>
+          {format.officialSpecs?.length ? <div className="mt-4"><GlobalPoliciesAndFaq /></div> : null}
         </div>
       </section>
     </div>

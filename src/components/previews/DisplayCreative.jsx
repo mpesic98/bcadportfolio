@@ -7,6 +7,8 @@ import display728x90 from "../../assets/display_728x90.png"
 import display970x90 from "../../assets/display_970x90.png"
 import { resolveCreativeForSlot } from "../../features/proposals/creativeResolver"
 import { usePreviewCampaign } from "../../features/proposals/PreviewCampaignContext"
+import { officialAdFormats2026 } from "../../data/globalAdSpecs2026"
+import CreativeSpecsPopover from "./CreativeSpecsPopover"
 
 const slotFallbacks = {
   rail_left_160x600: display160x600,
@@ -43,23 +45,52 @@ export default function DisplayCreative({ slotId, size = "300x250" }) {
   const fallbackSrc = slotFallbacks[slotId] || sizeFallbacks[size] || display300x250
   const src = resolveCreativeForSlot(campaign, slotId, fallbackSrc)
   const isLeaderboard = w >= 728 && h <= 90
+  const spec = officialAdFormats2026.find(
+    (format) =>
+      format.section === "display" &&
+      format.dimensions?.some((dimension) => dimension.startsWith(size))
+  )
+  const isMobileSlot = slotId.startsWith("mobile_")
+  const deviceLabel = isMobileSlot
+    ? "Mobile"
+    : spec?.devices?.includes("Mobile") && spec?.devices?.includes("Desktop")
+      ? "Desktop"
+      : spec?.devices?.join(" · ") || "Desktop"
 
   return (
     <div className="w-full flex justify-center">
-      <div
-        className="relative overflow-hidden rounded-md border border-neutral-200 shadow-sm max-w-full"
-        style={{ width: w, height: h }}
+      <CreativeSpecsPopover
+        title={spec?.name || "Display banner"}
+        size={size}
+        device={deviceLabel}
+        rows={[
+          {
+            label: "Accepted formats",
+            value: [
+              "Third-party tags via HTTPS",
+              "JPG, PNG or GIF",
+              "HTML5 as a complete ZIP",
+            ],
+          },
+          { label: "Animation", value: "Up to 15 seconds and 3 loops" },
+        ]}
+        note="General commercial guidance. Confirm final delivery with Ad Ops."
       >
-        <img
-          src={src}
-          alt={slotId}
-          className={isLeaderboard ? "w-full h-full object-contain bg-neutral-50" : "w-full h-full object-cover"}
-        />
+        <div
+          className="relative overflow-hidden rounded-md border border-neutral-200 shadow-sm max-w-full"
+          style={{ width: w, height: h }}
+        >
+          <img
+            src={src}
+            alt={`${spec?.name || "Display banner"} ${size}`}
+            className={isLeaderboard ? "w-full h-full object-contain bg-neutral-50" : "w-full h-full object-cover"}
+          />
 
-        <div className="absolute top-2 left-2 text-[9px] tracking-wide px-2 py-[3px] rounded backdrop-blur-sm bg-black/40 text-white/90 border border-white/10">
-          {slotId} - {w}x{h}
+          <div className="absolute left-2 top-2 rounded border border-white/10 bg-black/45 px-2 py-[3px] text-[9px] tracking-wide text-white/90 backdrop-blur-sm">
+            {size}
+          </div>
         </div>
-      </div>
+      </CreativeSpecsPopover>
     </div>
   )
 }

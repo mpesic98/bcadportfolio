@@ -103,7 +103,6 @@ function Offers() {
       <FormatDetailsModal
         open={Boolean(openItem)}
         formatData={openItem}
-        region={region}
         onClose={() => setOpenItem(null)}
         onOpenFullPreview={() => {
           if (!openItem) return

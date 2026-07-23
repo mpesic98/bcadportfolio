@@ -1,4 +1,3 @@
-import HomeFeatured from "../home/HomeFeatured"
 import HomeFormatsGrid from "../home/HomeFormatsGrid"
 import HomeHero from "../home/HomeHero"
 import HomePackages from "../home/HomePackages"
@@ -7,10 +6,8 @@ import ProposalFormatsSection from "./ProposalFormatsSection"
 
 export default function PortfolioPage({
   proposal = null,
-  featuredItems = [],
   formatGroups = [],
   packageItems = [],
-  region = "usa",
   onPreview,
   onOpenDetails,
 }) {
@@ -34,22 +31,9 @@ export default function PortfolioPage({
           </div>
         ) : (
           <>
-            <div
-              id="featured-solutions"
-              className="relative z-20 mt-14 md:mt-0"
-            >
-              <HomeFeatured
-                items={featuredItems}
-                region={region}
-                onPreview={onPreview}
-                onOpenDetails={onOpenDetails}
-              />
-            </div>
-
-            <div id="browse-all-formats" className="mt-14 md:mt-20">
+            <div id="browse-all-formats" className="relative z-20 mt-14 md:mt-0">
               <HomeFormatsGrid
                 groups={formatGroups}
-                region={region}
                 onPreview={onPreview}
                 onOpenDetails={onOpenDetails}
               />

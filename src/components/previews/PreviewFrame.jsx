@@ -1,21 +1,14 @@
 import { useEffect, useLayoutEffect, useMemo, useRef } from "react"
 import { useLocation, useNavigate, useParams } from "react-router-dom"
-import { endemicCatalog } from "../../data/endemicCatalog"
-import { nonEndemicCatalog } from "../../data/nonEndemicCatalog"
+import { publicCatalog } from "../../data/publicCatalog"
 import { getProposalFormatById } from "../../data/proposalFormats"
 import { PreviewCampaignProvider } from "../../features/proposals/PreviewCampaignContext.jsx"
 import { useProposalStore } from "../../features/proposals/ProposalStore"
-import {
-  getSegmentUrlValue,
-  normalizeRegion,
-  normalizeSegment,
-} from "../../data/regionConfig"
 import { PreviewViewportProvider, usePreviewViewport } from "./previewViewport.jsx"
 import PreviewSpecsPanel from "./PreviewSpecsPanel"
 
 const TABS_SCROLL_STORAGE_KEY = "preview-format-tabs-scroll-left"
 const HIDDEN_PREVIEW_INDEX_IDS = new Set([
-  "leadgen",
   "pre-roll-video",
   "video-instream-nonskippable-onsite",
   "video-instream-nonskippable-youtube",
@@ -23,23 +16,26 @@ const HIDDEN_PREVIEW_INDEX_IDS = new Set([
   "high-impact-nam-takeover",
   "high-impact-emea-takeover",
 ])
-const NON_ENDEMIC_HOME_ORDER = [
+const PUBLIC_HOME_ORDER = [
   "skin",
   "interscroller",
   "interstitial",
   "display-banners",
-  "video-banners",
   "native",
   "mobile-slider",
   "livescore",
   "countdown-widget",
   "cube",
   "content-widget",
+  "leadgen",
+  "video-banners",
   "video-instream-skippable-onsite",
   "video-instream-skippable-youtube",
+  "betsense-countdown",
+  "betsense-three-way-odds",
 ]
-const NON_ENDEMIC_HOME_ORDER_INDEX = new Map(
-  NON_ENDEMIC_HOME_ORDER.map((formatId, index) => [formatId, index])
+const PUBLIC_HOME_ORDER_INDEX = new Map(
+  PUBLIC_HOME_ORDER.map((formatId, index) => [formatId, index])
 )
 let tabsScrollMemory = 0
 
@@ -139,18 +135,13 @@ export default function PreviewFrame({
 }) {
   const navigate = useNavigate()
   const location = useLocation()
-  const { region: regionParam, segment: segmentParam, formatId } = useParams()
+  const { formatId } = useParams()
   const { proposalById, campaignById } = useProposalStore()
 
-  const region = normalizeRegion(regionParam)
-  const segment = normalizeSegment(segmentParam)
-  const segmentUrlValue = getSegmentUrlValue(segment)
-
-  const catalog = segment === "endemic" ? endemicCatalog : nonEndemicCatalog
   const tabs = useMemo(() => {
     const uniqueByKey = new Map()
-    catalog.forEach((item) => {
-      if (segment === "non-endemic" && HIDDEN_PREVIEW_INDEX_IDS.has(item.formatId)) return
+    publicCatalog.forEach((item) => {
+      if (HIDDEN_PREVIEW_INDEX_IDS.has(item.formatId)) return
       if (!uniqueByKey.has(item.formatId)) {
         uniqueByKey.set(item.formatId, {
           key: item.formatId,
@@ -159,14 +150,12 @@ export default function PreviewFrame({
       }
     })
     const items = Array.from(uniqueByKey.values())
-    if (segment !== "non-endemic") return items
-
     return items.sort((left, right) => {
-      const leftIndex = NON_ENDEMIC_HOME_ORDER_INDEX.get(left.key) ?? Number.MAX_SAFE_INTEGER
-      const rightIndex = NON_ENDEMIC_HOME_ORDER_INDEX.get(right.key) ?? Number.MAX_SAFE_INTEGER
+      const leftIndex = PUBLIC_HOME_ORDER_INDEX.get(left.key) ?? Number.MAX_SAFE_INTEGER
+      const rightIndex = PUBLIC_HOME_ORDER_INDEX.get(right.key) ?? Number.MAX_SAFE_INTEGER
       return leftIndex - rightIndex
     })
-  }, [catalog, segment])
+  }, [])
 
   const search = useMemo(
     () => new URLSearchParams(location.search),
@@ -370,11 +359,11 @@ export default function PreviewFrame({
       nextSearch.delete("vp")
     }
     const queryString = nextSearch.toString()
-    navigate(`/${region}/${segmentUrlValue}/preview/${key}${queryString ? `?${queryString}` : ""}`)
+    navigate(`/preview/${key}${queryString ? `?${queryString}` : ""}`)
   }
 
   const goHome = () => {
-    navigate(`/${region}?segment=${segmentUrlValue}`)
+    navigate("/")
   }
 
   return (
@@ -452,7 +441,7 @@ export default function PreviewFrame({
             </div>
 
             <div className="row-start-1 inline-flex items-center gap-1 justify-self-end rounded-xl border border-white/10 bg-black/15 p-1 md:col-start-3">
-              {segment === "non-endemic" ? <PreviewSpecsPanel formatId={formatId} /> : null}
+              <PreviewSpecsPanel formatId={formatId} />
               <button
                 type="button"
                 disabled={isMobileOnlyFormat}

@@ -1,3 +1,5 @@
+import { createPortal } from "react-dom"
+
 export default function PreviewVariantSwitcher({
   value,
   options,
@@ -5,10 +7,10 @@ export default function PreviewVariantSwitcher({
   label = "Creative variant",
   positionClassName = "bottom-4 right-4",
 }) {
-  return (
+  const switcher = (
     <div className={`fixed z-[3201] pointer-events-none ${positionClassName}`}>
       <div
-        className="pointer-events-auto flex flex-wrap items-center gap-2 rounded-xl border border-neutral-200 bg-white/90 p-1 shadow-sm backdrop-blur"
+        className="pointer-events-auto flex max-w-[calc(100vw-1rem)] flex-nowrap items-center gap-1 rounded-xl border border-neutral-200 bg-white/90 p-1 shadow-sm backdrop-blur sm:gap-2"
         role="group"
         aria-label={label}
       >
@@ -18,7 +20,7 @@ export default function PreviewVariantSwitcher({
             type="button"
             onClick={() => onChange(option.value)}
             className={[
-              "rounded-lg border px-3 py-1.5 text-sm font-medium transition",
+              "whitespace-nowrap rounded-lg border px-2 py-1.5 text-xs font-medium transition sm:px-3 sm:text-sm",
               value === option.value
                 ? "border-neutral-900 bg-neutral-900 text-white"
                 : "border-neutral-200 bg-white text-neutral-800 hover:bg-neutral-50",
@@ -30,4 +32,8 @@ export default function PreviewVariantSwitcher({
       </div>
     </div>
   )
+
+  return typeof document !== "undefined"
+    ? createPortal(switcher, document.body)
+    : switcher
 }

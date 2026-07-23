@@ -428,7 +428,7 @@ export default function ProposalPresentation({
               </div>
             </div>
 
-            <div className="flex max-h-[88vh] flex-col overflow-y-auto p-6 md:p-8">
+            <div className="bc-scrollbar flex max-h-[88vh] flex-col overflow-y-auto p-6 md:p-8">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-[11px] uppercase tracking-[0.3em] text-white/45">
@@ -492,7 +492,7 @@ export default function ProposalPresentation({
                   </ul>
                 </DetailSection>
 
-                <DetailSection label="Global Ad Specs 2026">
+                <DetailSection label="Global Ad Specs">
                   <FormatSpecsContent formatData={activeFormat} compact />
                 </DetailSection>
 

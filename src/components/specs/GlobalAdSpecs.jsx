@@ -72,23 +72,17 @@ function SupportGrid({ support }) {
 
 function SpecHeader({ spec }) {
   return (
-    <div className="flex flex-wrap items-start justify-between gap-3">
-      <div>
-        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--bc-green-soft)]">
-          2026 specification · {spec.section.replace("-", " ")}
-        </p>
-        <h3 className="mt-1 text-lg font-semibold text-white">{spec.name}</h3>
-      </div>
-      <span className="bc-pill bc-pill--glass">Updated {spec.sourceUpdatedAt}</span>
+    <div>
+      <h3 className="text-lg font-semibold text-white">{spec.name}</h3>
     </div>
   )
 }
 
-function FormatSpecCard({ spec, compact }) {
-  return (
-    <section className="rounded-xl border border-white/10 bg-white/5 p-4 md:p-5">
-      <SpecHeader spec={spec} />
-      <div className={["mt-4 grid gap-4", compact ? "" : "md:grid-cols-2"].join(" ")}>
+function FormatSpecCard({ spec, compact, showTitle = true, embedded = false }) {
+  const content = (
+    <>
+      {showTitle ? <SpecHeader spec={spec} /> : null}
+      <div className={[showTitle ? "mt-4 grid gap-4" : "grid gap-4", compact ? "" : "md:grid-cols-2"].join(" ")}>
         <SpecList label="Dimensions" values={spec.dimensions} />
         <SpecList label="Included units" values={spec.includedUnits} />
         <SpecList label="Devices" values={spec.devices} />
@@ -99,6 +93,14 @@ function FormatSpecCard({ spec, compact }) {
         <SpecList label="Operational notes" values={spec.operationalNotes} />
       </div>
       <SupportGrid support={spec.support} />
+    </>
+  )
+
+  if (embedded) return content
+
+  return (
+    <section className="rounded-xl border border-white/10 bg-white/5 p-4 md:p-5">
+      {content}
     </section>
   )
 }
@@ -108,14 +110,8 @@ function DisplayBundleSpecs({ specs, compact }) {
   return (
     <div className="space-y-4">
       <section className="rounded-xl border border-white/10 bg-white/5 p-4 md:p-5">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--bc-green-soft)]">
-              2026 specification · display
-            </p>
-            <h3 className="mt-1 text-lg font-semibold text-white">Display placements</h3>
-          </div>
-          <span className="bc-pill bc-pill--glass">Updated {shared.sourceUpdatedAt}</span>
+        <div>
+          <h3 className="text-lg font-semibold text-white">Display placements</h3>
         </div>
         <div className={["mt-4 grid gap-3", compact ? "" : "sm:grid-cols-2"].join(" ")}>
           {specs.map((spec) => (
@@ -142,7 +138,21 @@ function DisplayBundleSpecs({ specs, compact }) {
   )
 }
 
-export function FormatSpecsContent({ formatData, compact = false }) {
+function DisclosureSummary({ children }) {
+  return (
+    <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-semibold text-white [&::-webkit-details-marker]:hidden">
+      <span>{children}</span>
+      <span
+        aria-hidden="true"
+        className="text-lg leading-none text-white/54 transition-transform group-open:rotate-180"
+      >
+        ⌄
+      </span>
+    </summary>
+  )
+}
+
+export function FormatSpecsContent({ formatData, compact = false, disclosure = true }) {
   const officialSpecs = formatData?.officialSpecs || []
 
   if (!officialSpecs.length) {
@@ -151,24 +161,45 @@ export function FormatSpecsContent({ formatData, compact = false }) {
       <div className="rounded-xl border border-amber-200/20 bg-amber-100/8 p-4 text-sm leading-6 text-white/70">
         <span className="font-semibold text-white">{isLegacy ? "Legacy" : "Custom"} format.</span>{" "}
         {isLegacy
-          ? "This format is retained for compatibility and is not explicitly defined in the supplied Global Ad Specs 2026 document."
-          : "This portfolio offering remains available, but it is not presented as an official format from the supplied Global Ad Specs 2026 document."}
+          ? "This format is retained for compatibility and is not explicitly defined in the supplied Global Ad Specs document."
+          : "This portfolio offering remains available, but it is not presented as an official format from the supplied Global Ad Specs document."}
       </div>
     )
   }
 
-  if ((formatData?.formatId || formatData?.id) === "display-banners" && officialSpecs.length > 1) {
-    return <DisplayBundleSpecs specs={officialSpecs} compact={compact} />
-  }
+  const isDisplayBundle = (formatData?.formatId || formatData?.id) === "display-banners" && officialSpecs.length > 1
+  const showSpecTitles = officialSpecs.length > 1
+  const specsContent = isDisplayBundle ? (
+    <DisplayBundleSpecs specs={officialSpecs} compact={compact} />
+  ) : (
+    <div className="space-y-4">
+      {officialSpecs.map((spec) => (
+        <FormatSpecCard
+          key={spec.id}
+          spec={spec}
+          compact={compact}
+          showTitle={showSpecTitles}
+          embedded={disclosure && officialSpecs.length === 1}
+        />
+      ))}
+    </div>
+  )
 
-  return <div className="space-y-4">{officialSpecs.map((spec) => <FormatSpecCard key={spec.id} spec={spec} compact={compact} />)}</div>
+  if (!disclosure) return specsContent
+
+  return (
+    <details className="group rounded-xl border border-white/10 bg-white/5 p-4">
+      <DisclosureSummary>Global Ad Specs</DisclosureSummary>
+      <div className="mt-4">{specsContent}</div>
+    </details>
+  )
 }
 
 export function GlobalPoliciesAndFaq() {
   return (
     <div className="space-y-3">
-      <details className="rounded-xl border border-white/10 bg-white/5 p-4">
-        <summary className="cursor-pointer text-sm font-semibold text-white">Shared delivery policies</summary>
+      <details className="group rounded-xl border border-white/10 bg-white/5 p-4">
+        <DisclosureSummary>Shared delivery policies</DisclosureSummary>
         <ul className="mt-3 space-y-2 text-sm leading-6 text-white/68">
           {globalAdSpecs2026.globalPolicies.map((policy) => <li key={policy}>• {policy}</li>)}
         </ul>
@@ -176,8 +207,8 @@ export function GlobalPoliciesAndFaq() {
           {globalAdSpecs2026.clarifications.html5}
         </p>
       </details>
-      <details className="rounded-xl border border-white/10 bg-white/5 p-4">
-        <summary className="cursor-pointer text-sm font-semibold text-white">Global ad specs FAQ</summary>
+      <details className="group rounded-xl border border-white/10 bg-white/5 p-4">
+        <DisclosureSummary>Global ad specs FAQ</DisclosureSummary>
         <dl className="mt-3 space-y-3 text-sm leading-6 text-white/68">
           {globalAdSpecs2026.faq.map((item) => (
             <div key={item.question}>

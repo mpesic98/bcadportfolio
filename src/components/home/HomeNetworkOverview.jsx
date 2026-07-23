@@ -4,7 +4,7 @@ function splitMetric(value) {
   const [metric, ...label] = value.split(" ")
   return {
     metric,
-    label: label.join(" ").replace(/\s*\(updated quarterly\)\s*$/i, ""),
+    label: label.join(" "),
   }
 }
 
